@@ -42,9 +42,9 @@ CXXDEBUG=-Od -MTd -DDEBUG
 CXXNDEBUG=-O1 -MT -DNDEBUG
 NAME=-Fo
 # If you have problems with lexers being linked, try removing -OPT:REF and replacing with -OPT:NOREF
-LDFLAGS=-OPT:NOWIN98 -OPT:REF
+LDFLAGS=-OPT:REF
 LDDEBUG=
-LIBS=KERNEL32.lib USER32.lib GDI32.lib IMM32.lib OLE32.LIB
+LIBS=KERNEL32.lib USER32.lib GDI32.lib IMM32.lib OLE32.LIB UUID.LIB
 NOLOGO=-nologo
 
 !ELSE
@@ -170,7 +170,7 @@ $(COMPONENT): $(SOBJS) $(DIR_O)\ScintRes.res
 	$(LD) $(LDFLAGS) -DEF:Scintilla.def -DLL -OUT:$@ $** $(LIBS)
 
 $(LEXCOMPONENT): $(LOBJS) $(DIR_O)\ScintRes.res
-	$(LD) $(LDFLAGS) -DEF:Scintilla.def -DLL -OUT:$@ $** $(LIBS)
+	$(LD) $(LDFLAGS) -DEF:SciLexer.def -DLL -OUT:$@ $** $(LIBS)
 
 !ELSE
 

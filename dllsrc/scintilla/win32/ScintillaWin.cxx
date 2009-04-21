@@ -148,7 +148,7 @@ public:
  */
 class ScintillaWin :
 	public ScintillaBase {
-
+	unsigned int DMLUignoreLangChange; //remembers the last lbuttondown tick and if langchange requested shortly after this then it will be ignored
 	bool lastKeyDownConsumed;
 
 	bool capturedMouse;
@@ -260,7 +260,7 @@ HINSTANCE ScintillaWin::hInstance = 0;
 ScintillaWin::ScintillaWin(HWND hwnd) {
 
 	lastKeyDownConsumed = false;
-
+	DMLUignoreLangChange=0;
 	capturedMouse = false;
 	linesPerScroll = 0;
 	wheelDelta = 0;   // Wheel delta from roll
@@ -581,6 +581,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
 	case WM_LBUTTONDOWN:
+		DMLUignoreLangChange=GetTickCount();
 		//Platform::DebugPrintf("Buttdown %d %x %x %x %x %x\n",iMessage, wParam, lParam,
 		//	Platform::IsKeyDown(VK_SHIFT),
 		//	Platform::IsKeyDown(VK_CONTROL),
@@ -593,7 +594,11 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		break;
 
 	case WM_MOUSEMOVE:
-		ButtonMove(Point::FromLong(lParam));
+		ButtonMove(Point::FromLong(lParam),
+			( (wParam & MK_SHIFT)           ?SCMOD_SHIFT:0) |
+			( (wParam & MK_CONTROL)         ?SCMOD_CTRL:0)  |
+			( (Platform::IsKeyDown(VK_MENU))?SCMOD_ALT:0)
+			);
 		break;
 
 	case WM_LBUTTONUP:
@@ -652,9 +657,17 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 	case WM_IME_KEYDOWN:
 		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
-	case WM_KEYUP:
-		//Platform::DebugPrintf("S keyup %d %x %x\n",iMessage, wParam, lParam);
-		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+	case WM_KEYUP:{
+			//DMLU:
+			int ret = KeyUp(KeyTranslate(wParam),
+				Platform::IsKeyDown(VK_SHIFT),
+				Platform::IsKeyDown(VK_CONTROL),
+				Platform::IsKeyDown(VK_MENU) );
+			if ( !ret ) {
+				return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+			}
+			break;
+		}
 
 	case WM_SETTINGCHANGE:
 		//Platform::DebugPrintf("Setting Changed\n");
@@ -734,6 +747,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
 	case WM_INPUTLANGCHANGEREQUEST:
+		if( (DWORD)(GetTickCount()-DMLUignoreLangChange)<(DWORD)3000)return 0;
 		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
 	case WM_ERASEBKGND:
