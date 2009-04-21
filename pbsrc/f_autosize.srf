@@ -1,0 +1,38 @@
+HA$PBExportHeader$f_autosize.srf
+global type f_autosize from function_object
+end type
+
+forward prototypes
+global subroutine f_autosize (readonly window w)
+end prototypes
+
+global subroutine f_autosize (readonly window w);long i,l
+long minv=2147483640
+long minx=minv,miny=minv,maxx=0,maxy=0
+long deltax,deltay
+dragobject obj
+boolean apply=false
+
+w.width+=10
+l=upperbound(w.control)
+for i=1 to l
+	if isValid(w.control[i]) and w.control[i].visible then
+		if handle(w.control[i])<>0 and w.control[i].typeof()<>mdiclient! then
+			obj=w.control[i]
+			if minx>obj.x then minx=obj.x
+			if miny>obj.y then miny=obj.y
+			if maxx<obj.x+obj.width then maxx=obj.x+obj.width
+			if maxy<obj.y+obj.height then maxy=obj.y+obj.height
+			apply=true
+		end if
+	end if
+next
+
+if apply then
+	deltax=w.width - w.workspacewidth()
+	deltay=w.height - w.workspaceheight()
+	w.resize(maxx+minx+deltax,maxy+miny+deltay)
+end if
+
+end subroutine
+

@@ -1,0 +1,37 @@
+HA$PBExportHeader$d_triggers.srd
+release 10;
+datawindow(units=1 timer_interval=0 color=67108864 processing=0 HTMLDW=no print.printername="" print.documentname="" print.orientation = 0 print.margin.left = 24 print.margin.right = 24 print.margin.top = 24 print.margin.bottom = 24 print.paper.source = 0 print.paper.size = 0 print.canusedefaultprinter=yes print.prompt=no print.buttons=no print.preview.buttons=no print.cliptext=no print.overrideprintjob=no print.collate=yes hidegrayline=no )
+header(height=20 color="536870912" )
+summary(height=0 color="536870912" )
+footer(height=0 color="536870912" )
+detail(height=21 color="536870912" )
+table(column=(type=char(255) updatewhereclause=yes name=instrig dbname="instrig" )
+ column=(type=char(255) updatewhereclause=yes name=deltrig dbname="deltrig" )
+ column=(type=char(255) updatewhereclause=yes name=updtrig dbname="updtrig" )
+ retrieve="select 
+(select t.name from sysobjects t where t.id=o.instrig) instrig,
+(select t.name from sysobjects t where t.id=o.deltrig) deltrig,
+(select t.name from sysobjects t where t.id=o.updtrig) updtrig
+from sysobjects o
+where o.type =:type
+and o.name=:name
+" arguments=(("type", string),("name", string)) )
+text(band=header alignment="2" text="Instrig" border="6" color="33554432" x="2" y="2" height="16" width="91" html.valueishtml="0"  name=instrig_t visible="1"  font.face="Arial" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="553648127" )
+text(band=header alignment="2" text="Deltrig" border="6" color="33554432" x="95" y="2" height="16" width="81" html.valueishtml="0"  name=deltrig_t visible="1"  font.face="Arial" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="553648127" )
+text(band=header alignment="2" text="Updtrig" border="6" color="33554432" x="178" y="2" height="16" width="83" html.valueishtml="0"  name=updtrig_t visible="1"  font.face="Arial" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="553648127" )
+text(band=header alignment="2" text="havetrig" border="6" color="33554432" x="263" y="2" height="16" width="55" html.valueishtml="0"  name=t_1 visible="1"  font.face="Arial" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="553648127" )
+column(band=detail id=1 alignment="0" tabsequence=32766 border="0" color="33554432" x="2" y="1" height="19" width="91" format="[general]" html.valueishtml="0"  name=instrig visible="1" edit.limit=30 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Arial" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+column(band=detail id=2 alignment="0" tabsequence=10 border="0" color="33554432" x="95" y="1" height="19" width="81" format="[general]" html.valueishtml="0"  name=deltrig visible="1" edit.limit=30 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Arial" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+column(band=detail id=3 alignment="0" tabsequence=32766 border="0" color="33554432" x="178" y="1" height="19" width="83" format="[general]" html.valueishtml="0"  name=updtrig visible="1" edit.limit=30 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Arial" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=detail alignment="0" expression="if(  isNull(instrig) and isNull(deltrig) and isNull(updtrig),0,1)"border="0" color="33554432" x="263" y="1" height="19" width="55" format="[GENERAL]" html.valueishtml="0"  name=havetrig visible="1"  font.face="Arial" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+htmltable(border="1" )
+htmlgen(clientevents="1" clientvalidation="1" clientcomputedfields="1" clientformatting="0" clientscriptable="0" generatejavascript="1" encodeselflinkargs="1" netscapelayers="0" )
+xhtmlgen() cssgen(sessionspecific="0" )
+xmlgen(inline="0" )
+xsltgen()
+jsgen()
+export.xml(headgroups="1" includewhitespace="0" metadatatype=0 savemetadata=0 )
+import.xml()
+export.pdf(method=0 distill.custompostscript="0" xslfop.print="0" )
+export.xhtml()
+ 

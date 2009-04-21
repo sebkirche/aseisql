@@ -1,0 +1,44 @@
+HA$PBExportHeader$f_getfilepart.srf
+global type f_getfilepart from function_object
+end type
+
+forward prototypes
+global function string f_getfilepart (string file, integer part)
+end prototypes
+
+global function string f_getfilepart (string file, integer part);//part :	
+//			0:nothing
+//			1:path
+//			2:name
+//			4:ext
+
+long p,p1,p2,l
+string path,name,ext,ret
+
+p=pos(file,'\')
+DO
+	p1=p
+	p=pos(file,'\',p+1)
+LOOP WHILE p>0
+p=pos(file,'.',p1+1)
+DO
+	p2=p
+	p=pos(file,'.',p+1)
+LOOP WHILE p>0
+
+l=len(file)
+path=left(file,p1)
+if p2=0 then
+	ext='.'
+	name=mid(file,p1)
+else
+	ext=right(file,l -p2+1)
+	name=mid(file,p1+1,p2 -p1 -1)
+end if
+
+if int(mod(mod(part,4),2))=1 then ret+=path
+if int(mod(part,4)/2)=1 then ret+=name
+if int(part/4)=1 then ret+=ext
+return(ret)
+end function
+
