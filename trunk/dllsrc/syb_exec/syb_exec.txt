@@ -1,0 +1,168 @@
+This library created for executing sql command(s) for Sybase ASE database.
+
+It was created because PowerBuilder does not give ability to get resultset(s)
+column description after sql execution.
+
+syb_exec.dll exports the following functions:
+
+int sql_directory(HWND hwnd);
+int sql_execute(CS_CONNECTION *connection,char * sql_command,HWND hwnd);
+
+
+------------------------------------------------------------------------------
+--                       FUNCTION sql_directory                             --
+------------------------------------------------------------------------------
+It requests from sybase client server names that currently registered.
+
+Use the following declaration of external function in PowerBuilder:
+
+function long sql_directory(long hwnd) LIBRARY "syb_exec.dll"
+
+To call this function from PowerBuilder:
+
+res=sql_directory(Handle(w_connect))
+where:
+- w_connect is a window that will process events to receive server names
+
+Returns:
+This function returns 1 if succeed.
+
+Description:
+It sends the following messages to hwnd window:
+
+name          windows id  powerbuilder id  description
+------------  ----------  ---------------  -----------------------
+ue_message    WM_USER+3   pbm_custom04     info and error messages
+ue_syb_dir    WM_USER+4   pbm_custom05     server name
+------------  ----------  ---------------  -----------------------
+
+------------------------------------------------------------------------------
+--                            EVENT ue_message                              --
+------------------------------------------------------------------------------
+see FUNCTION sql_execute
+
+------------------------------------------------------------------------------
+--                            EVENT ue_syb_dir                              --
+------------------------------------------------------------------------------
+Occurs on next server name income.
+
+ue_syb_dir(long wparam, long lparam)
+Parameters:
+wparam  not used.
+lparam  a string that contains a server name.
+        to obtain a string value from lparam address of the string use:
+        if lparam<>0 then s=String(lparam,"address")
+
+
+
+------------------------------------------------------------------------------
+--                       FUNCTION sql_execute                               --
+------------------------------------------------------------------------------
+It executes sql_command as CS_LANG_CMD and receives all resultsets including 
+output parameters and return value from stored procedure.
+
+Use the following declaration of external function in PowerBuilder:
+
+function long sql_execute(long DBHandle,ref string sql, long hwnd) LIBRARY "syb_exec.dll"
+
+
+To call this function from PowerBuilder:
+
+res=sql_execute(sqlca.DBHandle(),sql_query,Handle(w_main))
+where:
+- sqlca is connected to Sybase ASE (probably it works with MS SQL).
+- sql_query is a string variable that contains query to execute
+- w_main ia a window that will process all events to receive resultset(s)
+
+Returns:
+This function returns 1 if succeed.
+
+Description:
+It sends the following messages to hwnd window:
+
+name          windows id  powerbuilder id  description
+------------  ----------  ---------------  -----------------------------------
+ue_resultset  WM_USER+0   pbm_custom01     new resultset
+ue_newrow     WM_USER+1   pbm_custom02     new row
+ue_setfield   WM_USER+2   pbm_custom03     set field data
+ue_message    WM_USER+3   pbm_custom04     internal debug and error messages
+ue_sqlerror   WM_USER+5   pbm_custom06     sql server error messages
+------------  ----------  ---------------  -----------------------------------
+
+
+------------------------------------------------------------------------------
+--                         EVENT ue_resultset                               --
+------------------------------------------------------------------------------
+Occurs on a new resultset income
+
+ue_resultset(long wparam, long lparam)
+Parameters:
+wparam  resultset type
+        0 - resultset data
+        1 - procedure return
+        2 - procedure output parameters
+lparam  resultset column count
+
+
+------------------------------------------------------------------------------
+--                           EVENT ue_newrow                                --
+------------------------------------------------------------------------------
+Occurs on new data row income (not header)
+
+ue_newrow(long wparam, long lparam)
+Parameters:
+wparam  the number of the new row
+lparam  not used
+
+
+------------------------------------------------------------------------------
+--                           EVENT ue_setfield                              --
+------------------------------------------------------------------------------
+Occurs for every field of resultset or for every column name.
+If this event occured before ue_newrow then it contains a column header 
+information in format: "int_col_width:col_name", in other case it contains 
+column data.
+
+ue_setfield(long wparam, long lparam)
+Parameters:
+wparam  column number
+lparam  string that contains column data or column header information
+        to obtain a string value from lparam address of the string use:
+        if lparam<>0 then s=String(lparam,"address")
+
+
+------------------------------------------------------------------------------
+--                            EVENT ue_message                              --
+------------------------------------------------------------------------------
+Occurs on debug or error message income (not from sql server). You do not need
+to process a debug message. They are just for debugging. But if the error 
+message is income - it means that the internal execution error occurs.
+
+ue_message(long wparam, long lparam)
+Parameters:
+wparam  message type:
+        0 - information/debug message
+        1 - error message
+lparam  a string that contains a message.
+        to obtain a string value from lparam address of the string use:
+        if lparam<>0 then s=String(lparam,"address")
+
+
+------------------------------------------------------------------------------
+--                            EVENT ue_sqlerror                             --
+------------------------------------------------------------------------------
+Occurs on sql server error message income.
+
+ue_sqlerror((unsigned long)long wparam, (string)long lparam)
+Parameters:
+wparam  a string with error info formated as "severity:msgnumber:line"
+lparam  a string that contains a message.
+        to obtain a string value from lparam address of the string use:
+        if lparam<>0 then s=String(lparam,"address")
+
+
+------------------------------------------------------------------------------
+--                                EXAMPLE                                   --
+------------------------------------------------------------------------------
+
+

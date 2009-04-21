@@ -1,0 +1,87 @@
+HA$PBExportHeader$f_centerwindow.srf
+global type f_centerwindow from function_object
+end type
+
+forward prototypes
+global function boolean f_centerwindow (readonly window w)
+end prototypes
+
+global function boolean f_centerwindow (readonly window w);/*********************************************************************
+	<AUTH>	TS - Tatyana Sherepa - FM2i Dniepr </AUTH>
+
+	<DESC>	Set this window to the center of the screen
+	</DESC>
+
+	<USAGE>	(none) [w_debug].of_Set_centre()
+	</USAGE>
+
+	<ARGS>	ai_screen_height Height of screen in PB units
+	ai_screen_width Width of screen in PB units
+	</ARGS>
+
+	<RETURN> (none) </RETURN>
+
+	Date        :  04/12/2001
+	
+Log		:
+...Date.....Auteur..................Objet............................
+_____________________________________________________________________
+
+********************************************************************/
+
+//Parent window
+Window w_parent
+//Current coordinates
+integer li_x, li_y
+integer ai_screen_width,ai_screen_height
+Environment env
+//Return code 
+integer li_return, li
+
+GetEnvironment(env)
+ai_screen_width=PixelsToUnits(env.ScreenWidth,XPixelsToUnits!)
+ai_screen_height=PixelsToUnits(env.ScreenHeight,YPixelsToUnits!)
+
+//Get parent window
+w_parent = w.ParentWindow()
+
+//Parent window is valid
+if Isvalid(w_parent) then
+	
+	//Get coordinates relatively the center of the parent window
+	li_x = w_parent.X + (w_parent.Width/2) - (w.Width/2) 
+	li_y = w_parent.Y + (w_parent.Height/2) - (w.Height/2) 
+
+	//Move if the X-coordinate is out of the screen
+	if (li_x < 0) then 
+		li_x = 0
+	else	
+		//Move to the screen visible area
+		if (li_x + w.Width) > ai_screen_width  then
+			li_x = ai_screen_width - w.Width
+		end if	
+	end if
+	
+	//Move if the Y-coordinate is out of the screen
+	if (li_y < 0) then 
+		li_y = 0
+	else	
+		//Move to the screen visible area
+		if (li_y + w.Height) > ai_screen_height  then
+			li_y = ai_screen_height - w.Height
+		end if
+	end if
+else
+	
+	//Get coordinates relatively the center of the screen
+	li_x = (ai_screen_width - w.Width)/2
+	li_y = (ai_screen_height - w.Height)/2
+	
+end if	
+
+//Move this window
+w.Move(li_x, li_y)
+return true
+
+end function
+

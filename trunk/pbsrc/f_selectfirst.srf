@@ -1,0 +1,64 @@
+HA$PBExportHeader$f_selectfirst.srf
+$PBExportComments$. $Id: f_selectfirst.srf,v 1.3 2003/01/21 14:38:40 lachinfophg Exp $
+global type f_selectfirst from function_object
+end type
+
+forward prototypes
+global function integer f_selectfirst (readonly string query, ref any outparm[])
+end prototypes
+
+global function integer f_selectfirst (readonly string query, ref any outparm[]);//this function selects only first row of data from the result set 
+//defined by query parameter
+
+//returns 1 if everything is Ok
+//returns 2 if everything is Ok but more then one rows found
+//        0 if no rows found
+//       -1 if error 
+
+long i
+int ret=0
+	
+DECLARE src_cursor DYNAMIC CURSOR FOR SQLSA;
+PREPARE SQLSA FROM :query using SQLCA;
+DESCRIBE SQLSA INTO SQLDA;
+OPEN DYNAMIC src_cursor USING DESCRIPTOR SQLDA;
+if SQLCA.sqlcode=-1 then 
+	//message.of_message(sqlca.sqlerrtext)
+	return -1
+end if
+FETCH src_cursor USING DESCRIPTOR SQLDA;
+if SQLCA.sqlcode=0 then
+	if SQLDA.NumOutputs>0 then
+		for i=1 to SQLDA.NumOutputs
+			CHOOSE CASE SQLDA.OutParmType[i]
+				CASE TypeDate!
+					outparm[i]=SQLDA.GetDynamicDate(i)
+				CASE TypeDateTime!
+					outparm[i]=SQLDA.GetDynamicDateTime(i)
+				CASE TypeDecimal!,TypeDouble!,TypeReal!,TypeUInt!,TypeULong!,TypeBoolean!
+					outparm[i]=SQLDA.GetDynamicNumber(i)
+				CASE TypeLong!
+					outparm[i]=long(SQLDA.GetDynamicNumber(i))
+				CASE TypeInteger!
+					outparm[i]=integer(SQLDA.GetDynamicNumber(i))
+				CASE TypeString!
+					outparm[i]=SQLDA.GetDynamicString(i)
+				CASE TypeTime!
+					outparm[i]=SQLDA.GetDynamicTime(i)
+			END CHOOSE
+		next
+		ret=1
+	end if
+	FETCH src_cursor USING DESCRIPTOR SQLDA;
+	if sqlca.sqlcode=0 then ret=2
+end if
+if SQLCA.sqlcode=-1 then 
+	//message.of_message(sqlca.sqlerrtext)
+	ret=-1
+end if
+close src_cursor;
+
+return ret
+
+end function
+

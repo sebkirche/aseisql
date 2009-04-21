@@ -1,0 +1,22 @@
+HA$PBExportHeader$m_dbitem.srm
+forward
+global type m_dbitem from menu
+end type
+end forward
+
+global type m_dbitem from menu
+end type
+global m_dbitem m_dbitem
+
+event clicked;parentwindow.triggerevent( "ue_select_database",0,this.text)
+end event
+
+on m_dbitem.create
+m_dbitem=this
+call super::create
+end on
+
+on m_dbitem.destroy
+call super::destroy
+end on
+

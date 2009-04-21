@@ -1,0 +1,33 @@
+HA$PBExportHeader$f_hex2long.srf
+global type f_hex2long from function_object
+end type
+
+forward prototypes
+global function long f_hex2long (string s)
+end prototypes
+
+global function long f_hex2long (string s);ulong ret=0
+long i,l
+char c[]
+
+s=UPPER(s)
+if left(s,2)="0X" then s=mid(s,3)
+c=s
+l=upperbound(c)
+
+for i=1 to l
+	ret*=16
+	CHOOSE CASE c[i]
+		CASE '0' to '9'
+			ret+=Asc(c[i])-Asc('0')
+		CASE 'A' to 'F'
+			ret+=Asc(c[i])-Asc('A')+10
+		CASE ELSE
+			return 0
+	END CHOOSE
+next
+
+return ret
+
+end function
+

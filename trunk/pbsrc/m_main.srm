@@ -1,0 +1,2545 @@
+HA$PBExportHeader$m_main.srm
+forward
+global type m_main from menu
+end type
+type m_file from menu within m_main
+end type
+type m_newsession from menu within m_file
+end type
+type m_sybasecentral from menu within m_file
+end type
+type m_file_separator1 from menu within m_file
+end type
+type m_open from menu within m_file
+end type
+type m_save from menu within m_file
+end type
+type m_saveas from menu within m_file
+end type
+type m_file_separator2 from menu within m_file
+end type
+type m_workspacesave from menu within m_file
+end type
+type m_workspaceload from menu within m_file
+end type
+type m_file_separator3 from menu within m_file
+end type
+type m_print from menu within m_file
+end type
+type m_file_separator4 from menu within m_file
+end type
+type m_exit from menu within m_file
+end type
+type m_file from menu within m_main
+m_newsession m_newsession
+m_sybasecentral m_sybasecentral
+m_file_separator1 m_file_separator1
+m_open m_open
+m_save m_save
+m_saveas m_saveas
+m_file_separator2 m_file_separator2
+m_workspacesave m_workspacesave
+m_workspaceload m_workspaceload
+m_file_separator3 m_file_separator3
+m_print m_print
+m_file_separator4 m_file_separator4
+m_exit m_exit
+end type
+type m_edit from menu within m_main
+end type
+type m_convertlineend from menu within m_edit
+end type
+type m_copyrtf from menu within m_edit
+end type
+type m_copyvarprint from menu within m_edit
+end type
+type m_edit_delimiter_1 from menu within m_edit
+end type
+type m_insertstub from menu within m_edit
+end type
+type m_formatsql from menu within m_edit
+end type
+type m_edit_delimiter_2 from menu within m_edit
+end type
+type m_find from menu within m_edit
+end type
+type m_findnext from menu within m_edit
+end type
+type m_replace from menu within m_edit
+end type
+type m_edit_delimiter_3 from menu within m_edit
+end type
+type m_deleteline from menu within m_edit
+end type
+type m_edit_delimiter_4 from menu within m_edit
+end type
+type m_commentselection from menu within m_edit
+end type
+type m_uncommentselection from menu within m_edit
+end type
+type m_edit_delimiter_5 from menu within m_edit
+end type
+type m_changecase from menu within m_edit
+end type
+type m_uppercase from menu within m_changecase
+end type
+type m_lowercase from menu within m_changecase
+end type
+type m_titlecase from menu within m_changecase
+end type
+type m_-1 from menu within m_changecase
+end type
+type m_upperkeywords from menu within m_changecase
+end type
+type m_lowerkeywords from menu within m_changecase
+end type
+type m_changecase from menu within m_edit
+m_uppercase m_uppercase
+m_lowercase m_lowercase
+m_titlecase m_titlecase
+m_-1 m_-1
+m_upperkeywords m_upperkeywords
+m_lowerkeywords m_lowerkeywords
+end type
+type m_edit_delimiter_6 from menu within m_edit
+end type
+type m_marker from menu within m_edit
+end type
+type m_markerset from menu within m_marker
+end type
+type m_marker_delimiter_1 from menu within m_marker
+end type
+type m_markerprev from menu within m_marker
+end type
+type m_markernext from menu within m_marker
+end type
+type m_marker from menu within m_edit
+m_markerset m_markerset
+m_marker_delimiter_1 m_marker_delimiter_1
+m_markerprev m_markerprev
+m_markernext m_markernext
+end type
+type m_edit from menu within m_main
+m_convertlineend m_convertlineend
+m_copyrtf m_copyrtf
+m_copyvarprint m_copyvarprint
+m_edit_delimiter_1 m_edit_delimiter_1
+m_insertstub m_insertstub
+m_formatsql m_formatsql
+m_edit_delimiter_2 m_edit_delimiter_2
+m_find m_find
+m_findnext m_findnext
+m_replace m_replace
+m_edit_delimiter_3 m_edit_delimiter_3
+m_deleteline m_deleteline
+m_edit_delimiter_4 m_edit_delimiter_4
+m_commentselection m_commentselection
+m_uncommentselection m_uncommentselection
+m_edit_delimiter_5 m_edit_delimiter_5
+m_changecase m_changecase
+m_edit_delimiter_6 m_edit_delimiter_6
+m_marker m_marker
+end type
+type m_command from menu within m_main
+end type
+type m_execute from menu within m_command
+end type
+type m_executeline from menu within m_command
+end type
+type m_executex from menu within m_command
+end type
+type m_reexecute from menu within m_command
+end type
+type m_cmd_cancel from menu within m_command
+end type
+type m_cancel from menu within m_command
+end type
+type m_cancel_all from menu within m_cancel
+end type
+type m_cancel_current from menu within m_cancel
+end type
+type m_cancel_separator_1 from menu within m_cancel
+end type
+type m_cancel_suicide from menu within m_cancel
+end type
+type m_cancel from menu within m_command
+m_cancel_all m_cancel_all
+m_cancel_current m_cancel_current
+m_cancel_separator_1 m_cancel_separator_1
+m_cancel_suicide m_cancel_suicide
+end type
+type m_command_separator0 from menu within m_command
+end type
+type m_browser from menu within m_command
+end type
+type m_sqlhistory from menu within m_command
+end type
+type m_command_separator1 from menu within m_command
+end type
+type m_queryprocessplan from menu within m_command
+end type
+type m_querytimestat from menu within m_command
+end type
+type m_noexecute from menu within m_command
+end type
+type m_command_separator2 from menu within m_command
+end type
+type m_connect from menu within m_command
+end type
+type m_disconnect from menu within m_command
+end type
+type m_reconnect from menu within m_command
+end type
+type m_command_separator3 from menu within m_command
+end type
+type m_viewprocesses from menu within m_command
+end type
+type m_command from menu within m_main
+m_execute m_execute
+m_executeline m_executeline
+m_executex m_executex
+m_reexecute m_reexecute
+m_cmd_cancel m_cmd_cancel
+m_cancel m_cancel
+m_command_separator0 m_command_separator0
+m_browser m_browser
+m_sqlhistory m_sqlhistory
+m_command_separator1 m_command_separator1
+m_queryprocessplan m_queryprocessplan
+m_querytimestat m_querytimestat
+m_noexecute m_noexecute
+m_command_separator2 m_command_separator2
+m_connect m_connect
+m_disconnect m_disconnect
+m_reconnect m_reconnect
+m_command_separator3 m_command_separator3
+m_viewprocesses m_viewprocesses
+end type
+type m_debug from menu within m_main
+end type
+type m_howtodebug from menu within m_debug
+end type
+type m_dbg_separator_1 from menu within m_debug
+end type
+type m_dbg_attach from menu within m_debug
+end type
+type m_dbg_detach from menu within m_debug
+end type
+type m_dbg_separator_2 from menu within m_debug
+end type
+type m_dbg_breakpoint from menu within m_debug
+end type
+type m_dbg_deleteall from menu within m_debug
+end type
+type m_dbg_separator_3 from menu within m_debug
+end type
+type m_dbg_step from menu within m_debug
+end type
+type m_dbg_stepin from menu within m_debug
+end type
+type m_dbg_stepout from menu within m_debug
+end type
+type m_dbg_continue from menu within m_debug
+end type
+type m_debug from menu within m_main
+m_howtodebug m_howtodebug
+m_dbg_separator_1 m_dbg_separator_1
+m_dbg_attach m_dbg_attach
+m_dbg_detach m_dbg_detach
+m_dbg_separator_2 m_dbg_separator_2
+m_dbg_breakpoint m_dbg_breakpoint
+m_dbg_deleteall m_dbg_deleteall
+m_dbg_separator_3 m_dbg_separator_3
+m_dbg_step m_dbg_step
+m_dbg_stepin m_dbg_stepin
+m_dbg_stepout m_dbg_stepout
+m_dbg_continue m_dbg_continue
+end type
+type m_tools from menu within m_main
+end type
+type m_exportdatatosql from menu within m_tools
+end type
+type m_executeexport from menu within m_tools
+end type
+type m_tools from menu within m_main
+m_exportdatatosql m_exportdatatosql
+m_executeexport m_executeexport
+end type
+type m_window from menu within m_main
+end type
+type m_windownext from menu within m_window
+end type
+type m_windowprev from menu within m_window
+end type
+type m_- from menu within m_window
+end type
+type m_close from menu within m_window
+end type
+type m_closeresultsets from menu within m_window
+end type
+type m_window from menu within m_main
+m_windownext m_windownext
+m_windowprev m_windowprev
+m_- m_-
+m_close m_close
+m_closeresultsets m_closeresultsets
+end type
+type m_view from menu within m_main
+end type
+type m_options from menu within m_view
+end type
+type m_view_separator1 from menu within m_view
+end type
+type m_showlog from menu within m_view
+end type
+type m_showbrowser from menu within m_view
+end type
+type m_lineendings from menu within m_view
+end type
+type m_lineendings_win from menu within m_lineendings
+end type
+type m_lineendings_unix from menu within m_lineendings
+end type
+type m_-0 from menu within m_lineendings
+end type
+type m_showlineendings from menu within m_lineendings
+end type
+type m_lineendings from menu within m_view
+m_lineendings_win m_lineendings_win
+m_lineendings_unix m_lineendings_unix
+m_-0 m_-0
+m_showlineendings m_showlineendings
+end type
+type m_showspaces from menu within m_view
+end type
+type m_view_separator2 from menu within m_view
+end type
+type m_gotoquerytabpage from menu within m_view
+end type
+type m_view from menu within m_main
+m_options m_options
+m_view_separator1 m_view_separator1
+m_showlog m_showlog
+m_showbrowser m_showbrowser
+m_lineendings m_lineendings
+m_showspaces m_showspaces
+m_view_separator2 m_view_separator2
+m_gotoquerytabpage m_gotoquerytabpage
+end type
+type m_help from menu within m_main
+end type
+type m_quickreference from menu within m_help
+end type
+type m_about from menu within m_help
+end type
+type m_help from menu within m_main
+m_quickreference m_quickreference
+m_about m_about
+end type
+global type m_main from menu
+m_file m_file
+m_edit m_edit
+m_command m_command
+m_debug m_debug
+m_tools m_tools
+m_window m_window
+m_view m_view
+m_help m_help
+end type
+end forward
+
+global type m_main from menu
+m_file m_file
+m_edit m_edit
+m_command m_command
+m_debug m_debug
+m_tools m_tools
+m_window m_window
+m_view m_view
+m_help m_help
+end type
+global m_main m_main
+
+on m_main.create
+m_main=this
+call super::create
+this.m_file=create m_file
+this.m_edit=create m_edit
+this.m_command=create m_command
+this.m_debug=create m_debug
+this.m_tools=create m_tools
+this.m_window=create m_window
+this.m_view=create m_view
+this.m_help=create m_help
+this.Item[UpperBound(this.Item)+1]=this.m_file
+this.Item[UpperBound(this.Item)+1]=this.m_edit
+this.Item[UpperBound(this.Item)+1]=this.m_command
+this.Item[UpperBound(this.Item)+1]=this.m_debug
+this.Item[UpperBound(this.Item)+1]=this.m_tools
+this.Item[UpperBound(this.Item)+1]=this.m_window
+this.Item[UpperBound(this.Item)+1]=this.m_view
+this.Item[UpperBound(this.Item)+1]=this.m_help
+end on
+
+on m_main.destroy
+call super::destroy
+destroy(this.m_file)
+destroy(this.m_edit)
+destroy(this.m_command)
+destroy(this.m_debug)
+destroy(this.m_tools)
+destroy(this.m_window)
+destroy(this.m_view)
+destroy(this.m_help)
+end on
+
+type m_file from menu within m_main
+m_newsession m_newsession
+m_sybasecentral m_sybasecentral
+m_file_separator1 m_file_separator1
+m_open m_open
+m_save m_save
+m_saveas m_saveas
+m_file_separator2 m_file_separator2
+m_workspacesave m_workspacesave
+m_workspaceload m_workspaceload
+m_file_separator3 m_file_separator3
+m_print m_print
+m_file_separator4 m_file_separator4
+m_exit m_exit
+end type
+
+on m_file.create
+call super::create
+this.text = "&File"
+this.m_newsession=create m_newsession
+this.m_sybasecentral=create m_sybasecentral
+this.m_file_separator1=create m_file_separator1
+this.m_open=create m_open
+this.m_save=create m_save
+this.m_saveas=create m_saveas
+this.m_file_separator2=create m_file_separator2
+this.m_workspacesave=create m_workspacesave
+this.m_workspaceload=create m_workspaceload
+this.m_file_separator3=create m_file_separator3
+this.m_print=create m_print
+this.m_file_separator4=create m_file_separator4
+this.m_exit=create m_exit
+this.Item[UpperBound(this.Item)+1]=this.m_newsession
+this.Item[UpperBound(this.Item)+1]=this.m_sybasecentral
+this.Item[UpperBound(this.Item)+1]=this.m_file_separator1
+this.Item[UpperBound(this.Item)+1]=this.m_open
+this.Item[UpperBound(this.Item)+1]=this.m_save
+this.Item[UpperBound(this.Item)+1]=this.m_saveas
+this.Item[UpperBound(this.Item)+1]=this.m_file_separator2
+this.Item[UpperBound(this.Item)+1]=this.m_workspacesave
+this.Item[UpperBound(this.Item)+1]=this.m_workspaceload
+this.Item[UpperBound(this.Item)+1]=this.m_file_separator3
+this.Item[UpperBound(this.Item)+1]=this.m_print
+this.Item[UpperBound(this.Item)+1]=this.m_file_separator4
+this.Item[UpperBound(this.Item)+1]=this.m_exit
+end on
+
+on m_file.destroy
+call super::destroy
+destroy(this.m_newsession)
+destroy(this.m_sybasecentral)
+destroy(this.m_file_separator1)
+destroy(this.m_open)
+destroy(this.m_save)
+destroy(this.m_saveas)
+destroy(this.m_file_separator2)
+destroy(this.m_workspacesave)
+destroy(this.m_workspaceload)
+destroy(this.m_file_separator3)
+destroy(this.m_print)
+destroy(this.m_file_separator4)
+destroy(this.m_exit)
+end on
+
+type m_newsession from menu within m_file
+end type
+
+on m_newsession.create
+call super::create
+this.text = "&New Session"
+this.microhelp = "Create New Session  (Ctrl+Click duplicate session)"
+this.toolbaritemname = "Watcom!"
+this.toolbaritemtext = "New Session ( Ctrl+Click duplicate session )"
+end on
+
+on m_newsession.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.triggerevent('ue_men_newsession')
+
+end event
+
+type m_sybasecentral from menu within m_file
+end type
+
+on m_sybasecentral.create
+call super::create
+this.text = "Sybase Central"
+this.microhelp = "Sybase Central"
+this.toolbaritemname = "img\scview.bmp"
+this.toolbaritemtext = "Sybase Central"
+end on
+
+on m_sybasecentral.destroy
+call super::destroy
+end on
+
+event clicked;string s,filename='scview.exe'
+
+s=cfg.of_getstring('options','scview.exe',filename)
+
+if run(s)<>1 then
+	if GetFileOpenName( 'Find Sybase Central Application', s, filename , 'exe', 'EXE Files (*.exe),*.exe')=1 then
+		cfg.of_setstring('options','scview.exe',s)
+		run(s)
+	end if
+end if
+
+end event
+
+type m_file_separator1 from menu within m_file
+end type
+
+on m_file_separator1.create
+call super::create
+this.text = "-"
+end on
+
+on m_file_separator1.destroy
+call super::destroy
+end on
+
+type m_open from menu within m_file
+end type
+
+on m_open.create
+call super::create
+this.text = "&Open~tCtrl+O"
+this.shortcut = 335
+this.microhelp = "Open file"
+this.toolbaritemname = "Custom050!"
+this.toolbaritemtext = "Open"
+this.toolbaritemspace = 1
+end on
+
+on m_open.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_open")
+
+end event
+
+type m_save from menu within m_file
+end type
+
+on m_save.create
+call super::create
+this.text = "&Save~tCtrl+S"
+this.shortcut = 339
+this.toolbaritemname = "Save!"
+this.toolbaritemtext = "Save"
+end on
+
+on m_save.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_save")
+
+end event
+
+type m_saveas from menu within m_file
+end type
+
+on m_saveas.create
+call super::create
+this.text = "Save &as ...~tCtrl+Shift+S"
+this.shortcut = 1363
+this.microhelp = "Save as"
+this.toolbaritemname = "SaveAs!"
+this.toolbaritemtext = "Save as"
+end on
+
+on m_saveas.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_saveas")
+
+end event
+
+type m_file_separator2 from menu within m_file
+end type
+
+on m_file_separator2.create
+call super::create
+this.text = "-"
+end on
+
+on m_file_separator2.destroy
+call super::destroy
+end on
+
+type m_workspacesave from menu within m_file
+end type
+
+event clicked;parentwindow.postEvent("ue_men_workspacesave")
+
+end event
+
+on m_workspacesave.create
+call super::create
+this.text = "Workspace Save"
+end on
+
+on m_workspacesave.destroy
+call super::destroy
+end on
+
+type m_workspaceload from menu within m_file
+end type
+
+event clicked;parentwindow.postEvent("ue_men_workspaceload")
+
+end event
+
+on m_workspaceload.create
+call super::create
+this.text = "Workspace Load"
+end on
+
+on m_workspaceload.destroy
+call super::destroy
+end on
+
+type m_file_separator3 from menu within m_file
+end type
+
+on m_file_separator3.create
+call super::create
+this.text = "-"
+end on
+
+on m_file_separator3.destroy
+call super::destroy
+end on
+
+type m_print from menu within m_file
+end type
+
+on m_print.create
+call super::create
+this.text = "Print..."
+this.microhelp = "Print..."
+this.toolbaritemname = "Print!"
+this.toolbaritemtext = "Print..."
+this.toolbaritemspace = 1
+end on
+
+on m_print.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent('ue_men_print')
+
+end event
+
+type m_file_separator4 from menu within m_file
+end type
+
+on m_file_separator4.create
+call super::create
+this.text = "-"
+end on
+
+on m_file_separator4.destroy
+call super::destroy
+end on
+
+type m_exit from menu within m_file
+end type
+
+on m_exit.create
+call super::create
+this.text = "E&xit"
+this.microhelp = "Exit program"
+this.toolbaritemname = "Exit!"
+this.toolbaritemdownname = "Start!"
+this.toolbaritemtext = "Exit"
+this.toolbaritemorder = 999
+this.toolbaritemspace = 1
+end on
+
+on m_exit.destroy
+call super::destroy
+end on
+
+event clicked;close(parentwindow)
+
+end event
+
+type m_edit from menu within m_main
+m_convertlineend m_convertlineend
+m_copyrtf m_copyrtf
+m_copyvarprint m_copyvarprint
+m_edit_delimiter_1 m_edit_delimiter_1
+m_insertstub m_insertstub
+m_formatsql m_formatsql
+m_edit_delimiter_2 m_edit_delimiter_2
+m_find m_find
+m_findnext m_findnext
+m_replace m_replace
+m_edit_delimiter_3 m_edit_delimiter_3
+m_deleteline m_deleteline
+m_edit_delimiter_4 m_edit_delimiter_4
+m_commentselection m_commentselection
+m_uncommentselection m_uncommentselection
+m_edit_delimiter_5 m_edit_delimiter_5
+m_changecase m_changecase
+m_edit_delimiter_6 m_edit_delimiter_6
+m_marker m_marker
+end type
+
+on m_edit.create
+call super::create
+this.text = "&Edit"
+this.m_convertlineend=create m_convertlineend
+this.m_copyrtf=create m_copyrtf
+this.m_copyvarprint=create m_copyvarprint
+this.m_edit_delimiter_1=create m_edit_delimiter_1
+this.m_insertstub=create m_insertstub
+this.m_formatsql=create m_formatsql
+this.m_edit_delimiter_2=create m_edit_delimiter_2
+this.m_find=create m_find
+this.m_findnext=create m_findnext
+this.m_replace=create m_replace
+this.m_edit_delimiter_3=create m_edit_delimiter_3
+this.m_deleteline=create m_deleteline
+this.m_edit_delimiter_4=create m_edit_delimiter_4
+this.m_commentselection=create m_commentselection
+this.m_uncommentselection=create m_uncommentselection
+this.m_edit_delimiter_5=create m_edit_delimiter_5
+this.m_changecase=create m_changecase
+this.m_edit_delimiter_6=create m_edit_delimiter_6
+this.m_marker=create m_marker
+this.Item[UpperBound(this.Item)+1]=this.m_convertlineend
+this.Item[UpperBound(this.Item)+1]=this.m_copyrtf
+this.Item[UpperBound(this.Item)+1]=this.m_copyvarprint
+this.Item[UpperBound(this.Item)+1]=this.m_edit_delimiter_1
+this.Item[UpperBound(this.Item)+1]=this.m_insertstub
+this.Item[UpperBound(this.Item)+1]=this.m_formatsql
+this.Item[UpperBound(this.Item)+1]=this.m_edit_delimiter_2
+this.Item[UpperBound(this.Item)+1]=this.m_find
+this.Item[UpperBound(this.Item)+1]=this.m_findnext
+this.Item[UpperBound(this.Item)+1]=this.m_replace
+this.Item[UpperBound(this.Item)+1]=this.m_edit_delimiter_3
+this.Item[UpperBound(this.Item)+1]=this.m_deleteline
+this.Item[UpperBound(this.Item)+1]=this.m_edit_delimiter_4
+this.Item[UpperBound(this.Item)+1]=this.m_commentselection
+this.Item[UpperBound(this.Item)+1]=this.m_uncommentselection
+this.Item[UpperBound(this.Item)+1]=this.m_edit_delimiter_5
+this.Item[UpperBound(this.Item)+1]=this.m_changecase
+this.Item[UpperBound(this.Item)+1]=this.m_edit_delimiter_6
+this.Item[UpperBound(this.Item)+1]=this.m_marker
+end on
+
+on m_edit.destroy
+call super::destroy
+destroy(this.m_convertlineend)
+destroy(this.m_copyrtf)
+destroy(this.m_copyvarprint)
+destroy(this.m_edit_delimiter_1)
+destroy(this.m_insertstub)
+destroy(this.m_formatsql)
+destroy(this.m_edit_delimiter_2)
+destroy(this.m_find)
+destroy(this.m_findnext)
+destroy(this.m_replace)
+destroy(this.m_edit_delimiter_3)
+destroy(this.m_deleteline)
+destroy(this.m_edit_delimiter_4)
+destroy(this.m_commentselection)
+destroy(this.m_uncommentselection)
+destroy(this.m_edit_delimiter_5)
+destroy(this.m_changecase)
+destroy(this.m_edit_delimiter_6)
+destroy(this.m_marker)
+end on
+
+type m_convertlineend from menu within m_edit
+end type
+
+event clicked;parentwindow.triggerevent( 'ue_men_convertlineend')
+
+end event
+
+on m_convertlineend.create
+call super::create
+this.visible = false
+this.text = "Convert Line Endings (CR+LF)"
+end on
+
+on m_convertlineend.destroy
+call super::destroy
+end on
+
+type m_copyrtf from menu within m_edit
+end type
+
+on m_copyrtf.create
+call super::create
+this.text = "Copy &RTF"
+end on
+
+on m_copyrtf.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.triggerevent('ue_men_copyrtf')
+
+end event
+
+type m_copyvarprint from menu within m_edit
+end type
+
+event clicked;parentwindow.triggerevent('ue_men_copyvarprint')
+
+end event
+
+on m_copyvarprint.create
+call super::create
+this.text = "Copy Variables for Print"
+end on
+
+on m_copyvarprint.destroy
+call super::destroy
+end on
+
+type m_edit_delimiter_1 from menu within m_edit
+end type
+
+on m_edit_delimiter_1.create
+call super::create
+this.text = "-"
+end on
+
+on m_edit_delimiter_1.destroy
+call super::destroy
+end on
+
+type m_insertstub from menu within m_edit
+end type
+
+event clicked;parentwindow.postEvent("ue_men_insertstub")
+
+end event
+
+on m_insertstub.create
+call super::create
+this.text = "Insert Stub~tCtrl+Space"
+this.shortcut = 288
+end on
+
+on m_insertstub.destroy
+call super::destroy
+end on
+
+type m_formatsql from menu within m_edit
+end type
+
+event clicked;parentwindow.postEvent("ue_men_formatsql")
+
+end event
+
+on m_formatsql.create
+call super::create
+this.text = "Format SQL"
+this.toolbaritemtext = "Format SQL"
+this.toolbaritemspace = 1
+end on
+
+on m_formatsql.destroy
+call super::destroy
+end on
+
+type m_edit_delimiter_2 from menu within m_edit
+end type
+
+on m_edit_delimiter_2.create
+call super::create
+this.text = "-"
+end on
+
+on m_edit_delimiter_2.destroy
+call super::destroy
+end on
+
+type m_find from menu within m_edit
+end type
+
+on m_find.create
+call super::create
+this.text = "&Find ...~tCtrl+F"
+this.shortcut = 326
+end on
+
+on m_find.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_find")
+
+end event
+
+type m_findnext from menu within m_edit
+end type
+
+event clicked;parentwindow.postEvent("ue_find_next")
+
+end event
+
+on m_findnext.create
+call super::create
+this.text = "Find &Next~tF3"
+this.enabled = false
+this.shortcut = 114
+end on
+
+on m_findnext.destroy
+call super::destroy
+end on
+
+type m_replace from menu within m_edit
+end type
+
+on m_replace.create
+call super::create
+this.text = "&Replace ...~tCtrl+H"
+this.shortcut = 328
+end on
+
+on m_replace.destroy
+call super::destroy
+end on
+
+event clicked;open(w_replace)
+
+end event
+
+type m_edit_delimiter_3 from menu within m_edit
+end type
+
+on m_edit_delimiter_3.create
+call super::create
+this.text = "-"
+end on
+
+on m_edit_delimiter_3.destroy
+call super::destroy
+end on
+
+type m_deleteline from menu within m_edit
+end type
+
+on m_deleteline.create
+call super::create
+this.text = "Delete Line~tCtrl+L"
+this.shortcut = 332
+this.microhelp = "Delete current line"
+end on
+
+on m_deleteline.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_deleteline")
+
+end event
+
+type m_edit_delimiter_4 from menu within m_edit
+end type
+
+on m_edit_delimiter_4.create
+call super::create
+this.text = "-"
+end on
+
+on m_edit_delimiter_4.destroy
+call super::destroy
+end on
+
+type m_commentselection from menu within m_edit
+end type
+
+on m_commentselection.create
+call super::create
+this.text = "Comment Selection"
+this.toolbaritemname = "Comment!"
+this.toolbaritemtext = "Comment"
+this.toolbaritemspace = 1
+end on
+
+on m_commentselection.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_comment")
+
+end event
+
+type m_uncommentselection from menu within m_edit
+end type
+
+on m_uncommentselection.create
+call super::create
+this.text = "Uncomment Selection"
+this.toolbaritemname = "Uncomment!"
+this.toolbaritemtext = "Uncomment"
+end on
+
+on m_uncommentselection.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_uncomment")
+
+end event
+
+type m_edit_delimiter_5 from menu within m_edit
+end type
+
+on m_edit_delimiter_5.create
+call super::create
+this.text = "-"
+end on
+
+on m_edit_delimiter_5.destroy
+call super::destroy
+end on
+
+type m_changecase from menu within m_edit
+m_uppercase m_uppercase
+m_lowercase m_lowercase
+m_titlecase m_titlecase
+m_-1 m_-1
+m_upperkeywords m_upperkeywords
+m_lowerkeywords m_lowerkeywords
+end type
+
+on m_changecase.create
+call super::create
+this.text = "Change Case"
+this.m_uppercase=create m_uppercase
+this.m_lowercase=create m_lowercase
+this.m_titlecase=create m_titlecase
+this.m_-1=create m_-1
+this.m_upperkeywords=create m_upperkeywords
+this.m_lowerkeywords=create m_lowerkeywords
+this.Item[UpperBound(this.Item)+1]=this.m_uppercase
+this.Item[UpperBound(this.Item)+1]=this.m_lowercase
+this.Item[UpperBound(this.Item)+1]=this.m_titlecase
+this.Item[UpperBound(this.Item)+1]=this.m_-1
+this.Item[UpperBound(this.Item)+1]=this.m_upperkeywords
+this.Item[UpperBound(this.Item)+1]=this.m_lowerkeywords
+end on
+
+on m_changecase.destroy
+call super::destroy
+destroy(this.m_uppercase)
+destroy(this.m_lowercase)
+destroy(this.m_titlecase)
+destroy(this.m_-1)
+destroy(this.m_upperkeywords)
+destroy(this.m_lowerkeywords)
+end on
+
+type m_uppercase from menu within m_changecase
+end type
+
+event clicked;parentwindow.postEvent("ue_men_case_up")
+
+end event
+
+on m_uppercase.create
+call super::create
+this.text = "Upper Case~tCtrl+="
+this.shortcut = 443
+end on
+
+on m_uppercase.destroy
+call super::destroy
+end on
+
+type m_lowercase from menu within m_changecase
+end type
+
+event clicked;parentwindow.postEvent("ue_men_case_lo")
+
+end event
+
+on m_lowercase.create
+call super::create
+this.text = "Lower Case~tCtrl+-"
+this.shortcut = 445
+end on
+
+on m_lowercase.destroy
+call super::destroy
+end on
+
+type m_titlecase from menu within m_changecase
+end type
+
+event clicked;parentwindow.postEvent("ue_men_case_ti")
+
+end event
+
+on m_titlecase.create
+call super::create
+this.visible = false
+this.text = "Title Case"
+this.enabled = false
+end on
+
+on m_titlecase.destroy
+call super::destroy
+end on
+
+type m_-1 from menu within m_changecase
+end type
+
+on m_-1.create
+call super::create
+this.text = "-"
+end on
+
+on m_-1.destroy
+call super::destroy
+end on
+
+type m_upperkeywords from menu within m_changecase
+end type
+
+event clicked;parentwindow.postEvent("ue_men_case_key_up")
+
+end event
+
+on m_upperkeywords.create
+call super::create
+this.text = "Upper Keywords~tCtrl+Shift+="
+this.shortcut = 1467
+end on
+
+on m_upperkeywords.destroy
+call super::destroy
+end on
+
+type m_lowerkeywords from menu within m_changecase
+end type
+
+event clicked;parentwindow.postEvent("ue_men_case_key_lo")
+
+end event
+
+on m_lowerkeywords.create
+call super::create
+this.text = "Lower Keywords~tCtrl+Shift+-"
+this.shortcut = 1469
+end on
+
+on m_lowerkeywords.destroy
+call super::destroy
+end on
+
+type m_edit_delimiter_6 from menu within m_edit
+end type
+
+on m_edit_delimiter_6.create
+call super::create
+this.text = "-"
+end on
+
+on m_edit_delimiter_6.destroy
+call super::destroy
+end on
+
+type m_marker from menu within m_edit
+m_markerset m_markerset
+m_marker_delimiter_1 m_marker_delimiter_1
+m_markerprev m_markerprev
+m_markernext m_markernext
+end type
+
+on m_marker.create
+call super::create
+this.text = "Marker"
+this.m_markerset=create m_markerset
+this.m_marker_delimiter_1=create m_marker_delimiter_1
+this.m_markerprev=create m_markerprev
+this.m_markernext=create m_markernext
+this.Item[UpperBound(this.Item)+1]=this.m_markerset
+this.Item[UpperBound(this.Item)+1]=this.m_marker_delimiter_1
+this.Item[UpperBound(this.Item)+1]=this.m_markerprev
+this.Item[UpperBound(this.Item)+1]=this.m_markernext
+end on
+
+on m_marker.destroy
+call super::destroy
+destroy(this.m_markerset)
+destroy(this.m_marker_delimiter_1)
+destroy(this.m_markerprev)
+destroy(this.m_markernext)
+end on
+
+type m_markerset from menu within m_marker
+end type
+
+on m_markerset.create
+call super::create
+this.text = "Add/Delete~tCtrl+M"
+this.shortcut = 333
+end on
+
+on m_markerset.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.triggerevent('ue_men_markerset')
+
+end event
+
+type m_marker_delimiter_1 from menu within m_marker
+end type
+
+on m_marker_delimiter_1.create
+call super::create
+this.text = "-"
+end on
+
+on m_marker_delimiter_1.destroy
+call super::destroy
+end on
+
+type m_markerprev from menu within m_marker
+end type
+
+on m_markerprev.create
+call super::create
+this.text = "Previous~tCtrl+,"
+this.shortcut = 444
+end on
+
+on m_markerprev.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.triggerevent('ue_men_markerprev')
+
+end event
+
+type m_markernext from menu within m_marker
+end type
+
+on m_markernext.create
+call super::create
+this.text = "Next~tCtrl+."
+this.shortcut = 446
+end on
+
+on m_markernext.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.triggerevent('ue_men_markernext')
+
+end event
+
+type m_command from menu within m_main
+m_execute m_execute
+m_executeline m_executeline
+m_executex m_executex
+m_reexecute m_reexecute
+m_cmd_cancel m_cmd_cancel
+m_cancel m_cancel
+m_command_separator0 m_command_separator0
+m_browser m_browser
+m_sqlhistory m_sqlhistory
+m_command_separator1 m_command_separator1
+m_queryprocessplan m_queryprocessplan
+m_querytimestat m_querytimestat
+m_noexecute m_noexecute
+m_command_separator2 m_command_separator2
+m_connect m_connect
+m_disconnect m_disconnect
+m_reconnect m_reconnect
+m_command_separator3 m_command_separator3
+m_viewprocesses m_viewprocesses
+end type
+
+on m_command.create
+call super::create
+this.text = "&Command"
+this.m_execute=create m_execute
+this.m_executeline=create m_executeline
+this.m_executex=create m_executex
+this.m_reexecute=create m_reexecute
+this.m_cmd_cancel=create m_cmd_cancel
+this.m_cancel=create m_cancel
+this.m_command_separator0=create m_command_separator0
+this.m_browser=create m_browser
+this.m_sqlhistory=create m_sqlhistory
+this.m_command_separator1=create m_command_separator1
+this.m_queryprocessplan=create m_queryprocessplan
+this.m_querytimestat=create m_querytimestat
+this.m_noexecute=create m_noexecute
+this.m_command_separator2=create m_command_separator2
+this.m_connect=create m_connect
+this.m_disconnect=create m_disconnect
+this.m_reconnect=create m_reconnect
+this.m_command_separator3=create m_command_separator3
+this.m_viewprocesses=create m_viewprocesses
+this.Item[UpperBound(this.Item)+1]=this.m_execute
+this.Item[UpperBound(this.Item)+1]=this.m_executeline
+this.Item[UpperBound(this.Item)+1]=this.m_executex
+this.Item[UpperBound(this.Item)+1]=this.m_reexecute
+this.Item[UpperBound(this.Item)+1]=this.m_cmd_cancel
+this.Item[UpperBound(this.Item)+1]=this.m_cancel
+this.Item[UpperBound(this.Item)+1]=this.m_command_separator0
+this.Item[UpperBound(this.Item)+1]=this.m_browser
+this.Item[UpperBound(this.Item)+1]=this.m_sqlhistory
+this.Item[UpperBound(this.Item)+1]=this.m_command_separator1
+this.Item[UpperBound(this.Item)+1]=this.m_queryprocessplan
+this.Item[UpperBound(this.Item)+1]=this.m_querytimestat
+this.Item[UpperBound(this.Item)+1]=this.m_noexecute
+this.Item[UpperBound(this.Item)+1]=this.m_command_separator2
+this.Item[UpperBound(this.Item)+1]=this.m_connect
+this.Item[UpperBound(this.Item)+1]=this.m_disconnect
+this.Item[UpperBound(this.Item)+1]=this.m_reconnect
+this.Item[UpperBound(this.Item)+1]=this.m_command_separator3
+this.Item[UpperBound(this.Item)+1]=this.m_viewprocesses
+end on
+
+on m_command.destroy
+call super::destroy
+destroy(this.m_execute)
+destroy(this.m_executeline)
+destroy(this.m_executex)
+destroy(this.m_reexecute)
+destroy(this.m_cmd_cancel)
+destroy(this.m_cancel)
+destroy(this.m_command_separator0)
+destroy(this.m_browser)
+destroy(this.m_sqlhistory)
+destroy(this.m_command_separator1)
+destroy(this.m_queryprocessplan)
+destroy(this.m_querytimestat)
+destroy(this.m_noexecute)
+destroy(this.m_command_separator2)
+destroy(this.m_connect)
+destroy(this.m_disconnect)
+destroy(this.m_reconnect)
+destroy(this.m_command_separator3)
+destroy(this.m_viewprocesses)
+end on
+
+type m_execute from menu within m_command
+end type
+
+event clicked;parentwindow.postEvent("ue_men_execute")
+
+end event
+
+on m_execute.create
+call super::create
+this.text = "E&xecute~tF9"
+this.enabled = false
+this.shortcut = 120
+this.microhelp = "Execute query"
+this.toolbaritemname = "ExecuteSQL5!"
+this.toolbaritemtext = "Execute (F9)"
+this.toolbaritembarindex = 2
+this.toolbaritemspace = 1
+end on
+
+on m_execute.destroy
+call super::destroy
+end on
+
+type m_executeline from menu within m_command
+end type
+
+event clicked;parentwindow.postEvent("ue_men_executeline")
+
+end event
+
+on m_executeline.create
+call super::create
+this.text = "Execute Current Line~tAlt+F9"
+this.enabled = false
+this.shortcut = 632
+this.microhelp = "Select current line, then execute"
+end on
+
+on m_executeline.destroy
+call super::destroy
+end on
+
+type m_executex from menu within m_command
+end type
+
+event clicked;parentwindow.postEvent("ue_men_execute")
+
+end event
+
+on m_executex.create
+call super::create
+this.visible = false
+this.text = "Execute X~tCtrl+E"
+this.enabled = false
+this.shortcut = 325
+end on
+
+on m_executex.destroy
+call super::destroy
+end on
+
+type m_reexecute from menu within m_command
+end type
+
+event clicked;parentwindow.postEvent("ue_men_reselect")
+
+end event
+
+on m_reexecute.create
+call super::create
+this.text = "ReExecute~tF5"
+this.shortcut = 116
+this.microhelp = "ReExecute query"
+this.toolbaritemname = "Continue!"
+this.toolbaritemtext = "ReExecute query"
+this.toolbaritembarindex = 2
+end on
+
+on m_reexecute.destroy
+call super::destroy
+end on
+
+type m_cmd_cancel from menu within m_command
+end type
+
+event clicked;parentwindow.TriggerEvent("ue_men_cancel")
+
+end event
+
+on m_cmd_cancel.create
+call super::create
+this.visible = false
+this.text = "Cancel"
+this.enabled = false
+this.microhelp = "Cancel result set"
+this.toolbaritemname = "img\stop.bmp"
+this.toolbaritemtext = "Cancel"
+this.toolbaritembarindex = 2
+end on
+
+on m_cmd_cancel.destroy
+call super::destroy
+end on
+
+type m_cancel from menu within m_command
+m_cancel_all m_cancel_all
+m_cancel_current m_cancel_current
+m_cancel_separator_1 m_cancel_separator_1
+m_cancel_suicide m_cancel_suicide
+end type
+
+on m_cancel.create
+call super::create
+this.text = "Cancel"
+this.enabled = false
+this.m_cancel_all=create m_cancel_all
+this.m_cancel_current=create m_cancel_current
+this.m_cancel_separator_1=create m_cancel_separator_1
+this.m_cancel_suicide=create m_cancel_suicide
+this.Item[UpperBound(this.Item)+1]=this.m_cancel_all
+this.Item[UpperBound(this.Item)+1]=this.m_cancel_current
+this.Item[UpperBound(this.Item)+1]=this.m_cancel_separator_1
+this.Item[UpperBound(this.Item)+1]=this.m_cancel_suicide
+end on
+
+on m_cancel.destroy
+call super::destroy
+destroy(this.m_cancel_all)
+destroy(this.m_cancel_current)
+destroy(this.m_cancel_separator_1)
+destroy(this.m_cancel_suicide)
+end on
+
+type m_cancel_all from menu within m_cancel
+end type
+
+event clicked;parentwindow.TriggerEvent("ue_men_cancel_all")
+
+end event
+
+on m_cancel_all.create
+call super::create
+this.text = "All resultsets~tEsc"
+this.shortcut = 27
+this.microhelp = "Discard all results generated by the command."
+end on
+
+on m_cancel_all.destroy
+call super::destroy
+end on
+
+type m_cancel_current from menu within m_cancel
+end type
+
+event clicked;parentwindow.TriggerEvent("ue_men_cancel_current")
+
+end event
+
+on m_cancel_current.create
+call super::create
+this.text = "Current resultset"
+this.microhelp = "Discards the current result set."
+end on
+
+on m_cancel_current.destroy
+call super::destroy
+end on
+
+type m_cancel_separator_1 from menu within m_cancel
+end type
+
+on m_cancel_separator_1.create
+call super::create
+this.text = "-"
+end on
+
+on m_cancel_separator_1.destroy
+call super::destroy
+end on
+
+type m_cancel_suicide from menu within m_cancel
+end type
+
+event clicked;parentwindow.TriggerEvent("ue_men_cancel_suicide")
+
+end event
+
+on m_cancel_suicide.create
+call super::create
+this.text = "Suicide process"
+end on
+
+on m_cancel_suicide.destroy
+call super::destroy
+end on
+
+type m_command_separator0 from menu within m_command
+end type
+
+on m_command_separator0.create
+call super::create
+this.text = "-"
+end on
+
+on m_command_separator0.destroy
+call super::destroy
+end on
+
+type m_browser from menu within m_command
+end type
+
+event clicked;parentwindow.TriggerEvent("ue_men_browser")
+
+end event
+
+on m_browser.create
+call super::create
+this.text = "Browser ...~tF4"
+this.shortcut = 115
+this.microhelp = "Database object browser"
+this.toolbaritemname = "BrowseObjects!"
+this.toolbaritemtext = "Database object browser (F4)"
+this.toolbaritembarindex = 2
+this.toolbaritemspace = 1
+end on
+
+on m_browser.destroy
+call super::destroy
+end on
+
+type m_sqlhistory from menu within m_command
+end type
+
+event clicked;parentwindow.TriggerEvent("ue_men_sqlhistory")
+
+end event
+
+on m_sqlhistory.create
+call super::create
+this.text = "SQL History ...~tCtrl+R"
+this.shortcut = 338
+this.microhelp = "SQL History"
+this.toolbaritemname = "ToDoList!"
+this.toolbaritemtext = "SQL History (Ctrl+R)"
+end on
+
+on m_sqlhistory.destroy
+call super::destroy
+end on
+
+type m_command_separator1 from menu within m_command
+end type
+
+on m_command_separator1.create
+call super::create
+this.text = "-"
+end on
+
+on m_command_separator1.destroy
+call super::destroy
+end on
+
+type m_queryprocessplan from menu within m_command
+end type
+
+event clicked;parentwindow.triggerevent('ue_men_queryprocessplan')
+
+end event
+
+on m_queryprocessplan.create
+call super::create
+this.text = "Query Process Plan"
+this.enabled = false
+this.microhelp = "Query Process Plan"
+this.toolbaritemname = "Where!"
+this.toolbaritemtext = "Query Process Plan"
+this.toolbaritembarindex = 2
+this.toolbaritemspace = 1
+end on
+
+on m_queryprocessplan.destroy
+call super::destroy
+end on
+
+type m_querytimestat from menu within m_command
+end type
+
+event clicked;parentwindow.triggerevent('ue_men_querytimestat')
+
+end event
+
+on m_querytimestat.create
+call super::create
+this.text = "Query Time Statistics"
+this.enabled = false
+this.microhelp = "Query Time Statistics"
+this.toolbaritemname = "img\timestat.bmp"
+this.toolbaritemtext = "Query Time Statistics"
+this.toolbaritembarindex = 2
+end on
+
+on m_querytimestat.destroy
+call super::destroy
+end on
+
+type m_noexecute from menu within m_command
+end type
+
+event clicked;parentwindow.triggerevent('ue_men_noexecute')
+
+end event
+
+on m_noexecute.create
+call super::create
+this.text = "No Execute"
+this.enabled = false
+this.microhelp = "No Execute"
+this.toolbaritemname = "img\noexec.bmp"
+this.toolbaritemtext = "No Execute"
+this.toolbaritembarindex = 2
+end on
+
+on m_noexecute.destroy
+call super::destroy
+end on
+
+type m_command_separator2 from menu within m_command
+end type
+
+on m_command_separator2.create
+call super::create
+this.text = "-"
+end on
+
+on m_command_separator2.destroy
+call super::destroy
+end on
+
+type m_connect from menu within m_command
+end type
+
+event clicked;parentwindow.postEvent("ue_men_connect")
+
+end event
+
+on m_connect.create
+call super::create
+this.text = "&Connect~tF11"
+this.shortcut = 122
+this.microhelp = "Server connect "
+this.toolbaritemname = "img\connect.ico"
+this.toolbaritemtext = "Connect (F11)"
+this.toolbaritembarindex = 2
+this.toolbaritemspace = 1
+end on
+
+on m_connect.destroy
+call super::destroy
+end on
+
+type m_disconnect from menu within m_command
+end type
+
+event clicked;parentwindow.postEvent("ue_men_disconnect")
+
+end event
+
+on m_disconnect.create
+call super::create
+this.text = "&Disconnect~tF12"
+this.enabled = false
+this.shortcut = 123
+this.microhelp = "Server disconnect"
+this.toolbaritemname = "img\dconnect.ico"
+this.toolbaritemtext = "Disconnect (F12)"
+this.toolbaritembarindex = 2
+end on
+
+on m_disconnect.destroy
+call super::destroy
+end on
+
+type m_reconnect from menu within m_command
+end type
+
+event clicked;parentwindow.postEvent("ue_men_connect")
+
+end event
+
+on m_reconnect.create
+call super::create
+this.text = "&Reconnect~tCtrl+F11"
+this.shortcut = 378
+this.microhelp = "Disconnect and connect to the same server."
+end on
+
+on m_reconnect.destroy
+call super::destroy
+end on
+
+type m_command_separator3 from menu within m_command
+end type
+
+on m_command_separator3.create
+call super::create
+this.text = "-"
+end on
+
+on m_command_separator3.destroy
+call super::destroy
+end on
+
+type m_viewprocesses from menu within m_command
+end type
+
+event clicked;parentwindow.postEvent('ue_men_viewprocesses')
+
+end event
+
+on m_viewprocesses.create
+call super::create
+this.text = "View Processes"
+this.enabled = false
+this.microhelp = "View processes"
+this.toolbaritemname = "ViewPainter!"
+this.toolbaritemtext = "View processes"
+this.toolbaritembarindex = 2
+this.toolbaritemspace = 1
+end on
+
+on m_viewprocesses.destroy
+call super::destroy
+end on
+
+type m_debug from menu within m_main
+m_howtodebug m_howtodebug
+m_dbg_separator_1 m_dbg_separator_1
+m_dbg_attach m_dbg_attach
+m_dbg_detach m_dbg_detach
+m_dbg_separator_2 m_dbg_separator_2
+m_dbg_breakpoint m_dbg_breakpoint
+m_dbg_deleteall m_dbg_deleteall
+m_dbg_separator_3 m_dbg_separator_3
+m_dbg_step m_dbg_step
+m_dbg_stepin m_dbg_stepin
+m_dbg_stepout m_dbg_stepout
+m_dbg_continue m_dbg_continue
+end type
+
+on m_debug.create
+call super::create
+this.text = "&Debug"
+this.m_howtodebug=create m_howtodebug
+this.m_dbg_separator_1=create m_dbg_separator_1
+this.m_dbg_attach=create m_dbg_attach
+this.m_dbg_detach=create m_dbg_detach
+this.m_dbg_separator_2=create m_dbg_separator_2
+this.m_dbg_breakpoint=create m_dbg_breakpoint
+this.m_dbg_deleteall=create m_dbg_deleteall
+this.m_dbg_separator_3=create m_dbg_separator_3
+this.m_dbg_step=create m_dbg_step
+this.m_dbg_stepin=create m_dbg_stepin
+this.m_dbg_stepout=create m_dbg_stepout
+this.m_dbg_continue=create m_dbg_continue
+this.Item[UpperBound(this.Item)+1]=this.m_howtodebug
+this.Item[UpperBound(this.Item)+1]=this.m_dbg_separator_1
+this.Item[UpperBound(this.Item)+1]=this.m_dbg_attach
+this.Item[UpperBound(this.Item)+1]=this.m_dbg_detach
+this.Item[UpperBound(this.Item)+1]=this.m_dbg_separator_2
+this.Item[UpperBound(this.Item)+1]=this.m_dbg_breakpoint
+this.Item[UpperBound(this.Item)+1]=this.m_dbg_deleteall
+this.Item[UpperBound(this.Item)+1]=this.m_dbg_separator_3
+this.Item[UpperBound(this.Item)+1]=this.m_dbg_step
+this.Item[UpperBound(this.Item)+1]=this.m_dbg_stepin
+this.Item[UpperBound(this.Item)+1]=this.m_dbg_stepout
+this.Item[UpperBound(this.Item)+1]=this.m_dbg_continue
+end on
+
+on m_debug.destroy
+call super::destroy
+destroy(this.m_howtodebug)
+destroy(this.m_dbg_separator_1)
+destroy(this.m_dbg_attach)
+destroy(this.m_dbg_detach)
+destroy(this.m_dbg_separator_2)
+destroy(this.m_dbg_breakpoint)
+destroy(this.m_dbg_deleteall)
+destroy(this.m_dbg_separator_3)
+destroy(this.m_dbg_step)
+destroy(this.m_dbg_stepin)
+destroy(this.m_dbg_stepout)
+destroy(this.m_dbg_continue)
+end on
+
+type m_howtodebug from menu within m_debug
+end type
+
+on m_howtodebug.create
+call super::create
+this.text = "How to debug?"
+end on
+
+on m_howtodebug.destroy
+call super::destroy
+end on
+
+event clicked;open(w_browser)
+w_browser.visible=true
+w_browser.tab_1.selectTab(4)
+w_browser.tab_1.page_dbg.uo_menu.event btn_clicked(5)
+
+end event
+
+type m_dbg_separator_1 from menu within m_debug
+end type
+
+on m_dbg_separator_1.create
+call super::create
+this.text = "-"
+end on
+
+on m_dbg_separator_1.destroy
+call super::destroy
+end on
+
+type m_dbg_attach from menu within m_debug
+end type
+
+on m_dbg_attach.create
+call super::create
+this.text = "Attach"
+this.microhelp = "Attach to a selected spid in ~"View Processes~" screen"
+this.toolbaritemspace = 1
+end on
+
+on m_dbg_attach.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_dbg_attach")
+
+end event
+
+type m_dbg_detach from menu within m_debug
+end type
+
+on m_dbg_detach.create
+call super::create
+this.text = "Detach"
+this.microhelp = "Detach from an attached spid."
+this.toolbaritemspace = 1
+end on
+
+on m_dbg_detach.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_dbg_detach")
+
+end event
+
+type m_dbg_separator_2 from menu within m_debug
+end type
+
+on m_dbg_separator_2.create
+call super::create
+this.text = "-"
+end on
+
+on m_dbg_separator_2.destroy
+call super::destroy
+end on
+
+type m_dbg_breakpoint from menu within m_debug
+end type
+
+on m_dbg_breakpoint.create
+call super::create
+this.text = "Set Breakpoint~tCtrl+B"
+this.shortcut = 322
+this.microhelp = "Stop at a valid line number in the procedure/trigger. Automatically moves the breakpoint to the next valid line."
+end on
+
+on m_dbg_breakpoint.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_dbg_stop")
+
+end event
+
+type m_dbg_deleteall from menu within m_debug
+end type
+
+event clicked;parentwindow.postEvent("ue_men_dbg_deleteall")
+
+end event
+
+on m_dbg_deleteall.create
+call super::create
+this.text = "Delete all breakpoints"
+end on
+
+on m_dbg_deleteall.destroy
+call super::destroy
+end on
+
+type m_dbg_separator_3 from menu within m_debug
+end type
+
+on m_dbg_separator_3.create
+call super::create
+this.text = "-"
+end on
+
+on m_dbg_separator_3.destroy
+call super::destroy
+end on
+
+type m_dbg_step from menu within m_debug
+end type
+
+on m_dbg_step.create
+call super::create
+this.text = "Step~tF8"
+this.shortcut = 119
+this.microhelp = "Step to the next statement."
+this.toolbaritemname = "StepOver!"
+this.toolbaritemtext = "Step"
+this.toolbaritembarindex = 2
+this.toolbaritemspace = 1
+end on
+
+on m_dbg_step.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_dbg_step")
+
+end event
+
+type m_dbg_stepin from menu within m_debug
+end type
+
+on m_dbg_stepin.create
+call super::create
+this.text = "Step in"
+this.microhelp = "Step into the procedure or trigger if it is an update/delete/insert statement and if there is a trigger."
+this.toolbaritemname = "StepIn!"
+this.toolbaritemtext = "Step in"
+this.toolbaritembarindex = 2
+end on
+
+on m_dbg_stepin.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_dbg_stepin")
+
+end event
+
+type m_dbg_stepout from menu within m_debug
+end type
+
+event clicked;parentwindow.postEvent("ue_men_dbg_stepout")
+
+end event
+
+on m_dbg_stepout.create
+call super::create
+this.text = "Step out"
+this.microhelp = "Step out of the procedure or trigger"
+this.toolbaritemname = "StepOut!"
+this.toolbaritemtext = "Step out"
+this.toolbaritembarindex = 2
+end on
+
+on m_dbg_stepout.destroy
+call super::destroy
+end on
+
+type m_dbg_continue from menu within m_debug
+end type
+
+on m_dbg_continue.create
+call super::create
+this.text = "Continue"
+this.microhelp = "Continue the execution of trigger/procedure."
+this.toolbaritemname = "Regenerate5!"
+this.toolbaritemtext = "Continue"
+this.toolbaritembarindex = 2
+end on
+
+on m_dbg_continue.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.postEvent("ue_men_dbg_continue")
+
+end event
+
+type m_tools from menu within m_main
+m_exportdatatosql m_exportdatatosql
+m_executeexport m_executeexport
+end type
+
+on m_tools.create
+call super::create
+this.text = "&Tools"
+this.m_exportdatatosql=create m_exportdatatosql
+this.m_executeexport=create m_executeexport
+this.Item[UpperBound(this.Item)+1]=this.m_exportdatatosql
+this.Item[UpperBound(this.Item)+1]=this.m_executeexport
+end on
+
+on m_tools.destroy
+call super::destroy
+destroy(this.m_exportdatatosql)
+destroy(this.m_executeexport)
+end on
+
+type m_exportdatatosql from menu within m_tools
+end type
+
+event clicked;parentwindow.postEvent("ue_men_exportdata")
+
+end event
+
+on m_exportdatatosql.create
+call super::create
+this.text = "Export Data to SQL..."
+this.microhelp = "Open dialog to export data to sql files"
+end on
+
+on m_exportdatatosql.destroy
+call super::destroy
+end on
+
+type m_executeexport from menu within m_tools
+end type
+
+event clicked;parentwindow.postEvent("ue_men_executeexport")
+
+end event
+
+on m_executeexport.create
+call super::create
+this.text = "Execute && Export to SQL"
+this.microhelp = "Do execute and export of the custom sql. Note: ~"for browse~" is required!"
+end on
+
+on m_executeexport.destroy
+call super::destroy
+end on
+
+type m_window from menu within m_main
+m_windownext m_windownext
+m_windowprev m_windowprev
+m_- m_-
+m_close m_close
+m_closeresultsets m_closeresultsets
+end type
+
+on m_window.create
+call super::create
+this.text = "&Window"
+this.m_windownext=create m_windownext
+this.m_windowprev=create m_windowprev
+this.m_-=create m_-
+this.m_close=create m_close
+this.m_closeresultsets=create m_closeresultsets
+this.Item[UpperBound(this.Item)+1]=this.m_windownext
+this.Item[UpperBound(this.Item)+1]=this.m_windowprev
+this.Item[UpperBound(this.Item)+1]=this.m_-
+this.Item[UpperBound(this.Item)+1]=this.m_close
+this.Item[UpperBound(this.Item)+1]=this.m_closeresultsets
+end on
+
+on m_window.destroy
+call super::destroy
+destroy(this.m_windownext)
+destroy(this.m_windowprev)
+destroy(this.m_-)
+destroy(this.m_close)
+destroy(this.m_closeresultsets)
+end on
+
+type m_windownext from menu within m_window
+end type
+
+on m_windownext.create
+call super::create
+this.text = "Next~tCtrl+Tab"
+this.shortcut = 265
+end on
+
+on m_windownext.destroy
+call super::destroy
+end on
+
+event clicked;ParentWindow.Triggerevent('ue_men_windownext')
+
+end event
+
+type m_windowprev from menu within m_window
+end type
+
+event clicked;ParentWindow.Triggerevent('ue_men_windowprev')
+
+end event
+
+on m_windowprev.create
+call super::create
+this.text = "Previous~tCtrl+Shift+Tab"
+this.shortcut = 1289
+end on
+
+on m_windowprev.destroy
+call super::destroy
+end on
+
+type m_- from menu within m_window
+end type
+
+on m_-.create
+call super::create
+this.text = "-"
+end on
+
+on m_-.destroy
+call super::destroy
+end on
+
+type m_close from menu within m_window
+end type
+
+on m_close.create
+call super::create
+this.text = "&Close~tCtrl+F4"
+this.enabled = false
+this.shortcut = 371
+this.microhelp = "Close result set"
+this.toolbaritemname = "Close!"
+this.toolbaritemtext = "Close Current Window"
+this.toolbaritemspace = 1
+end on
+
+on m_close.destroy
+call super::destroy
+end on
+
+event clicked;parentWindow.TriggerEvent('ue_men_close')
+
+end event
+
+type m_closeresultsets from menu within m_window
+end type
+
+on m_closeresultsets.create
+call super::create
+this.text = "Close Resultsets"
+this.enabled = false
+this.toolbaritemname = "NotFound!"
+this.toolbaritemtext = "Close All Resultsets"
+end on
+
+on m_closeresultsets.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.triggerevent('ue_men_closeallrs')
+
+end event
+
+type m_view from menu within m_main
+m_options m_options
+m_view_separator1 m_view_separator1
+m_showlog m_showlog
+m_showbrowser m_showbrowser
+m_lineendings m_lineendings
+m_showspaces m_showspaces
+m_view_separator2 m_view_separator2
+m_gotoquerytabpage m_gotoquerytabpage
+end type
+
+on m_view.create
+call super::create
+this.text = "&View"
+this.m_options=create m_options
+this.m_view_separator1=create m_view_separator1
+this.m_showlog=create m_showlog
+this.m_showbrowser=create m_showbrowser
+this.m_lineendings=create m_lineendings
+this.m_showspaces=create m_showspaces
+this.m_view_separator2=create m_view_separator2
+this.m_gotoquerytabpage=create m_gotoquerytabpage
+this.Item[UpperBound(this.Item)+1]=this.m_options
+this.Item[UpperBound(this.Item)+1]=this.m_view_separator1
+this.Item[UpperBound(this.Item)+1]=this.m_showlog
+this.Item[UpperBound(this.Item)+1]=this.m_showbrowser
+this.Item[UpperBound(this.Item)+1]=this.m_lineendings
+this.Item[UpperBound(this.Item)+1]=this.m_showspaces
+this.Item[UpperBound(this.Item)+1]=this.m_view_separator2
+this.Item[UpperBound(this.Item)+1]=this.m_gotoquerytabpage
+end on
+
+on m_view.destroy
+call super::destroy
+destroy(this.m_options)
+destroy(this.m_view_separator1)
+destroy(this.m_showlog)
+destroy(this.m_showbrowser)
+destroy(this.m_lineendings)
+destroy(this.m_showspaces)
+destroy(this.m_view_separator2)
+destroy(this.m_gotoquerytabpage)
+end on
+
+type m_options from menu within m_view
+end type
+
+event clicked;parentWindow.postEvent('ue_men_options')
+
+end event
+
+on m_options.create
+call super::create
+this.text = "Options..."
+this.microhelp = "Options"
+this.toolbaritemname = "Properties!"
+this.toolbaritemdownname = "Custom038!"
+this.toolbaritemtext = "Options"
+this.toolbaritemspace = 1
+end on
+
+on m_options.destroy
+call super::destroy
+end on
+
+type m_view_separator1 from menu within m_view
+end type
+
+on m_view_separator1.create
+call super::create
+this.text = "-"
+end on
+
+on m_view_separator1.destroy
+call super::destroy
+end on
+
+type m_showlog from menu within m_view
+end type
+
+on m_showlog.create
+call super::create
+this.text = "Show Log~tAlt+2"
+this.checked = true
+this.shortcut = 562
+this.toolbaritemname = "Output!"
+this.toolbaritemtext = "Show Log (Alt+2)"
+end on
+
+on m_showlog.destroy
+call super::destroy
+end on
+
+event clicked;parentWindow.postEvent('ue_men_showlog')
+
+end event
+
+type m_showbrowser from menu within m_view
+end type
+
+on m_showbrowser.create
+call super::create
+this.visible = false
+this.text = "Show Browser~tAlt+3"
+this.shortcut = 563
+this.toolbaritemtext = "Show Browser"
+end on
+
+on m_showbrowser.destroy
+call super::destroy
+end on
+
+event clicked;if isValid(w_browser) then
+	w_browser.visible = not w_browser.visible 
+else
+	open(w_browser)
+end if
+
+end event
+
+type m_lineendings from menu within m_view
+m_lineendings_win m_lineendings_win
+m_lineendings_unix m_lineendings_unix
+m_-0 m_-0
+m_showlineendings m_showlineendings
+end type
+
+on m_lineendings.create
+call super::create
+this.text = "Line Endings"
+this.m_lineendings_win=create m_lineendings_win
+this.m_lineendings_unix=create m_lineendings_unix
+this.m_-0=create m_-0
+this.m_showlineendings=create m_showlineendings
+this.Item[UpperBound(this.Item)+1]=this.m_lineendings_win
+this.Item[UpperBound(this.Item)+1]=this.m_lineendings_unix
+this.Item[UpperBound(this.Item)+1]=this.m_-0
+this.Item[UpperBound(this.Item)+1]=this.m_showlineendings
+end on
+
+on m_lineendings.destroy
+call super::destroy
+destroy(this.m_lineendings_win)
+destroy(this.m_lineendings_unix)
+destroy(this.m_-0)
+destroy(this.m_showlineendings)
+end on
+
+type m_lineendings_win from menu within m_lineendings
+end type
+
+on m_lineendings_win.create
+call super::create
+this.text = "Windows <CRLF>"
+end on
+
+on m_lineendings_win.destroy
+call super::destroy
+end on
+
+event clicked;parentWindow.postEvent('ue_men_lineendings_win')
+
+end event
+
+type m_lineendings_unix from menu within m_lineendings
+end type
+
+on m_lineendings_unix.create
+call super::create
+this.text = "Unix <LF>"
+end on
+
+on m_lineendings_unix.destroy
+call super::destroy
+end on
+
+event clicked;parentWindow.postEvent('ue_men_lineendings_unix')
+end event
+
+type m_-0 from menu within m_lineendings
+end type
+
+on m_-0.create
+call super::create
+this.visible = false
+this.text = "-"
+end on
+
+on m_-0.destroy
+call super::destroy
+end on
+
+type m_showlineendings from menu within m_lineendings
+end type
+
+event clicked;parentWindow.postEvent('ue_men_showlineendings')
+
+end event
+
+on m_showlineendings.create
+call super::create
+this.visible = false
+this.text = "Show Line Endings"
+this.toolbaritemvisible = false
+this.toolbaritemname = "img\eol.bmp"
+this.toolbaritemspace = 1
+end on
+
+on m_showlineendings.destroy
+call super::destroy
+end on
+
+type m_showspaces from menu within m_view
+end type
+
+event clicked;parentWindow.postEvent('ue_men_showspaces')
+
+end event
+
+on m_showspaces.create
+call super::create
+this.text = "Show Spaces"
+this.toolbaritemname = "img\eol.bmp"
+this.toolbaritemtext = "Show Spaces"
+end on
+
+on m_showspaces.destroy
+call super::destroy
+end on
+
+type m_view_separator2 from menu within m_view
+end type
+
+on m_view_separator2.create
+call super::create
+this.text = "-"
+end on
+
+on m_view_separator2.destroy
+call super::destroy
+end on
+
+type m_gotoquerytabpage from menu within m_view
+end type
+
+on m_gotoquerytabpage.create
+call super::create
+this.text = "Goto &Query Tabpage~tCtrl+Q"
+this.shortcut = 337
+end on
+
+on m_gotoquerytabpage.destroy
+call super::destroy
+end on
+
+event clicked;parentWindow.postEvent('ue_men_querytab')
+end event
+
+type m_help from menu within m_main
+m_quickreference m_quickreference
+m_about m_about
+end type
+
+on m_help.create
+call super::create
+this.text = "&Help"
+this.m_quickreference=create m_quickreference
+this.m_about=create m_about
+this.Item[UpperBound(this.Item)+1]=this.m_quickreference
+this.Item[UpperBound(this.Item)+1]=this.m_about
+end on
+
+on m_help.destroy
+call super::destroy
+destroy(this.m_quickreference)
+destroy(this.m_about)
+end on
+
+type m_quickreference from menu within m_help
+end type
+
+event clicked;ParentWindow.Triggerevent('ue_men_help')
+
+end event
+
+on m_quickreference.create
+call super::create
+this.text = "Quick Reference~tF1"
+this.shortcut = 112
+end on
+
+on m_quickreference.destroy
+call super::destroy
+end on
+
+type m_about from menu within m_help
+end type
+
+event clicked;date d=today()
+
+MessageBox(app().displayname,app().displayname+' (Unicode)'+&
+	'~n is a free tool'+&
+	'~ncreated by Dmitry Lukyanov (http://LDU.da.ru)'+&
+	'~nas a replacement of Sybase SQL Advantage'+&
+	'~n~nColored by Scintilla (http://scintilla.sourceforge.net)'+&
+	'~n~nBuilt on '+string(d,'yyyy-mm-dd')+' (YMD)')
+end event
+
+on m_about.create
+call super::create
+this.text = "&About"
+this.toolbaritemvisible = false
+this.toolbaritemname = "AddWatch!"
+end on
+
+on m_about.destroy
+call super::destroy
+end on
+

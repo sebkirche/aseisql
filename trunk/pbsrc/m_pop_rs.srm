@@ -1,0 +1,232 @@
+HA$PBExportHeader$m_pop_rs.srm
+forward
+global type m_pop_rs from menu
+end type
+type m_copy from menu within m_pop_rs
+end type
+type m_copywithheaders from menu within m_pop_rs
+end type
+type m_copyheaders from menu within m_pop_rs
+end type
+type m_- from menu within m_pop_rs
+end type
+type m_copyall from menu within m_pop_rs
+end type
+type m_-3 from menu within m_pop_rs
+end type
+type m_copycommadelimiteddata from menu within m_pop_rs
+end type
+global type m_pop_rs from menu
+m_copy m_copy
+m_copywithheaders m_copywithheaders
+m_copyheaders m_copyheaders
+m_- m_-
+m_copyall m_copyall
+m_-3 m_-3
+m_copycommadelimiteddata m_copycommadelimiteddata
+end type
+end forward
+
+global type m_pop_rs from menu
+m_copy m_copy
+m_copywithheaders m_copywithheaders
+m_copyheaders m_copyheaders
+m_- m_-
+m_copyall m_copyall
+m_-3 m_-3
+m_copycommadelimiteddata m_copycommadelimiteddata
+end type
+global m_pop_rs m_pop_rs
+
+type variables
+datawindow idw
+
+end variables
+
+on m_pop_rs.create
+m_pop_rs=this
+call super::create
+this.text = "m_pop_rs"
+this.m_copy=create m_copy
+this.m_copywithheaders=create m_copywithheaders
+this.m_copyheaders=create m_copyheaders
+this.m_-=create m_-
+this.m_copyall=create m_copyall
+this.m_-3=create m_-3
+this.m_copycommadelimiteddata=create m_copycommadelimiteddata
+this.Item[UpperBound(this.Item)+1]=this.m_copy
+this.Item[UpperBound(this.Item)+1]=this.m_copywithheaders
+this.Item[UpperBound(this.Item)+1]=this.m_copyheaders
+this.Item[UpperBound(this.Item)+1]=this.m_-
+this.Item[UpperBound(this.Item)+1]=this.m_copyall
+this.Item[UpperBound(this.Item)+1]=this.m_-3
+this.Item[UpperBound(this.Item)+1]=this.m_copycommadelimiteddata
+end on
+
+on m_pop_rs.destroy
+call super::destroy
+destroy(this.m_copy)
+destroy(this.m_copywithheaders)
+destroy(this.m_copyheaders)
+destroy(this.m_-)
+destroy(this.m_copyall)
+destroy(this.m_-3)
+destroy(this.m_copycommadelimiteddata)
+end on
+
+type m_copy from menu within m_pop_rs
+end type
+
+on m_copy.create
+call super::create
+this.text = "&Copy"
+end on
+
+on m_copy.destroy
+call super::destroy
+end on
+
+event clicked;if isValid(idw) then clipboard(RightTrim(idw.Describe("DataWindow.Selected.Data")))
+
+end event
+
+type m_copywithheaders from menu within m_pop_rs
+end type
+
+on m_copywithheaders.create
+call super::create
+this.text = "Copy &with Headers"
+end on
+
+on m_copywithheaders.destroy
+call super::destroy
+end on
+
+event clicked;n_dw_selection ln_sel
+
+if isValid(idw) then
+	ln_sel=create n_dw_selection
+	ln_sel.of_init( idw )
+	clipboard(ln_sel.of_tostring( true, true, '~t', '~r~n',false) )
+	destroy ln_sel
+end if
+
+end event
+
+type m_copyheaders from menu within m_pop_rs
+end type
+
+event clicked;string sdata
+long iitem
+n_dw_selection ln_sel
+
+if isValid(idw) then
+	ln_sel=create n_dw_selection
+	if ln_sel.of_init( idw )>0 then
+		clipboard(ln_sel.of_tostring( true, false, ', ', ', ',false) )
+	else
+		for iitem=1 to long(idw.describe('datawindow.column.count'))
+			if sdata<>'' then sdata+=', '
+			sdata+=idw.describe( idw.describe('#'+string(iitem)+'.name') +'_t.text')
+		next
+		clipboard( sdata )
+	end if
+	destroy ln_sel
+end if
+
+end event
+
+on m_copyheaders.create
+call super::create
+this.text = "Copy &Headers"
+end on
+
+on m_copyheaders.destroy
+call super::destroy
+end on
+
+type m_- from menu within m_pop_rs
+end type
+
+on m_-.create
+call super::create
+this.text = "-"
+end on
+
+on m_-.destroy
+call super::destroy
+end on
+
+type m_copyall from menu within m_pop_rs
+end type
+
+on m_copyall.create
+call super::create
+this.text = "Copy &All"
+end on
+
+on m_copyall.destroy
+call super::destroy
+end on
+
+event clicked;long pos,i,count
+string names
+
+if isValid(idw) then
+	count=long(idw.Describe("DataWindow.Column.Count"))
+	
+	for i=1 to count
+		names+=idw.describe('col_'+string(i)+'_t.text')
+		if i<count then names+='~t'
+	next
+	names+='~r~n'
+	names+=idw.Describe("DataWindow.Data")
+	clipboard(names)
+end if
+
+end event
+
+type m_-3 from menu within m_pop_rs
+end type
+
+on m_-3.create
+call super::create
+this.text = "-"
+end on
+
+on m_-3.destroy
+call super::destroy
+end on
+
+type m_copycommadelimiteddata from menu within m_pop_rs
+end type
+
+on m_copycommadelimiteddata.create
+call super::create
+this.text = "Copy Comma &Delimited Data"
+end on
+
+on m_copycommadelimiteddata.destroy
+call super::destroy
+end on
+
+event clicked;string s
+n_dw_selection ln_sel
+
+if isValid(idw) then
+	ln_sel=create n_dw_selection
+	if ln_sel.of_init( idw )>0 then
+		if ln_sel.of_isnumbercolumn( ) then
+			s=ln_sel.of_tostring( false, true, ', ', ', ',false)
+		else
+			s=ln_sel.of_tostring( false, true, ', ', ', ',true)
+		end if
+		clipboard(s )
+	end if
+	destroy ln_sel
+end if
+
+
+
+end event
+

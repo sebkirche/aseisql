@@ -1,0 +1,38 @@
+HA$PBExportHeader$f_remove_space.srf
+global type f_remove_space from function_object
+end type
+
+forward prototypes
+global function string f_remove_space (readonly string as_source)
+end prototypes
+
+global function string f_remove_space (readonly string as_source);char  lch_char
+long  ll_pos
+long  ll_len
+boolean lb_space=true
+char as_sourceCh[]
+string ls_Ret
+
+//Check parameters
+If IsNull(as_source) then return as_source
+
+ll_len = Len(as_source)
+as_sourceCh = as_source
+// Remove characters 
+FOR ll_pos = 1 to ll_len step 1
+        lch_char = as_sourceCh[ll_pos]  
+        Choose Case ASC(lch_char)
+        Case IS <= 13, 32
+                if not lb_space then
+                        ls_Ret = ls_Ret + " "
+                        lb_space=true
+                end if          
+        case else
+                lb_space=false
+                ls_Ret = ls_Ret + (lch_char)
+        End choose      
+next
+Return ls_Ret
+
+end function
+
