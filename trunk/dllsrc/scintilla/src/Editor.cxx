@@ -4,7 +4,17 @@
  **/
 // Copyright 1998-2003 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
+//#include <windows.h>
 
+/*
+extern "C"{
+int __stdcall MessageBoxA(
+    long hWnd ,
+    char* lpText,
+    char* lpCaption,
+    long uType);
+}
+*/
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -283,6 +293,7 @@ Editor::Editor() {
 	ctrlID = 0;
 
 	stylesValid = false;
+	DMLUCtrlHoverPos=-1;
 
 	printMagnification = 0;
 	printColourMode = SC_PRINT_NORMAL;
@@ -305,6 +316,7 @@ Editor::Editor() {
 	dwelling = false;
 	ptMouseLast.x = 0;
 	ptMouseLast.y = 0;
+	modMouseLast=0; //DMLU
 	inDragDrop = false;
 	dropWentOutside = false;
 	posDrag = invalidPosition;
@@ -3121,6 +3133,30 @@ bool Editor::NotifyMarginClick(Point pt, bool shift, bool ctrl, bool alt) {
 	}
 }
 
+void Editor::DMLUNotifyCtrlHover(Point pt, bool ctrl) {
+	SCNotification scn;
+	int start=-1;
+	int len=0;
+	if (ctrl) {
+		int movePos = PositionFromLocation(pt);
+		if( movePos != -1 ) {
+			int endPos = pdoc->ExtendWordSelect(movePos, 1, true);
+			movePos = pdoc->ExtendWordSelect(movePos, -1, true );
+			len = endPos - movePos;
+			if (len!=0) start = movePos;
+		}
+	}
+	
+	
+	if (DMLUCtrlHoverPos != start || start==-1) {
+		DMLUCtrlHoverPos = start;
+		scn.nmhdr.code = SCN_DMLUCTRLHOVER;
+		scn.position = start;
+		scn.length = len;
+		NotifyParent(scn);
+	}
+}
+
 void Editor::NotifyNeedShown(int pos, int len) {
 	SCNotification scn;
 	scn.nmhdr.code = SCN_NEEDSHOWN;
@@ -3825,7 +3861,15 @@ int Editor::KeyDefault(int, int) {
 	return 0;
 }
 
+int Editor::KeyUp(int key, bool shift, bool ctrl, bool alt) {
+	/*DMLU*/
+	DMLUNotifyCtrlHover(ptMouseLast,ctrl);
+	return 0;
+}
 int Editor::KeyDown(int key, bool shift, bool ctrl, bool alt, bool *consumed) {
+	/*DMLU;add key!=17&16 to ignore CTRL and SHIFT keys down*/
+	/*if(key==VK_CONTROL)*/DMLUNotifyCtrlHover(ptMouseLast,ctrl);
+	//if(key!=17 && key!=16)
 	DwellEnd(false);
 	int modifiers = (shift ? SCI_SHIFT : 0) | (ctrl ? SCI_CTRL : 0) |
 	                (alt ? SCI_ALT : 0);
@@ -4262,6 +4306,7 @@ void Editor::DwellEnd(bool mouseMoved) {
 void Editor::ButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, bool alt) {
 	//Platform::DebugPrintf("Scintilla:ButtonDown %d %d = %d alt=%d\n", curTime, lastClickTime, curTime - lastClickTime, alt);
 	ptMouseLast = pt;
+	modMouseLast = (shift?SCMOD_SHIFT:0) | (ctrl?SCMOD_CTRL:0) | (alt?SCMOD_ALT:0);//DMLU
 	int newPos = PositionFromLocation(pt);
 	newPos = MovePositionOutsideChar(newPos, currentPos - newPos);
 	inDragDrop = false;
@@ -4352,7 +4397,8 @@ void Editor::ButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, b
 				xEndSelect = pt.x - vs.fixedColumnWidth + xOffset;
 				SetDragPosition(invalidPosition);
 				SetMouseCapture(true);
-				if (!shift)
+				/*DMLU if control pressed then just click and remove selection; added: " || crtl " */
+				if (!shift || ctrl)
 					SetEmptySelection(newPos);
 				selType = alt ? selRectangle : selStream;
 				selectionType = selChar;
@@ -4365,11 +4411,12 @@ void Editor::ButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, b
 	ShowCaretAtCurrentPosition();
 }
 
-void Editor::ButtonMove(Point pt) {
+void Editor::ButtonMove(Point pt,int modifiers) {
 	if ((ptMouseLast.x != pt.x) || (ptMouseLast.y != pt.y)) {
 		DwellEnd(true);
 	}
 	ptMouseLast = pt;
+	modMouseLast = modifiers;//DMLU
 	//Platform::DebugPrintf("Move %d %d\n", pt.x, pt.y);
 	if (HaveMouseCapture()) {
 
@@ -4430,8 +4477,12 @@ void Editor::ButtonMove(Point pt) {
 		// Display regular (drag) cursor over selection
 		if (PointInSelection(pt))
 			DisplayCursor(Window::cursorArrow);
-		else
+		else {
+			//DMLU HOVER NOTIFY
+			DMLUNotifyCtrlHover(pt,	modifiers&SCMOD_CTRL);
+
 			DisplayCursor(Window::cursorText);
+		}
 	}
 
 }
@@ -4446,6 +4497,7 @@ void Editor::ButtonUp(Point pt, unsigned int curTime, bool ctrl) {
 		}
 		xEndSelect = pt.x - vs.fixedColumnWidth + xOffset;
 		ptMouseLast = pt;
+		modMouseLast = (ctrl?SCMOD_CTRL:0);//DMLU
 		SetMouseCapture(false);
 		int newPos = PositionFromLocation(pt);
 		newPos = MovePositionOutsideChar(newPos, currentPos - newPos);
@@ -4497,7 +4549,7 @@ void Editor::ButtonUp(Point pt, unsigned int curTime, bool ctrl) {
 void Editor::Tick() {
 	if (HaveMouseCapture()) {
 		// Auto scroll
-		ButtonMove(ptMouseLast);
+		ButtonMove(ptMouseLast,	modMouseLast );
 	}
 	if (caret.period > 0) {
 		timer.ticksToWait -= timer.tickSize;
@@ -4706,6 +4758,8 @@ void Editor::ToggleContraction(int line) {
 			cs.SetExpanded(line, 0);
 			if (lineMaxSubord > line) {
 				cs.SetVisible(line + 1, lineMaxSubord, false);
+			}
+			if (lineMaxSubord >= line) {
 				SetScrollBars();
 				Redraw();
 			}

@@ -195,6 +195,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	bool inOverstrike;
 	int errorStatus;
 	bool mouseDownCaptures;
+	int DMLUCtrlHoverPos;
 
 	/** In bufferedDraw mode, graphics operations are drawn to a pixmap and then copied to
 	 * the screen. This avoids flashing but is about 30% slower. */
@@ -232,6 +233,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	bool dwelling;
 	enum { selChar, selWord, selLine } selectionType;
 	Point ptMouseLast;
+	int  modMouseLast;
 	bool inDragDrop;
 	bool dropWentOutside;
 	int posDrag;
@@ -397,6 +399,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual int GetCtrlID() { return ctrlID; }
 	virtual void NotifyParent(SCNotification scn) = 0;
 	virtual void NotifyStyleToNeeded(int endStyleNeeded);
+	void DMLUNotifyCtrlHover(Point pt,bool ctrl);
 	void NotifyChar(int ch);
 	void NotifyMove(int position);
 	void NotifySavePoint(bool isSavePoint);
@@ -428,6 +431,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual int KeyCommand(unsigned int iMessage);
 	virtual int KeyDefault(int /* key */, int /*modifiers*/);
 	int KeyDown(int key, bool shift, bool ctrl, bool alt, bool *consumed=0);
+	int KeyUp(int key, bool shift, bool ctrl, bool alt); //added by DMLU for hover
 
 	int GetWhitespaceVisible();
 	void SetWhitespaceVisible(int view);
@@ -454,7 +458,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void LineSelection(int lineCurrent_, int lineAnchor_);
 	void DwellEnd(bool mouseMoved);
 	virtual void ButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, bool alt);
-	void ButtonMove(Point pt);
+	void ButtonMove(Point pt,int modifiers);
 	void ButtonUp(Point pt, unsigned int curTime, bool ctrl);
 
 	void Tick();
