@@ -1,0 +1,30 @@
+!include <ntwin32.mak>
+
+PRJNAME=test
+
+
+
+.cpp.obj:
+	$(cc) -Ox $(cflags) $(cvars) -DSTRICT -YX -DNODEBUG  $<
+
+
+CPP_FILES= $(PRJNAME).cpp
+
+OBJS= $(CPP_FILES:.cpp=.obj)
+
+
+
+all: $(PRJNAME).exe
+
+$(PRJNAME).exe: $(OBJS)
+  $(link) $(conlflags) -out:$*.exe $** $(conlibs) \
+    user32.lib advapi32.lib
+
+clean:
+    -del *.obj
+	-del *.dll
+	-del *.pch
+	-del *.exp
+	-del *.lib
+
+
