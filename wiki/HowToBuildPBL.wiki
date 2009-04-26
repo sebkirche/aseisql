@@ -1,0 +1,33 @@
+#How to build pb libraries from sources
+
+= How to organize local workspace =
+This paragraph is only a proposal how to organize `aseisql` project workspace.
+
+Let's create a `aseisql project root directory`, where we will place sources and libraries.
+
+`c:\projects\AseisqlProject`
+
+CheckOut the sources from repository into 
+
+`c:\projects\AseisqlProject\svn`
+
+Refer [Source] page to see how to access repository.
+
+= How to build pb libraries =
+Now you can find the sources in `\AseisqlProject\svn\pbsrc`.
+
+To start work in pb you need to create PB libraries.
+
+To do that, you can use the batch `\AseisqlProject\svn\build\build_pbl.cmd`
+
+This batch uses [http://dm.char.com.ua/pb/pborca.htm pborca tool] to build libraries.
+
+You can check the `build_pbl.orc` file to see the `orca` commands to be executed.
+
+= Result =
+There will be created `\AseisqlProject\pb` directory, all the required files (images, DLLs, workspace, target, and PBLs) will be placed.
+
+= Requirements =
+ * Windows NT,XP,+
+ * PowerBuilder version 10.2.0 build 8100
+ * Path environment variable that refers to powerbuilder common libraries
