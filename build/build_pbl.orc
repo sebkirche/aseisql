@@ -8,6 +8,10 @@ timestamp
 
 # export sources from svn repository to future libraries directory
 sys svn export ..\pbsrc  ..\..\pb
+sys copy /Y ..\dll\*.dll  ..\..\pb
+sys copy /Y ..\sql\*.sql  ..\..\pb
+sys rename ..\..\pb\xxsyc.dll pbsyc100.dll
+
 cd ..\..\pb
 
 echo create PBLs
@@ -25,6 +29,7 @@ target import .\%%PRJNAME%%.pbt, .\
 #delete source files from directory with pb libraries
 sys del /S /Q .\*.sr?
 sys del /S /Q .\*.pbg
+
 
 
 #show time                                                           
