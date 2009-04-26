@@ -1,4 +1,5 @@
-#How to build pb libraries from sources
+#summary How to build pb libraries from sources
+#labels Phase-Implementation
 
 = How to organize local workspace =
 This paragraph is only a proposal how to organize `aseisql` project workspace.
