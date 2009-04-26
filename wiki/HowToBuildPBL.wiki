@@ -10,7 +10,7 @@ Let's create a `aseisql project root directory`, where we will place sources and
 
 CheckOut the sources from repository into `\AseisqlProject\svn`
 
-Refer [Source] page to see how to access repository.
+Refer [http://code.google.com/p/aseisql/source/checkout Source] page to see how to access repository.
 
 = How to build pb libraries =
 Now you can find the sources in `\AseisqlProject\svn\pbsrc`.
