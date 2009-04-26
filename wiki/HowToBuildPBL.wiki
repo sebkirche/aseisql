@@ -4,13 +4,11 @@
 = How to organize local workspace =
 This paragraph is only a proposal how to organize `aseisql` project workspace.
 
-Let's create a `aseisql project root directory`, where we will place sources and libraries.
+Let's create a `aseisql project root directory`, where we will place sources and libraries:
 
 `c:\projects\AseisqlProject`
 
-CheckOut the sources from repository into 
-
-`c:\projects\AseisqlProject\svn`
+CheckOut the sources from repository into `\AseisqlProject\svn`
 
 Refer [Source] page to see how to access repository.
 
@@ -26,7 +24,8 @@ This batch uses [http://dm.char.com.ua/pb/pborca.htm pborca tool] to build libra
 You can check the `build_pbl.orc` file to see the `orca` commands to be executed.
 
 = Result =
-There will be created `\AseisqlProject\pb` directory, all the required files (images, DLLs, workspace, target, and PBLs) will be placed.
+There will be created `\AseisqlProject\pb` directory,  
+where all the required files (images, DLLs, workspace, target, and PBLs) will be placed.
 
 = Requirements =
  * Windows NT,XP,+
