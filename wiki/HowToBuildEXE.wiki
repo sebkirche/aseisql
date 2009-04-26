@@ -1,0 +1,17 @@
+#summary How to build executable from sources
+
+= Introduction =
+
+Please read [HowToBuildPBL] page, to check the requirements and to read how to organize project workspace.
+
+= How to build executable =
+
+To do that, you can use the batch `\AseisqlProject\svn\build\build_exe.cmd`
+
+This batch uses [http://dm.char.com.ua/pb/pborca.htm pborca tool] to build libraries and executable.
+
+You can check the `build_exe.orc` file to see the `orca` commands to be executed.
+
+= Result =
+There will be created `\AseisqlProject\exe` directory,  
+where all the deploy files will be placed.
