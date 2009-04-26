@@ -31,3 +31,4 @@ where all the required files (images, DLLs, workspace, target, and PBLs) will be
  * Windows NT,XP,+
  * PowerBuilder version 10.2.0 build 8100
  * Path environment variable that refers to powerbuilder common libraries
+ * TortoiseSVN and Subversion (command line tools) version 1.5.*
