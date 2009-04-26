@@ -1,7 +1,6 @@
 folder that contains batches to build 
-powerbuilder libraries and executable from sources.
-
-also pborca.exe
+powerbuilder libraries and executable from sources
+using pborca.exe
 http://dm.char.com.ua/pb/pborca.htm
 
-orca files have to be reviewed because generic were used
+the file pbdll.txt used to copy powerbuilder dll files into deploy directory
