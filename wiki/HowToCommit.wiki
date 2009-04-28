@@ -1,0 +1,15 @@
+#summary How to commit changes from PowerBuilder
+
+_document have to be reviewed_
+
+= Installation =
+
+ # [http://tortoisesvn.tigris.org/ TortoiseSVN] (visual SVN interface for windows) 1.5
+ # [http://subversion.tigris.org/ Subversion] (console SVN applications) 1.5
+ # [http://dm.char.com.ua/pb/pbscc/pbscc.htm PbSccProxy] (ver 2008-06-22)
+
+= Notes =
+
+ * Subversion version 1.6 not checked, but should work.
+ * You could use PowerBuilder version 10.0 - 10.5 (but please use commands compatible with version 10.0)
+ * Follow the installation and configuration instructions [http://dm.char.com.ua/pb/pbscc/pbscc.htm here].
