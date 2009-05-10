@@ -1,9 +1,10 @@
 LIBRARY      syb_exec.dll
 
 EXPORTS
-	sql_execute		@1
-	sql_directory	@2
-	sql_ctversion	@3
+	sql_execute			@1
+	sql_directory		@2
+	sql_ctversion		@3
 	sql_dbgrpc_control	@5
-	isLegalUTF8 @6
-	sql_property_set @7
+	isLegalUTF8			@6
+	sql_property_set	@7
+	sql_execute2		@8

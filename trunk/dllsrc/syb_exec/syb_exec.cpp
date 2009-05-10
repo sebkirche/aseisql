@@ -1,20 +1,103 @@
 
 #include "syb_exec.h"
-#include "mstring.h"
+
 //#include <locale.h>
 extern "C"{
 
 DBG(FILE *flog=NULL);
 
-HWND public_hwnd;
 long public_datetime_format=1;
 long MAXBUFSIZE=32767;
+SQLCONTEXT *public_sqlctx=NULL;
+IPB_Session *g_IPB_Session = NULL;
 
-CS_RETCODE ERR(HWND hwnd, char * msg, int i){
+
+
+bool FatalError(char * msg, char*parm1=NULL, char*parm2=NULL){
+	mstring s=mstring();
+	s.sprintf( msg ,parm1, parm2);
+	MessageBox(0,s.c_str(),APP_NAME" Fatal error.",MB_OK|MB_ICONSTOP);
+	return false;
+}
+
+
+/*********************************************************
+ * Function to call event in powerbuilder object by name
+ * example to call:
+
+ * WCHAR * str = L"Huray!";
+ * TriggerEvent(pbo[0],"callback",555,(long)str);	
+ ********************************************************/
+bool TriggerEvent(pbobject *object,char * event,long wparm, long lparm, long * ret) {
+	PBCallInfo ci;
+	pbclass    clz = g_IPB_Session->GetClass(object[0]);
+	pbmethodID mid = g_IPB_Session->GetMethodID(clz, event, PBRT_EVENT, "LLL");
+	
+	if(mid == kUndefinedMethodID) return FatalError("Can't find event named \"%40s\"",event);
+	
+	g_IPB_Session->InitCallInfo(clz, mid, &ci);
+	ci.pArgs->GetAt(0)->SetLong(wparm);
+	ci.pArgs->GetAt(1)->SetLong(lparm);
+	g_IPB_Session->TriggerEvent(object[0], mid, &ci);
+	if(ret)ret[0] = ci.returnValue->GetLong();
+	g_IPB_Session->FreeCallInfo(&ci);
+	return true;
+}
+
+
+LRESULT SendData(SQLCONTEXT*ctx,UINT Msg, WPARAM wParam, LPARAM lParam){
+	if(!ctx){
+		FatalError("Error initializing SQLCONTEXT.");
+		return 0;
+	}
+	if(ctx->hwnd){
+		return SendMessage(ctx->hwnd, Msg, wParam, lParam);
+	}else if(ctx->callback){
+		long ret=0;
+		switch(Msg){
+			case PEM_RESULTSET:
+				TriggerEvent(ctx->callback,"sqlexec_resultset", wParam, lParam, &ret);
+				break;
+			case PEM_END_ROW:
+				TriggerEvent(ctx->callback,"sqlexec_row_end", wParam, lParam, &ret);
+				break;
+			case PEM_INSERT_ROW:
+				TriggerEvent(ctx->callback,"sqlexec_row_start", wParam, lParam, &ret);
+				break;
+			case PEM_SET_FIELD:
+				TriggerEvent(ctx->callback,"sqlexec_field_value", wParam, lParam, &ret);
+				break;
+			case PEM_FLD_INFO:
+				TriggerEvent(ctx->callback,"sqlexec_field_info", wParam, lParam, &ret);
+				break;
+			case PEM_LOG_MESSAGE:
+				DBG(TriggerEvent(ctx->callback,"sqlexec_debug", wParam, lParam, &ret));
+				break;
+			case PEM_DIRECTORY:
+				TriggerEvent(ctx->callback,"sqlexec_directory", wParam, lParam, &ret);
+				break;
+			case PEM_SQL_MESSAGE:
+				TriggerEvent(ctx->callback,"sqlexec_sql_message", wParam, lParam, &ret);
+				break;
+			case PEM_RES_INFO:
+				TriggerEvent(ctx->callback,"sqlexec_res_info", wParam, lParam, &ret);
+				break;
+			case PEM_DIR_INFO:
+				TriggerEvent(ctx->callback,"sqlexec_dir_info", wParam, lParam, &ret);
+				break;
+		}
+		return ret;
+	}
+	FatalError("SQLCONTEXT contains no handlers.");
+	return 0;
+}
+
+
+CS_RETCODE ERR(SQLCONTEXT*ctx, char * msg, int i){
 	if(msg){
 		char*buf=new char[strlen(msg)+20];
 		sprintf(buf,msg,i);
-		SendMessage(hwnd,PEM_LOG_MESSAGE,LOG_MSG_INFO,(LPARAM)buf);
+		SendData(ctx,PEM_LOG_MESSAGE,LOG_MSG_INFO,(LPARAM)buf);
 		delete []buf;
 	}
 	return CS_FAIL;
@@ -22,8 +105,8 @@ CS_RETCODE ERR(HWND hwnd, char * msg, int i){
 
 //sends notification to intervace about new row incoming
 //returns false if user want to cancel data transfer
-BOOL ROW(HWND hwnd, CS_COMMAND *cmd, long row){
-	CS_INT code=SendMessage(hwnd,PEM_INSERT_ROW,row,0);
+BOOL ROW(SQLCONTEXT*ctx, CS_COMMAND *cmd, long row){
+	CS_INT code=SendData(ctx,PEM_INSERT_ROW,row,0);
 	switch(code){
 		case 0:
 			return true;
@@ -46,7 +129,7 @@ char*rtrim(char*c){
 }
 
 
-void SQLERR(HWND hwnd, long msgnumber, long severity, char  *proc, long line, char *text ){
+void SQLERR(SQLCONTEXT*ctx, long msgnumber, long severity, char  *proc, long line, char *text ){
 	SQLMESSAGE m;
 	memset(&m,0,sizeof(SQLMESSAGE) );
 	m.msgnumber=msgnumber;
@@ -60,97 +143,94 @@ void SQLERR(HWND hwnd, long msgnumber, long severity, char  *proc, long line, ch
 	rtrim(m.text);
 	rtrim(m.proc);
 	
-	SendMessage(hwnd,PEM_SQL_MESSAGE,sizeof(SQLMESSAGE),(LPARAM)&m);
+	SendData(ctx,PEM_SQL_MESSAGE,sizeof(SQLMESSAGE),(LPARAM)&m);
 }
-
-
-
 
 void * old_srv_msg_callback=NULL;
 void * old_cli_msg_callback=NULL;
 
 
 CS_RETCODE CS_PUBLIC ex_servermsg_cb(CS_CONTEXT*context, CS_CONNECTION*connection, CS_SERVERMSG*srvmsg){
-	SQLERR(public_hwnd, srvmsg->msgnumber, srvmsg->severity, srvmsg->proc, srvmsg->line, srvmsg->text );
+	SQLERR(public_sqlctx, srvmsg->msgnumber, srvmsg->severity, srvmsg->proc, srvmsg->line, srvmsg->text );
 	return CS_SUCCEED;
 }
 
 
 CS_RETCODE CS_PUBLIC clientmsg_callback(CS_CONTEXT*ctx, CS_CONNECTION*con, CS_CLIENTMSG*cmsg){
-	SQLERR(public_hwnd, cmsg->msgnumber, cmsg->severity, "", 0, cmsg->msgstring );
+	SQLERR(public_sqlctx, cmsg->msgnumber, cmsg->severity, "", 0, cmsg->msgstring );
 	return CS_SUCCEED;
 }
 
 
-CS_RETCODE install_message_callback(HWND hwnd,CS_COMMAND *cmd){
+CS_RETCODE install_message_callback(SQLCONTEXT*sct,CS_COMMAND *cmd){
 	CS_CONNECTION	*connection;
 
-	LOG(hwnd,"installing server message callback...");
+	LOG(sct,"installing server message callback...");
 	//get connection
-	RET_ON_FAIL(ct_cmd_props(cmd,CS_GET,CS_PARENT_HANDLE,&connection,CS_UNUSED,NULL),hwnd,"install_message_callback: ct_cmd_props() failed");
+	RET_ON_FAIL(ct_cmd_props(cmd,CS_GET,CS_PARENT_HANDLE,&connection,CS_UNUSED,NULL),sct,"install_message_callback: ct_cmd_props() failed");
 	//get old callback message
-	RET_ON_FAIL(ct_callback(NULL, connection, CS_GET, CS_SERVERMSG_CB,(void*)&old_srv_msg_callback),hwnd,"install_message_callback: ct_callback(CS_GET) failed");
+	RET_ON_FAIL(ct_callback(NULL, connection, CS_GET, CS_SERVERMSG_CB,(void*)&old_srv_msg_callback),sct,"install_message_callback: ct_callback(CS_GET) failed");
 	DBG(fprintf(flog,"old_srv_msg_callback :%X\n",old_srv_msg_callback));
 	//set the new one
 	if(ct_callback(NULL, connection, CS_SET, CS_SERVERMSG_CB,(void*)ex_servermsg_cb)!=CS_SUCCEED){
-		ERR(hwnd,"install_message_callback: ct_callback(CS_SET) failed");
+		ERR(sct,"install_message_callback: ct_callback(CS_SET) failed");
 		old_srv_msg_callback=NULL;
 		return CS_FAIL;
 	}
-	LOG(hwnd,"server message callback installed");
+	LOG(sct,"server message callback installed");
 	return CS_SUCCEED;
 }
 
-CS_RETCODE return_message_callback(HWND hwnd,CS_COMMAND *cmd){
+CS_RETCODE return_message_callback(SQLCONTEXT*sct,CS_COMMAND *cmd){
 	CS_CONNECTION	*connection;
 
-	LOG(hwnd,"uninstalling server message callback...");
+	LOG(sct,"uninstalling server message callback...");
 	//get connection
-	RET_ON_FAIL(ct_cmd_props(cmd,CS_GET,CS_PARENT_HANDLE,&connection,CS_UNUSED,NULL),hwnd,"return_message_callback: ct_cmd_props() failed");
+	RET_ON_FAIL(ct_cmd_props(cmd,CS_GET,CS_PARENT_HANDLE,&connection,CS_UNUSED,NULL),sct,"return_message_callback: ct_cmd_props() failed");
 	//return the old cb
 	if(ct_callback(NULL, connection, CS_SET, CS_SERVERMSG_CB,(void*)old_srv_msg_callback)!=CS_SUCCEED){
-		ERR(hwnd,"return_message_callback: ct_callback(CS_SET) failed");
+		ERR(sct,"return_message_callback: ct_callback(CS_SET) failed");
 		return CS_FAIL;
 	}
 	old_srv_msg_callback=NULL;
-	LOG(hwnd,"server message callback uninstalled");
+	LOG(sct,"server message callback uninstalled");
 	return CS_SUCCEED;
 }
 
-CS_RETCODE install_cli_message_callback(HWND hwnd,CS_COMMAND *cmd){
+CS_RETCODE install_cli_message_callback(SQLCONTEXT*sct,CS_COMMAND *cmd){
 	CS_CONNECTION	*connection;
 
-	LOG(hwnd,"installing client message callback...");
+	LOG(sct,"installing client message callback...");
 	//get connection
-	RET_ON_FAIL(ct_cmd_props(cmd,CS_GET,CS_PARENT_HANDLE,&connection,CS_UNUSED,NULL),hwnd,"install_cli_message_callback: ct_cmd_props() failed");
+	RET_ON_FAIL(ct_cmd_props(cmd,CS_GET,CS_PARENT_HANDLE,&connection,CS_UNUSED,NULL),sct,"install_cli_message_callback: ct_cmd_props() failed");
 	//get old callback message
 	RET_ON_FAIL(ct_callback(NULL, connection, CS_GET, CS_CLIENTMSG_CB,
-			(CS_VOID *)&old_cli_msg_callback),hwnd,
+			(CS_VOID *)&old_cli_msg_callback),sct,
 		    "install_cli_message_callback: ct_callback(CS_GET) failed");
 	DBG(fprintf(flog,"old_cli_msg_callback :%X\n",old_cli_msg_callback));
 	//set the new one
 	if(ct_callback(NULL, connection, CS_SET, CS_CLIENTMSG_CB,(void*)clientmsg_callback)!=CS_SUCCEED){
-		ERR(hwnd,"install_cli_message_callback: ct_callback(CS_SET) failed");
+		ERR(sct,"install_cli_message_callback: ct_callback(CS_SET) failed");
 		old_cli_msg_callback=NULL;
 		return CS_FAIL;
 	}
-	LOG(hwnd,"client message callback installed");
+	LOG(sct,"client message callback installed");
 	return CS_SUCCEED;
 }
 
-CS_RETCODE return_cli_message_callback(HWND hwnd,CS_COMMAND *cmd){
+CS_RETCODE return_cli_message_callback(SQLCONTEXT* sct,CS_COMMAND *cmd){
 	CS_CONNECTION	*connection;
 
-	LOG(hwnd,"uninstalling client message callback...");
+	LOG(sct,"uninstalling client message callback...");
 	//get connection
-	RET_ON_FAIL(ct_cmd_props(cmd,CS_GET,CS_PARENT_HANDLE,&connection,CS_UNUSED,NULL),hwnd,"return_message_callback: ct_cmd_props() failed");
+	RET_ON_FAIL(ct_cmd_props(cmd,CS_GET,CS_PARENT_HANDLE,&connection,CS_UNUSED,NULL),sct,"return_message_callback: ct_cmd_props() failed");
 	//return the old cb
 	if(ct_callback(NULL, connection, CS_SET, CS_CLIENTMSG_CB,(void*)old_cli_msg_callback)!=CS_SUCCEED){
-		ERR(hwnd,"return_cli_message_callback: ct_callback(CS_SET) failed");
+		ERR(sct,"return_cli_message_callback: ct_callback(CS_SET) failed");
 		return CS_FAIL;
 	}
 	old_cli_msg_callback=NULL;
-	LOG(hwnd,"client message callback uninstalled");
+	LOG(sct,"client message callback uninstalled");
 	return CS_SUCCEED;
 }
 
@@ -220,7 +300,25 @@ char* DisplayType(CS_DATAFMT*column){
 		case CS_TIME_TYPE:
 			sprintf(buf,"time");
 			break;
-		default:
+/*		case CS_UNITEXT_TYPE:
+			sprintf(buf,"unitext");
+			break;
+		case CS_BIGINT_TYPE:
+			sprintf(buf,"bigint");
+			break;
+		case CS_USMALLINT_TYPE:
+			sprintf(buf,"usmallint");
+			break;
+		case CS_UINT_TYPE:
+			sprintf(buf,"uint");
+			break;
+		case CS_UBIGINT_TYPE:
+			sprintf(buf,"ubigint");
+			break;
+		case CS_XML_TYPE:
+			sprintf(buf,"xml");
+			break;
+*/		default:
 			sprintf(buf,"type_%i",column->datatype);
 			break;
 	}
@@ -436,7 +534,7 @@ BOOL FetchCancel(CS_COMMAND *cmd,CS_INT code){
 	}
 }
 
-CS_STATIC CS_RETCODE CS_INTERNAL FetchComputeResults(HWND hwnd,CS_COMMAND *cmd){
+CS_STATIC CS_RETCODE CS_INTERNAL FetchComputeResults(SQLCONTEXT*sct,CS_COMMAND *cmd){
 	CS_RETCODE		retcode;
 	CS_INT			num_cols;
 	CS_INT			i;
@@ -449,20 +547,20 @@ CS_STATIC CS_RETCODE CS_INTERNAL FetchComputeResults(HWND hwnd,CS_COMMAND *cmd){
 	CS_DATAFMT		datafmt;
 	COLUMNDATA		*coldata=NULL;
 	
-	RET_ON_FAIL(ct_res_info(cmd, CS_NUMDATA, &num_cols, CS_UNUSED, NULL),hwnd,"FetchComputeResults: ct_res_info() failed")
+	RET_ON_FAIL(ct_res_info(cmd, CS_NUMDATA, &num_cols, CS_UNUSED, NULL),sct,"FetchComputeResults: ct_res_info() failed")
 
 	if (num_cols <= 0){
-		ERR(hwnd,"FetchComputeResults: ct_res_info() returned zero columns");
+		ERR(sct,"FetchComputeResults: ct_res_info() returned zero columns");
 		return CS_FAIL;
 	}
 	
-	if( !ROW(hwnd,cmd,0) ){
+	if( !ROW(sct,cmd,1) ){
 		return CS_SUCCEED;
 	}
 	
 	coldata=(COLUMNDATA*)malloc(num_cols * sizeof (COLUMNDATA));
 	if (coldata == NULL){
-		ERR(hwnd,"FetchComputeResults: malloc() failed");
+		ERR(sct,"FetchComputeResults: malloc() failed");
 		return CS_FAIL;
 	}
 	memset( coldata, 0, num_cols * sizeof (COLUMNDATA) );
@@ -470,7 +568,7 @@ CS_STATIC CS_RETCODE CS_INTERNAL FetchComputeResults(HWND hwnd,CS_COMMAND *cmd){
 	for (i = 0; i < num_cols; i++){
 		retcode = ct_compute_info(cmd, CS_COMP_OP, (i + 1), &compinfo, CS_UNUSED, NULL);
 		if (retcode != CS_SUCCEED){
-			ERR(hwnd,"FetchComputeResults: ct_compute_info() failed");
+			ERR(sct,"FetchComputeResults: ct_compute_info() failed");
 			break;
 		}
 		switch(compinfo){
@@ -483,14 +581,14 @@ CS_STATIC CS_RETCODE CS_INTERNAL FetchComputeResults(HWND hwnd,CS_COMMAND *cmd){
 		}
 		retcode = ct_compute_info(cmd, CS_COMP_COLID, (i + 1), &compinfo, CS_UNUSED, NULL);
 		if (retcode != CS_SUCCEED){
-			ERR(hwnd,"FetchComputeResults: ct_compute_info() failed");
+			ERR(sct,"FetchComputeResults: ct_compute_info() failed");
 			break;
 		}
-		FLD(hwnd,compinfo,operation);
+		FLD(sct,compinfo,operation);
 		
 		retcode = ct_describe(cmd, (i + 1), &datafmt);
 		if (retcode != CS_SUCCEED){
-			ERR(hwnd,"FetchComputeResults: ct_describe() failed");
+			ERR(sct,"FetchComputeResults: ct_describe() failed");
 			break;
 		}
 		
@@ -498,11 +596,11 @@ CS_STATIC CS_RETCODE CS_INTERNAL FetchComputeResults(HWND hwnd,CS_COMMAND *cmd){
 		
 		retcode = ct_bind(cmd, i+1, &datafmt,coldata[i].data, &coldata[i].len,&coldata[i].ind);
 		if (retcode != CS_SUCCEED){
-			ERR(hwnd,"FetchComputeResults: ct_bind() failed");
+			ERR(sct,"FetchComputeResults: ct_bind() failed");
 			break;
 		}
 	}
-	
+	ROWEND(sct,1);
 	if (retcode != CS_SUCCEED){
 		for (i = 0; i < num_cols; i++){
 			if(coldata[i].data)free(coldata[i].data);
@@ -520,10 +618,10 @@ CS_STATIC CS_RETCODE CS_INTERNAL FetchComputeResults(HWND hwnd,CS_COMMAND *cmd){
 			&rows_read)) == CS_SUCCEED) || (retcode == CS_ROW_FAIL))
 	{
 		if (retcode == CS_ROW_FAIL){
-			ERR(hwnd, "Error fetching row.");
+			ERR(sct, "Error fetching row.");
 		}
 		if(rows_read==1){
-			if( !ROW(hwnd,cmd,0) ){
+			if( !ROW(sct,cmd,2) ){
 				retcode=CS_SUCCEED;
 				break;
 			}
@@ -531,11 +629,12 @@ CS_STATIC CS_RETCODE CS_INTERNAL FetchComputeResults(HWND hwnd,CS_COMMAND *cmd){
 				ToString(cmd,&coldata[i]);
 				retcode = ct_compute_info(cmd, CS_COMP_COLID, (i + 1), &compinfo, CS_UNUSED, NULL);
 				if (retcode != CS_SUCCEED){
-					ERR(hwnd,"FetchComputeResults: ct_compute_info() failed");
+					ERR(sct,"FetchComputeResults: ct_compute_info() failed");
 					break;
 				}
-				FLD(hwnd,compinfo,(coldata[i].ind==-1?0:coldata[i].data));
+				FLD(sct,compinfo,(coldata[i].ind==-1?0:coldata[i].data));
 			}
+			ROWEND(sct,2);
 		}
 	}
 
@@ -547,16 +646,16 @@ CS_STATIC CS_RETCODE CS_INTERNAL FetchComputeResults(HWND hwnd,CS_COMMAND *cmd){
 
 	switch ((int)retcode){
 		case CS_END_DATA:
-			LOG(hwnd, "All done processing rows.");
+			LOG(sct, "All done processing rows.");
 			retcode = CS_SUCCEED;
 			break;
 
 		case CS_FAIL:
-			ERR(hwnd,"FetchComputeResults: ct_fetch() failed");
+			ERR(sct,"FetchComputeResults: ct_fetch() failed");
 			return retcode;
 
 		default:
-			ERR(hwnd,"FetchComputeResults: ct_fetch() returned an expected retcode");
+			ERR(sct,"FetchComputeResults: ct_fetch() returned an expected retcode");
 			return retcode;
 	}
 
@@ -564,7 +663,7 @@ CS_STATIC CS_RETCODE CS_INTERNAL FetchComputeResults(HWND hwnd,CS_COMMAND *cmd){
 }
 
 
-CS_RETCODE FetchData(HWND hwnd,CS_COMMAND *cmd,int res_type,bool append){
+CS_RETCODE FetchData(SQLCONTEXT*sct,CS_COMMAND *cmd,int res_type,bool append){
 	CS_RETCODE		retcode;
 	CS_INT			num_cols;
 	CS_INT			i;
@@ -581,25 +680,25 @@ CS_RETCODE FetchData(HWND hwnd,CS_COMMAND *cmd,int res_type,bool append){
 	
 	
 	
-	LOG(hwnd, "FetchData enter.");
-	RET_ON_FAIL(ct_res_info(cmd, CS_NUMDATA, &num_cols, CS_UNUSED, NULL),hwnd,"FetchData: ct_res_info() failed")
+	LOG(sct, "FetchData enter.");
+	RET_ON_FAIL(ct_res_info(cmd, CS_NUMDATA, &num_cols, CS_UNUSED, NULL),sct,"FetchData: ct_res_info() failed")
 
 	if (num_cols <= 0){
-		ERR(hwnd,"FetchData: ct_res_info() returned zero columns");
+		ERR(sct,"FetchData: ct_res_info() returned zero columns");
 		return CS_FAIL;
 	}
 	//notify about new resultset
-	if(!append && res_type!=RS_TYPE_RET)RES(hwnd,res_type,num_cols);
+	if(!append && res_type!=RS_TYPE_RET)RES(sct,res_type,num_cols);
 	//check if there is a browse information, then dispatch it
 	if(!append && res_type==RS_TYPE_DAT){
 		ct_res_info(cmd, CS_BROWSE_INFO, &has_br_info, CS_UNUSED, NULL);
 		if(has_br_info){
-			RET_ON_FAIL(ct_br_table(cmd, CS_UNUSED, CS_TABNUM, &br_tabnum, CS_UNUSED, NULL),hwnd,"FetchData: ct_br_table(CS_TABNUM) failed");
+			RET_ON_FAIL(ct_br_table(cmd, CS_UNUSED, CS_TABNUM, &br_tabnum, CS_UNUSED, NULL),sct,"FetchData: ct_br_table(CS_TABNUM) failed");
 			if(br_tabnum>0){
 				retcode=ct_br_table(cmd, 1, CS_TABNAME, br_tabname, CS_OBJ_NAME+5, NULL);
 				if(retcode==CS_SUCCEED){
 					if(br_tabnum>1)strcat(br_tabname,"...");
-					INFO(hwnd,RS_INFO_BR_TABLE,br_tabname);
+					INFO(sct,RS_INFO_BR_TABLE,br_tabname);
 				}
 			}
 		}
@@ -607,7 +706,7 @@ CS_RETCODE FetchData(HWND hwnd,CS_COMMAND *cmd,int res_type,bool append){
 	
 	coldata=(COLUMNDATA*)malloc(num_cols * sizeof (COLUMNDATA));
 	if (coldata == NULL){
-		ERR(hwnd,"FetchData: malloc() failed");
+		ERR(sct,"FetchData: malloc() failed");
 		return CS_FAIL;
 	}
 	memset( coldata, 0, num_cols * sizeof (COLUMNDATA) );
@@ -616,7 +715,7 @@ CS_RETCODE FetchData(HWND hwnd,CS_COMMAND *cmd,int res_type,bool append){
 	for (i = 0; i < num_cols; i++){
 		retcode = ct_describe(cmd, (i + 1), &datafmt);
 		if (retcode != CS_SUCCEED){
-			ERR(hwnd,"FetchData: ct_describe() failed");
+			ERR(sct,"FetchData: ct_describe() failed");
 			break;
 		}
 		
@@ -625,14 +724,15 @@ CS_RETCODE FetchData(HWND hwnd,CS_COMMAND *cmd,int res_type,bool append){
 		InitColData(&datafmt, &coldata[i]);
 		
 		sprintf(fname+strlen(fname),"?%i?%s",coldata[i].charlen,datafmt.name);
-		if(!append && res_type!=RS_TYPE_RET)FLD(hwnd,i+1,fname);
+		if(!append && res_type!=RS_TYPE_RET)FLD_INFO(sct,i+1,fname);
 		
 		retcode = ct_bind(cmd, i+1, &datafmt,coldata[i].data, &coldata[i].len,&coldata[i].ind);
 		if (retcode != CS_SUCCEED){
-			ERR(hwnd,"FetchData: ct_bind() failed");
+			ERR(sct,"FetchData: ct_bind() failed");
 			break;
 		}
 	}
+	if(!append && res_type!=RS_TYPE_RET)ROWEND(sct,0);
 	
 	if (retcode != CS_SUCCEED){
 		for (i = 0; i < num_cols; i++){
@@ -652,20 +752,21 @@ CS_RETCODE FetchData(HWND hwnd,CS_COMMAND *cmd,int res_type,bool append){
 	{
 		row_count = row_count + rows_read;
 		if (retcode == CS_ROW_FAIL){
-			ERR(hwnd, "Error fetching row %i.",row_count);
+			ERR(sct, "Error fetching row %i.",row_count);
 		}
 		if(rows_read==1){
 			if(res_type==RS_TYPE_RET){
-				INFO(hwnd,RS_INFO_RET,(coldata[0].ind==-1?0:coldata[0].data));
+				INFO(sct,RS_INFO_RET,(coldata[0].ind==-1?0:coldata[0].data));
 			}else{
-				if( !ROW(hwnd,cmd,row_count) ){
+				if( !ROW(sct,cmd,row_count) ){
 					retcode=CS_SUCCEED;
 					break;
 				}
 				for (i = 0; i < num_cols; i++){
 					ToString(cmd, &coldata[i]);
-					FLD(hwnd,i+1,(coldata[i].ind==-1?0:coldata[i].data));
+					FLD(sct,i+1,(coldata[i].ind==-1?0:coldata[i].data));
 				}
+				ROWEND(sct,row_count);
 			}
 		}
 	}
@@ -678,22 +779,22 @@ CS_RETCODE FetchData(HWND hwnd,CS_COMMAND *cmd,int res_type,bool append){
 
 	switch ((int)retcode){
 		case CS_END_DATA:
-			LOG(hwnd, "All done processing rows.");
+			LOG(sct, "All done processing rows.");
 			retcode = CS_SUCCEED;
 			break;
 
 		case CS_FAIL:
-			ERR(hwnd,"FetchData: ct_fetch() failed");
+			ERR(sct,"FetchData: ct_fetch() failed");
 			return retcode;
 
 		default:
-			ERR(hwnd,"FetchData: ct_fetch() returned an expected retcode");
+			ERR(sct,"FetchData: ct_fetch() returned an expected retcode");
 			return retcode;
 	}
 
 	return retcode;
 }
-CS_RETCODE SendRowCount(HWND hwnd,CS_COMMAND *cmd,char * info){
+CS_RETCODE SendRowCount(SQLCONTEXT* sct,CS_COMMAND *cmd,char * info){
 	CS_INT	outlen,rowcount;
 	CS_RETCODE	ret;
 	char c[100];
@@ -701,13 +802,13 @@ CS_RETCODE SendRowCount(HWND hwnd,CS_COMMAND *cmd,char * info){
 //	sprintf(c,"%i %s",rowcount,info);
 	if(rowcount < 0)return ret; //don't show -1 lines affected
 	sprintf(c,"%i",rowcount);
-	INFO(hwnd,RS_INFO_ROWS,c);
+	INFO(sct,RS_INFO_ROWS,c);
 	return ret;
 }
 
 
 
-CS_RETCODE HandleResults(HWND hwnd,CS_COMMAND *cmd){
+CS_RETCODE HandleResults(SQLCONTEXT* sct,CS_COMMAND *cmd){
 	CS_RETCODE	retcode;
 	CS_INT		res_type;
 	BOOL		append=false;
@@ -715,45 +816,45 @@ CS_RETCODE HandleResults(HWND hwnd,CS_COMMAND *cmd){
 	while( (retcode=ct_results(cmd, &res_type))==CS_SUCCEED ){
 		switch(res_type){
 			case CS_CMD_SUCCEED:
-				LOG(hwnd,"ct_results: result_type=CS_CMD_SUCCEED");
-				//SendRowCount(hwnd,cmd,"CS_CMD_SUCCEED");
+				LOG(sct,"ct_results: result_type=CS_CMD_SUCCEED");
+				//SendRowCount(sct,cmd,"CS_CMD_SUCCEED");
 				break;
 			case CS_CMD_DONE:
 				append=false;
-				LOG(hwnd,"ct_results: result_type=CS_CMD_DONE");
-				SendRowCount(hwnd,cmd,"CS_CMD_DONE");
+				LOG(sct,"ct_results: result_type=CS_CMD_DONE");
+				SendRowCount(sct,cmd,"CS_CMD_DONE");
 				break;
 			case CS_CMD_FAIL:
-				ERR(hwnd,"ct_results: result_type=CS_CMD_FAIL");
-				SendRowCount(hwnd,cmd,"CS_CMD_FAIL");
+				ERR(sct,"ct_results: result_type=CS_CMD_FAIL");
+				SendRowCount(sct,cmd,"CS_CMD_FAIL");
 				ct_cancel(NULL, cmd, CS_CANCEL_ALL);
 				return CS_FAIL;
 				
 				
 			case CS_STATUS_RESULT:
-				LOG(hwnd,"ct_results: result_type=CS_STATUS_RESULT");
-				FetchData(hwnd,cmd,RS_TYPE_RET,false);
+				LOG(sct,"ct_results: result_type=CS_STATUS_RESULT");
+				FetchData(sct,cmd,RS_TYPE_RET,false);
 				break;
 			case CS_PARAM_RESULT:
-				LOG(hwnd,"ct_results: result_type=CS_PARAM_RESULT");
-				FetchData(hwnd,cmd,RS_TYPE_OUT,false);
+				LOG(sct,"ct_results: result_type=CS_PARAM_RESULT");
+				FetchData(sct,cmd,RS_TYPE_OUT,false);
 				break;
 			case CS_ROW_RESULT:
-				LOG(hwnd,"ct_results: result_type=CS_ROW_RESULT");
-				FetchData(hwnd,cmd,RS_TYPE_DAT,append);
+				LOG(sct,"ct_results: result_type=CS_ROW_RESULT");
+				FetchData(sct,cmd,RS_TYPE_DAT,append);
 				break;
 			case CS_COMPUTE_RESULT:
 				append=true;
-				LOG(hwnd,"ct_results: result_type=CS_COMPUTE_RESULT");
-				FetchComputeResults(hwnd,cmd);
+				LOG(sct,"ct_results: result_type=CS_COMPUTE_RESULT");
+				FetchComputeResults(sct,cmd);
 				break; 
 			default:
-				ERR(hwnd,"ct_results returned unexpected result type: %i",res_type);
+				ERR(sct,"ct_results returned unexpected result type: %i",res_type);
 				return CS_FAIL;
 		}
 	}
 	if(retcode!=CS_END_RESULTS){
-		ERR(hwnd,"ct_results() returns unexpected code: %i",retcode);
+		ERR(sct,"ct_results() returns unexpected code: %i",retcode);
 		return CS_FAIL;
 	}
 	return CS_SUCCEED;
@@ -761,19 +862,19 @@ CS_RETCODE HandleResults(HWND hwnd,CS_COMMAND *cmd){
 
 
 
-CS_RETCODE _sql_execute(HWND hwnd,CS_COMMAND *cmd,char * query){
-	RET_ON_FAIL(ct_command(cmd,CS_LANG_CMD,query,CS_NULLTERM,CS_UNUSED),hwnd,"ct_command(CS_LANG_CMD) failed");
-	RET_ON_FAIL(ct_send(cmd),hwnd,"ct_send() failed");
-	RET_ON_FAIL(HandleResults(hwnd,cmd),hwnd,"HandleResults() failed");
+CS_RETCODE _sql_execute(SQLCONTEXT* sct,CS_COMMAND *cmd,char * query){
+	RET_ON_FAIL(ct_command(cmd,CS_LANG_CMD,query,CS_NULLTERM,CS_UNUSED),sct,"ct_command(CS_LANG_CMD) failed");
+	RET_ON_FAIL(ct_send(cmd),sct,"ct_send() failed");
+	RET_ON_FAIL(HandleResults(sct,cmd),sct,"HandleResults() failed");
 	
 	return CS_SUCCEED;
 }
 
 
-CS_RETCODE _sql_dbgrpc_control(HWND hwnd,CS_COMMAND *cmd,CS_INT spid, char * parm){
+CS_RETCODE _sql_dbgrpc_control(SQLCONTEXT* sct,CS_COMMAND *cmd,CS_INT spid, char * parm){
 	CS_DATAFMT	datafmt;
 	
-	RET_ON_FAIL(ct_command(cmd, CS_RPC_CMD, "$dbgrpc_control", CS_NULLTERM, CS_NO_RECOMPILE),hwnd,"_sql_dbgrpc_control: ct_command() failed");
+	RET_ON_FAIL(ct_command(cmd, CS_RPC_CMD, "$dbgrpc_control", CS_NULLTERM, CS_NO_RECOMPILE),sct,"_sql_dbgrpc_control: ct_command() failed");
 	
 	memset(&datafmt, 0, sizeof (datafmt));
 //	datafmt.name[0]=0;
@@ -781,7 +882,7 @@ CS_RETCODE _sql_dbgrpc_control(HWND hwnd,CS_COMMAND *cmd,CS_INT spid, char * par
 	datafmt.datatype = CS_INT_TYPE;
 	datafmt.maxlength = CS_UNUSED;
 	datafmt.status = CS_INPUTVALUE;
-	RET_ON_FAIL(ct_param(cmd, &datafmt, (CS_VOID *)&spid,CS_SIZEOF(CS_INT), CS_UNUSED ),hwnd,"_sql_dbgrpc_control: ct_param(CS_INT) failed");
+	RET_ON_FAIL(ct_param(cmd, &datafmt, (CS_VOID *)&spid,CS_SIZEOF(CS_INT), CS_UNUSED ),sct,"_sql_dbgrpc_control: ct_param(CS_INT) failed");
 
 	memset(&datafmt, 0, sizeof (datafmt));
 //	datafmt.name[0]=0;
@@ -789,10 +890,10 @@ CS_RETCODE _sql_dbgrpc_control(HWND hwnd,CS_COMMAND *cmd,CS_INT spid, char * par
 	datafmt.datatype = CS_CHAR_TYPE;
 	datafmt.maxlength = CS_NULLTERM;
 	datafmt.status = CS_INPUTVALUE;
-	RET_ON_FAIL(ct_param(cmd, &datafmt, parm, CS_NULLTERM, ( (parm&&parm[0])?1:-1) ),hwnd,"_sql_dbgrpc_control: ct_param(char) failed");
+	RET_ON_FAIL(ct_param(cmd, &datafmt, parm, CS_NULLTERM, ( (parm&&parm[0])?1:-1) ),sct,"_sql_dbgrpc_control: ct_param(char) failed");
 		
-	RET_ON_FAIL(ct_send(cmd),hwnd,"ct_send() failed");
-	RET_ON_FAIL(HandleResults(hwnd,cmd),hwnd,"HandleResults() failed");
+	RET_ON_FAIL(ct_send(cmd),sct,"ct_send() failed");
+	RET_ON_FAIL(HandleResults(sct,cmd),sct,"HandleResults() failed");
 	
 	return CS_SUCCEED;
 }
@@ -802,30 +903,74 @@ CS_RETCODE _sql_dbgrpc_control(HWND hwnd,CS_COMMAND *cmd,CS_INT spid, char * par
 BOOL APIENTRY DllMain( HANDLE hModule, DWORD  reason, LPVOID lpReserved){
     return TRUE;
 }
+
+void sqlctx_init(SQLCONTEXT * sct,HWND hwnd,pbobject *callback){
+	sct->hwnd=hwnd;
+	sct->callback=callback;
+	public_sqlctx=sct;
+}
+
+
+void sqlctx_finit(SQLCONTEXT * sql){
+	public_sqlctx=NULL;
+}
+
+
 //-----------------------------------------------------------------------------
 // Main exported function
 //
 int __stdcall sql_execute(CS_CONNECTION	*connection,char * query,HWND hwnd){
 	CS_RETCODE		retcode;
 	CS_COMMAND		*cmd;
+	SQLCONTEXT		sct;
 	DBG(flog = fopen("syb_exec.log","at"));
 	DBG(fprintf(flog,"sql_execute enter\n"));
 	if(!connection)return 0;
-	public_hwnd=hwnd;
+	sqlctx_init(&sct,hwnd,NULL);
 	retcode=ct_cmd_alloc(connection, &cmd);
 	if ( retcode==CS_SUCCEED ){
-		install_cli_message_callback(hwnd,cmd);
-		install_message_callback(hwnd,cmd);
-		retcode=_sql_execute(hwnd,cmd,query);
-		return_message_callback(hwnd,cmd);
-		return_cli_message_callback(hwnd,cmd);
+		install_cli_message_callback(&sct,cmd);
+		install_message_callback(&sct,cmd);
+		retcode=_sql_execute(&sct,cmd,query);
+		return_message_callback(&sct,cmd);
+		return_cli_message_callback(&sct,cmd);
 		ct_cmd_drop(cmd);
 	}else{
-		ERR(hwnd,"sql_execute: ct_cmd_alloc() failed");
+		ERR(&sct,"sql_execute: ct_cmd_alloc() failed");
 	}
 	DBG(fprintf(flog,"sql_execute exit\n"));
 	DBG(fflush(flog));
 	DBG(fclose(flog));
+	sqlctx_finit(&sct);
+	return (retcode == CS_SUCCEED) ? 1 : 0;
+}
+
+//-----------------------------------------------------------------------------
+// Main exported function 2
+//
+int __stdcall sql_execute2(CS_CONNECTION *connection,char * query,pbobject * callback){
+	CS_RETCODE		retcode;
+	CS_COMMAND		*cmd;
+	SQLCONTEXT		sct;
+	DBG(flog = fopen("syb_exec.log","at"));
+	DBG(fprintf(flog,"sql_execute2 enter\n"));
+	if(!connection)return 0;
+	sqlctx_init(&sct,NULL,callback);
+	retcode=ct_cmd_alloc(connection, &cmd);
+	if ( retcode==CS_SUCCEED ){
+		install_cli_message_callback(&sct,cmd);
+		install_message_callback(&sct,cmd);
+		retcode=_sql_execute(&sct,cmd,query);
+		return_message_callback(&sct,cmd);
+		return_cli_message_callback(&sct,cmd);
+		ct_cmd_drop(cmd);
+	}else{
+		ERR(&sct,"sql_execute2: ct_cmd_alloc() failed");
+	}
+	DBG(fprintf(flog,"sql_execute2 exit\n"));
+	DBG(fflush(flog));
+	DBG(fclose(flog));
+	sqlctx_finit(&sct);
 	return (retcode == CS_SUCCEED) ? 1 : 0;
 }
 
@@ -847,24 +992,26 @@ int __stdcall sql_ctversion(int ver){
 int __stdcall sql_dbgrpc_control(CS_CONNECTION	*connection,int spid, char * parm,HWND hwnd){
 	CS_RETCODE		retcode;
 	CS_COMMAND		*cmd;
+	SQLCONTEXT      sct;
 	DBG(flog = fopen("syb_exec.log","at"));
 	DBG(fprintf(flog,"sql_dbgrpc_control enter\n"));
 	if(!connection)return 0;
-	public_hwnd=hwnd;
+	sqlctx_init(&sct,hwnd,NULL);
 	retcode=ct_cmd_alloc(connection, &cmd);
 	if ( retcode==CS_SUCCEED ){
-		install_cli_message_callback(hwnd,cmd);
-		install_message_callback(hwnd,cmd);
-		retcode=_sql_dbgrpc_control(hwnd,cmd, spid, parm);
-		return_message_callback(hwnd,cmd);
-		return_cli_message_callback(hwnd,cmd);
+		install_cli_message_callback(&sct,cmd);
+		install_message_callback(&sct,cmd);
+		retcode=_sql_dbgrpc_control(&sct,cmd, spid, parm);
+		return_message_callback(&sct,cmd);
+		return_cli_message_callback(&sct,cmd);
 		ct_cmd_drop(cmd);
 	}else{
-		ERR(hwnd,"sql_dbgrpc_control: ct_cmd_alloc() failed");
+		ERR(&sct,"sql_dbgrpc_control: ct_cmd_alloc() failed");
 	}
 	DBG(fprintf(flog,"sql_dbgrpc_control exit\n"));
 	DBG(fflush(flog));
 	DBG(fclose(flog));
+	sqlctx_finit(&sct);
 	return (retcode == CS_SUCCEED) ? 1 : 0;
 }
 
@@ -949,3 +1096,76 @@ bool __stdcall sql_property_set(int prop, int value){
 }
 
 }//extern "C"
+
+
+
+/**************************************************************************
+ -=========== PBNATIVE TO SEND RESPONCE TO PB NONVISUAL OBJECT ==========-
+**************************************************************************/
+
+PBXEXPORT LPCTSTR PBXCALL PBX_GetDescription(){
+	static const TCHAR desc[] = {
+		"class cppdummy from nonvisualobject\n"
+		"function long dummy()\n"
+		"end class\n"
+	};
+	return desc;
+}
+
+class CppDummy : public IPBX_NonVisualObject {
+	enum { mDummy = 0 };
+
+	public:
+	CppDummy(){}
+	
+	~CppDummy(){}
+	
+	void Destroy(){	delete this; }
+	
+	PBXRESULT Invoke (IPB_Session *session, pbobject obj, pbmethodID mid, PBCallInfo *ci ) {
+		switch(mid) {
+			case mDummy:
+				ci->returnValue->SetLong(0);
+				break;
+			default:
+				return PBX_E_INVALID_METHOD_ID;
+		}
+		return PBX_OK;
+	}
+
+};
+
+PBXEXPORT PBXRESULT PBXCALL PBX_CreateNonVisualObject ( 
+		IPB_Session*pbsession, pbobject pbobj, LPCTSTR className, IPBX_NonVisualObject **obj ) {
+	if (  !strcmp((char*)className,"cppdummy") ){
+		*obj = new CppDummy();
+	} else {
+		*obj = NULL;
+		return PBX_E_NO_SUCH_CLASS;
+	}
+	return PBX_OK;
+}
+
+PBXEXPORT PBXRESULT PBXCALL PBX_Notify ( IPB_Session* pbsession, pbint reasonForCall ) {
+	//store PB session to make a callback to PB Object later
+	g_IPB_Session=pbsession;
+	switch(reasonForCall) {
+		case kAfterDllLoaded:
+		case kBeforeDllUnloaded:
+		   break;
+	}
+	return PBX_OK;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

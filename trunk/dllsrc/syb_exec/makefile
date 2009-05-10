@@ -1,7 +1,7 @@
 MAKEFILE=MAKEFILE
 
 
-INCLUDE=$(INCLUDE);$(SYBASE)\$(SYBASE_OCS)\include
+INCLUDE=$(INCLUDE);$(SYBASE)\$(SYBASE_OCS)\include;C:\Program Files\Sybase\PowerBuilder 10.0\SDK\PBNI\include
 LIB=$(LIB);$(SYBASE)\$(SYBASE_OCS)\lib
 
 

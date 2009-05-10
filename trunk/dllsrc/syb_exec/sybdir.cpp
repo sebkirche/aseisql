@@ -7,7 +7,7 @@ int match_OID(CS_OID *oid,CS_CHAR *oid_string){
 	  && (strncmp(oid_string, oid->oid_buffer, oid->oid_length) == 0));
 } /* match_OID() */
 
-CS_RETCODE attr_get_by_type(HWND hwnd,CS_DS_OBJECT       *ds_object,
+CS_RETCODE attr_get_by_type(SQLCONTEXT*sct,CS_DS_OBJECT       *ds_object,
 				CS_CHAR            *attr_type_str,
 				CS_ATTRIBUTE       *attr_metadata,
 				CS_ATTRVALUE      **p_attrvals) {
@@ -34,7 +34,7 @@ CS_RETCODE attr_get_by_type(HWND hwnd,CS_DS_OBJECT       *ds_object,
 			    (CS_VOID *)&num_attrs, CS_SIZEOF(num_attrs),
 			    NULL);
 	if (ret != CS_SUCCEED) {
-		ERR(hwnd, "attr_get_by_type: get number of attributes failed.");
+		ERR(sct, "attr_get_by_type: get number of attributes failed.");
 		return CS_FAIL;
 	}
 
@@ -49,7 +49,7 @@ CS_RETCODE attr_get_by_type(HWND hwnd,CS_DS_OBJECT       *ds_object,
 		ret = ct_ds_objinfo(ds_object, CS_GET, CS_DS_ATTRIBUTE, 
 				    cur_attr, (CS_VOID *)attr_metadata, 
 				    CS_SIZEOF(CS_ATTRIBUTE), NULL);
-		RET_ON_FAIL(ret,hwnd,"attr_get_by_type: get attribute failed.");
+		RET_ON_FAIL(ret,sct,"attr_get_by_type: get attribute failed.");
 
 		// Check for a match.
 		if (match_OID(&(attr_metadata->attr_type), attr_type_str)) {
@@ -59,14 +59,14 @@ CS_RETCODE attr_get_by_type(HWND hwnd,CS_DS_OBJECT       *ds_object,
 			** CS_ATTRVALUE unions.
 			*/
 			if (attr_metadata->attr_numvals <= 0) {
-				ERR(hwnd,"attr_get_by_type: bad numvals field!");
+				ERR(sct,"attr_get_by_type: bad numvals field!");
 				return CS_FAIL;
 			}
 			*p_attrvals = (CS_ATTRVALUE *) 
 			     malloc(sizeof(CS_ATTRVALUE)
 				    * (attr_metadata->attr_numvals));
 			if (p_attrvals == NULL) {
-				ERR(hwnd,"attr_get_by_type: out of memory!");
+				ERR(sct,"attr_get_by_type: out of memory!");
 				return CS_FAIL;
 			}
 
@@ -77,7 +77,7 @@ CS_RETCODE attr_get_by_type(HWND hwnd,CS_DS_OBJECT       *ds_object,
 					    (CS_VOID *)(*p_attrvals), 
 					    buflen, &outlen);
 			if (ret != CS_SUCCEED) {
-				ERR(hwnd, "attr_get_by_type: get attribute values failed.");
+				ERR(sct, "attr_get_by_type: get attribute values failed.");
 				free(*p_attrvals);
 				*p_attrvals = NULL;
 				attr_metadata->attr_numvals = 0;
@@ -138,7 +138,7 @@ CS_RETCODE attr_val_as_string(CS_ATTRIBUTE *attr_metadata, CS_ATTRVALUE *val, CS
 
 CS_RETCODE CS_PUBLIC directory_cb(CS_CONNECTION *conn,CS_INT reqid,CS_RETCODE status,CS_INT numentries,CS_DS_OBJECT *ds_object,CS_VOID *userdata){
 	CS_RETCODE          ret;
-	HWND				hwnd=(HWND)userdata;
+	SQLCONTEXT			*sct=(SQLCONTEXT*)userdata;
 	
 	DBG(fprintf(flog,"directory_cb %i %i %X\n",status,numentries,ds_object));
 
@@ -159,15 +159,15 @@ CS_RETCODE CS_PUBLIC directory_cb(CS_CONNECTION *conn,CS_INT reqid,CS_RETCODE st
 	//RET_ON_FAIL(ret,hwnd,"directory_cb: ct_ds_objinfo failed.");
 	//printf("%s\t",s);
 	
-	ret=attr_get_by_type(hwnd,ds_object, CS_OID_ATTRSERVNAME, &attr_metadata, &p_attrvals);
-	RET_ON_FAIL(ret,hwnd,"directory_cb: attr_get_by_type failed.");
+	ret=attr_get_by_type(sct,ds_object, CS_OID_ATTRSERVNAME, &attr_metadata, &p_attrvals);
+	RET_ON_FAIL(ret,sct,"directory_cb: attr_get_by_type failed.");
 	
 	ret = attr_val_as_string(&attr_metadata, p_attrvals,outbuf, CS_MAX_DS_STRING * 3, NULL);
-	RET_ON_FAIL(ret,hwnd,"directory_cb: attr_val_as_string failed.");
+	RET_ON_FAIL(ret,sct,"directory_cb: attr_val_as_string failed.");
 	
 	// Append the object to the list of servers.
 	MultiByteToWideChar(CP_ACP,0,outbuf,-1,ws,CS_MAX_DS_STRING * 3);
-	DIR(hwnd,ws);
+	DIR(sct,ws);
 	/*
 	** Return CS_CONTINUE so Client-Library will call us again if more
 	** entries are found.
@@ -176,7 +176,7 @@ CS_RETCODE CS_PUBLIC directory_cb(CS_CONNECTION *conn,CS_INT reqid,CS_RETCODE st
 
 } /* directory_cb() */
 
-CS_RETCODE get_servers(CS_CONNECTION *conn, HWND hwnd){
+CS_RETCODE get_servers(CS_CONNECTION *conn, SQLCONTEXT*sct){
 	CS_RETCODE          ret;
 	CS_INT              reqid;
 	CS_VOID            *oldcallback;
@@ -189,7 +189,7 @@ CS_RETCODE get_servers(CS_CONNECTION *conn, HWND hwnd){
 	if (ret == CS_SUCCEED){
 		ret = ct_callback(NULL, conn, CS_SET, CS_DS_LOOKUP_CB, (CS_VOID *)directory_cb);
 	}
-	RET_ON_FAIL(ret,hwnd,"get_servers: Could not install directory callback.")
+	RET_ON_FAIL(ret,sct,"get_servers: Could not install directory callback.")
 
 	// Set the CS_DS_LOOKUP_INFO structure fields.
 	lookup_info.path = NULL;
@@ -202,12 +202,12 @@ CS_RETCODE get_servers(CS_CONNECTION *conn, HWND hwnd){
 	lookup_info.objclass = &oid;
 
 	// Begin the search.
-	ret = ct_ds_lookup(conn, CS_SET, &reqid,&lookup_info, hwnd);
-	RET_ON_FAIL(ret,hwnd,"get_servers: Could not run ct_ds_lookup.");
+	ret = ct_ds_lookup(conn, CS_SET, &reqid,&lookup_info, sct);
+	RET_ON_FAIL(ret,sct,"get_servers: Could not run ct_ds_lookup.");
 
 	// Restore callbacks and properties that we changed.
 	ret = ct_callback(NULL, conn, CS_SET, CS_DS_LOOKUP_CB, oldcallback);
-	RET_ON_FAIL(ret,hwnd,"get_servers: Could not restore directory callback.");
+	RET_ON_FAIL(ret,sct,"get_servers: Could not restore directory callback.");
 
 	return CS_SUCCEED;
 
@@ -222,10 +222,26 @@ int __stdcall sql_directory(HWND cb_hwnd){
 	
 	CS_CHAR         scratch_str[DIR_MAX_LEN];
 	WCHAR			ws[DIR_MAX_LEN];
+	SQLCONTEXT		sct;
+	
+	sqlctx_init(&sct,cb_hwnd,NULL);
 	//LOG(cb_hwnd,"sql_directory call");
 	DBG(flog = fopen("syb_exec.log","at"));
 	DBG(fprintf(flog,"sql_directory enter\n"));
 
+	if ( GetEnvironmentVariableW(L"SYBASE",	ws,	DIR_MAX_LEN)>0 ){
+		DIR_INFO(&sct,L"Sybase",ws);
+	}else{
+		DIR_INFO(&sct,L"Sybase",L"NOT SET!");
+	}
+	
+	HMODULE hmodule= GetModuleHandleW( L"libct.dll" );
+	if(hmodule){
+		GetModuleFileNameW(hmodule, ws, DIR_MAX_LEN);
+		DIR_INFO(&sct,L"libct.dll",ws);
+	}else{
+		DIR_INFO(&sct,L"libct.dll",L"NOT FOUND!");
+	}
 	// Get a context handle to use.
 	retcode = cs_ctx_alloc(CS_VERSION_110, &ctx);
 	if (retcode == CS_SUCCEED){
@@ -240,53 +256,40 @@ int __stdcall sql_directory(HWND cb_hwnd){
 				retcode = ct_config(ctx, CS_GET, CS_VER_STRING, (CS_VOID *)scratch_str, DIR_MAX_LEN, NULL);
 				if(retcode == CS_SUCCEED){
 					MultiByteToWideChar(CP_ACP,0,scratch_str,-1,ws,DIR_MAX_LEN);
-					DIR_INFO(cb_hwnd,L"CS Version",ws);
-				}
-				
-				if ( GetEnvironmentVariableW(L"SYBASE",	ws,	DIR_MAX_LEN)>0 ){
-					DIR_INFO(cb_hwnd,L"Sybase",ws);
-				}else{
-					DIR_INFO(cb_hwnd,L"Sybase",L"NOT SET!");
-				}
-				
-				HMODULE hmodule= GetModuleHandleW( L"libct.dll" );
-				if(hmodule){
-					GetModuleFileNameW(hmodule, ws, DIR_MAX_LEN);
-					DIR_INFO(cb_hwnd,L"libct.dll",ws);
-				}else{
-					DIR_INFO(cb_hwnd,L"libct.dll",L"NOT FOUND!");
+					DIR_INFO(&sct,L"CS Version",ws);
 				}
 				
 				retcode = ct_con_props(conn, CS_GET, CS_DS_PROVIDER, scratch_str, DIR_MAX_LEN, NULL);
 				if(retcode == CS_SUCCEED){
 					MultiByteToWideChar(CP_ACP,0,scratch_str,-1,ws,DIR_MAX_LEN);
-					DIR_INFO(cb_hwnd,L"Provider",ws);
+					DIR_INFO(&sct,L"Provider",ws);
 				}
 				
 				retcode = ct_config(ctx, CS_GET, CS_IFILE, (CS_VOID *)scratch_str, DIR_MAX_LEN, NULL);
 				if(retcode == CS_SUCCEED){
 					MultiByteToWideChar(CP_ACP,0,scratch_str,-1,ws,DIR_MAX_LEN);
-					DIR_INFO(cb_hwnd,L"Interface file",ws);
+					DIR_INFO(&sct,L"Interface file",ws);
 				}
 				
 				
 				DBG(fprintf(flog,"ct_con_alloc\n"));
-				get_servers(conn,cb_hwnd);
+				get_servers(conn,&sct);
 				ct_con_drop(conn);
 			}else{
-				ERR(cb_hwnd,"sql_directory: ct_con_alloc() failed");
+				ERR(&sct,"sql_directory: ct_con_alloc() failed");
 			}
 			
 		}else{
-			ERR(cb_hwnd,"sql_directory: ct_init() failed");
+			ERR(&sct,"sql_directory: ct_init() failed");
 		}
 		cs_ctx_drop(ctx);
 	}else{
 		remove("sybinit.err");
-		ERR(cb_hwnd,"sql_directory: cs_ctx_alloc() failed");
+		ERR(&sct,"sql_directory: cs_ctx_alloc() failed");
 	}
 	DBG(fprintf(flog,"sql_directory exit\n"));
 	DBG(fflush(flog));
 	DBG(fclose(flog));
+	sqlctx_finit(&sct);
 	return (retcode == CS_SUCCEED) ? 1 : 0;
 }
