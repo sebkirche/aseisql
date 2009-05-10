@@ -34,6 +34,7 @@ Save Format v3.0(19990112)
  "uo_br_database.sru" "aseisql.pbl";
  "f_remove_space.srf" "aseisql.pbl";
  "uo_option_file.sru" "aseisql.pbl";
+ "n_sqlexecsink_string.sru" "aseisql.pbl";
  "zz_d_toolbars.srd" "aseisql.pbl";
  "d_search_exact.srd" "aseisql.pbl";
  "uo_option_tab.sru" "aseisql.pbl";
@@ -59,6 +60,7 @@ Save Format v3.0(19990112)
  "uo_resultset_export.sru" "aseisql.pbl";
  "w_view_data.srw" "aseisql.pbl";
  "uo_editpage.sru" "aseisql.pbl";
+ "n_sqlexecsink.sru" "aseisql.pbl";
  "f_selectfirst.srf" "aseisql.pbl";
  "n_sqlmessage.sru" "aseisql.pbl";
  "uo_option_browse.sru" "aseisql.pbl";

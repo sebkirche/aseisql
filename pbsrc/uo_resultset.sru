@@ -63,6 +63,7 @@ public subroutine of_sybexec_newrow (long al_row)
 public subroutine of_sybexec_setfield (readonly long al_col, readonly string as_value)
 public subroutine of_sybexec_resultset (readonly long al_rstype, readonly long al_colcount)
 public subroutine of_sybexec_tabname (readonly string as_tablename)
+public subroutine of_sybexec_setfieldinfo (readonly long al_col, readonly string as_value)
 end prototypes
 
 event resize;//
@@ -167,21 +168,8 @@ this.event ue_newrow( )
 
 end subroutine
 
-public subroutine of_sybexec_setfield (readonly long al_col, readonly string as_value);long pos,pos2
-if in_rsinfo[il_rscount].il_rowcount=0 then
-	//receive the column definition
-	pos=pos(as_value,'?')
-	pos2=pos(as_value,'?',pos+1)
-	in_rsinfo[il_rscount].it_col[al_col].sqltype=left(as_value,pos -1)
-	in_rsinfo[il_rscount].it_col[al_col].displaylen=long(mid(as_value,pos+1,pos2 - pos -1))
-	in_rsinfo[il_rscount].it_col[al_col].name=mid(as_value,pos2+1)
-	in_rsinfo[il_rscount].it_col[al_col].maxcharlen=max(len(in_rsinfo[il_rscount].it_col[al_col].name),len(in_rsinfo[il_rscount].it_col[al_col].sqltype))
-	
-	if in_rsinfo[il_rscount].it_col[al_col].maxcharlen>in_rsinfo[il_rscount].it_col[al_col].displaylen then
-		in_rsinfo[il_rscount].it_col[al_col].displaylen=in_rsinfo[il_rscount].it_col[al_col].maxcharlen
-	end if
-	//create the header if last column
-	if al_col=in_rsinfo[il_rscount].il_colcount then this.event ue_resultset_begin()
+public subroutine of_sybexec_setfield (readonly long al_col, readonly string as_value);if in_rsinfo[il_rscount].il_rowcount=0 then
+	//moved to SetFieldInfo
 else
 	this.event ue_setfield(al_col,as_value)
 	if al_col=in_rsinfo[il_rscount].il_colcount then this.event ue_row_end()
@@ -203,6 +191,26 @@ in_rsinfo[il_rscount].is_name=''
 end subroutine
 
 public subroutine of_sybexec_tabname (readonly string as_tablename);in_rsinfo[il_rscount].is_name=as_tablename
+return
+
+end subroutine
+
+public subroutine of_sybexec_setfieldinfo (readonly long al_col, readonly string as_value);long pos,pos2
+
+//receive the column definition
+pos=pos(as_value,'?')
+pos2=pos(as_value,'?',pos+1)
+in_rsinfo[il_rscount].it_col[al_col].sqltype=left(as_value,pos -1)
+in_rsinfo[il_rscount].it_col[al_col].displaylen=long(mid(as_value,pos+1,pos2 - pos -1))
+in_rsinfo[il_rscount].it_col[al_col].name=mid(as_value,pos2+1)
+in_rsinfo[il_rscount].it_col[al_col].maxcharlen=max(len(in_rsinfo[il_rscount].it_col[al_col].name),len(in_rsinfo[il_rscount].it_col[al_col].sqltype))
+
+if in_rsinfo[il_rscount].it_col[al_col].maxcharlen>in_rsinfo[il_rscount].it_col[al_col].displaylen then
+	in_rsinfo[il_rscount].it_col[al_col].displaylen=in_rsinfo[il_rscount].it_col[al_col].maxcharlen
+end if
+//create the header if last column
+if al_col=in_rsinfo[il_rscount].il_colcount then this.event ue_resultset_begin()
+
 return
 
 end subroutine
