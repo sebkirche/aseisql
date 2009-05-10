@@ -1,0 +1,24 @@
+!include <win32.mak>
+
+.cpp.obj:
+	$(cc) -Ox $(cflags) $(cvarsdll) -DSTRICT -YX -DNODEBUG $<
+
+#LIB_FILES= wsock32.lib kernel32.lib user32.lib libc.lib
+
+CPP_FILES= dllmain.cpp\
+           sciprint.cpp
+
+OBJS= $(CPP_FILES:.cpp=.obj)
+
+all: sciprint.dll
+
+sciprint.dll: $(OBJS)
+	$(link) /LINK50COMPAT /RELEASE $(dlllflags) /DEF:sciprint.def \
+	-out:$*.dll $(OBJS) $(guilibsdll)
+
+clean:
+    -del *.obj
+	-del *.dll
+	-del *.pch
+	-del *.exp
+	-del *.lib

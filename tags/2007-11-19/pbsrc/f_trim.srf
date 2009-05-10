@@ -1,0 +1,28 @@
+HA$PBExportHeader$f_trim.srf
+global type f_trim from function_object
+end type
+
+forward prototypes
+global function string f_trim (readonly string as_src, readonly string as_space)
+end prototypes
+
+global function string f_trim (readonly string as_src, readonly string as_space);long ib,ie,count
+
+count=len(as_src)
+
+ib=1
+do while ib<=count and pos(as_space, mid(as_src,ib,1) )>0
+	ib++
+loop
+if ib>count then return ''
+
+ie=count
+do while ie>1 and pos(as_space, mid(as_src,ie,1) )>0
+	ie --
+loop
+
+if ie<count or ib>1 then return mid(as_src,ib,ie - ib + 1)
+return as_src
+
+end function
+

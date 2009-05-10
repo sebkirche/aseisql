@@ -1,0 +1,26 @@
+HA$PBExportHeader$f_selectstring.srf
+global type f_selectstring from function_object
+end type
+
+forward prototypes
+global function string f_selectstring (string query, string default)
+end prototypes
+
+global function string f_selectstring (string query, string default);string s
+s=default
+if not IsNull(query) then
+	DECLARE f_selectstring DYNAMIC CURSOR FOR SQLSA;
+	PREPARE SQLSA FROM :query;
+	OPEN f_selectstring;
+	IF SQLCA.SQLCODE=0 THEN 
+		FETCH f_selectstring INTO :s;
+		sqlca.of_error()
+		CLOSE f_selectstring;
+	else
+		sqlca.of_error()
+	end if
+end if
+return(s)
+
+end function
+

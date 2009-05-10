@@ -1,0 +1,13 @@
+HA$PBExportHeader$f_b2i.srf
+global type f_b2i from function_object
+end type
+
+forward prototypes
+global function integer f_b2i (boolean b)
+end prototypes
+
+global function integer f_b2i (boolean b);if b then return 1
+return 0
+
+end function
+

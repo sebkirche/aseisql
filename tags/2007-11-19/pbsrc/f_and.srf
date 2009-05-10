@@ -1,0 +1,24 @@
+HA$PBExportHeader$f_and.srf
+global type f_and from function_object
+end type
+
+forward prototypes
+global function unsignedlong f_and (unsignedlong val1, unsignedlong val2)
+end prototypes
+
+global function unsignedlong f_and (unsignedlong val1, unsignedlong val2);unsignedlong ret=0
+int bit=0
+
+do while val1<>0 and val2<>0
+	if mod(val1,2)=1 and mod(val2,2)=1 then
+		ret+=2^bit
+	end if
+	val1/=2
+	val2/=2
+	bit++
+loop
+
+return ret
+
+end function
+

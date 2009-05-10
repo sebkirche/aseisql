@@ -1,0 +1,355 @@
+HA$PBExportHeader$m_pop_edit.srm
+forward
+global type m_pop_edit from menu
+end type
+type m_undo from menu within m_pop_edit
+end type
+type m_redo from menu within m_pop_edit
+end type
+type m_sep_0 from menu within m_pop_edit
+end type
+type m_cut from menu within m_pop_edit
+end type
+type m_copy from menu within m_pop_edit
+end type
+type m_copyspecial from menu within m_pop_edit
+end type
+type m_copyrtf from menu within m_copyspecial
+end type
+type m_copyvarprint from menu within m_copyspecial
+end type
+type m_copyspecial from menu within m_pop_edit
+m_copyrtf m_copyrtf
+m_copyvarprint m_copyvarprint
+end type
+type m_paste from menu within m_pop_edit
+end type
+type m_delete from menu within m_pop_edit
+end type
+type m_sep_1 from menu within m_pop_edit
+end type
+type m_selectall from menu within m_pop_edit
+end type
+type m_sep_2 from menu within m_pop_edit
+end type
+type m_findselected from menu within m_pop_edit
+end type
+type m_sep_sql from menu within m_pop_edit
+end type
+global type m_pop_edit from menu
+m_undo m_undo
+m_redo m_redo
+m_sep_0 m_sep_0
+m_cut m_cut
+m_copy m_copy
+m_copyspecial m_copyspecial
+m_paste m_paste
+m_delete m_delete
+m_sep_1 m_sep_1
+m_selectall m_selectall
+m_sep_2 m_sep_2
+m_findselected m_findselected
+m_sep_sql m_sep_sql
+end type
+end forward
+
+global type m_pop_edit from menu
+m_undo m_undo
+m_redo m_redo
+m_sep_0 m_sep_0
+m_cut m_cut
+m_copy m_copy
+m_copyspecial m_copyspecial
+m_paste m_paste
+m_delete m_delete
+m_sep_1 m_sep_1
+m_selectall m_selectall
+m_sep_2 m_sep_2
+m_findselected m_findselected
+m_sep_sql m_sep_sql
+end type
+global m_pop_edit m_pop_edit
+
+type variables
+uo_scintilla uo_edit
+
+end variables
+
+on m_pop_edit.create
+m_pop_edit=this
+call super::create
+this.text = "m_pop_edit"
+this.m_undo=create m_undo
+this.m_redo=create m_redo
+this.m_sep_0=create m_sep_0
+this.m_cut=create m_cut
+this.m_copy=create m_copy
+this.m_copyspecial=create m_copyspecial
+this.m_paste=create m_paste
+this.m_delete=create m_delete
+this.m_sep_1=create m_sep_1
+this.m_selectall=create m_selectall
+this.m_sep_2=create m_sep_2
+this.m_findselected=create m_findselected
+this.m_sep_sql=create m_sep_sql
+this.Item[UpperBound(this.Item)+1]=this.m_undo
+this.Item[UpperBound(this.Item)+1]=this.m_redo
+this.Item[UpperBound(this.Item)+1]=this.m_sep_0
+this.Item[UpperBound(this.Item)+1]=this.m_cut
+this.Item[UpperBound(this.Item)+1]=this.m_copy
+this.Item[UpperBound(this.Item)+1]=this.m_copyspecial
+this.Item[UpperBound(this.Item)+1]=this.m_paste
+this.Item[UpperBound(this.Item)+1]=this.m_delete
+this.Item[UpperBound(this.Item)+1]=this.m_sep_1
+this.Item[UpperBound(this.Item)+1]=this.m_selectall
+this.Item[UpperBound(this.Item)+1]=this.m_sep_2
+this.Item[UpperBound(this.Item)+1]=this.m_findselected
+this.Item[UpperBound(this.Item)+1]=this.m_sep_sql
+end on
+
+on m_pop_edit.destroy
+call super::destroy
+destroy(this.m_undo)
+destroy(this.m_redo)
+destroy(this.m_sep_0)
+destroy(this.m_cut)
+destroy(this.m_copy)
+destroy(this.m_copyspecial)
+destroy(this.m_paste)
+destroy(this.m_delete)
+destroy(this.m_sep_1)
+destroy(this.m_selectall)
+destroy(this.m_sep_2)
+destroy(this.m_findselected)
+destroy(this.m_sep_sql)
+end on
+
+type m_undo from menu within m_pop_edit
+end type
+
+on m_undo.create
+call super::create
+this.text = "&Undo~tCtrl+Z"
+this.shortcut = 346
+end on
+
+on m_undo.destroy
+call super::destroy
+end on
+
+event clicked;uo_edit.of_send(uo_edit.SCI_UNDO,0,0)
+
+end event
+
+type m_redo from menu within m_pop_edit
+end type
+
+on m_redo.create
+call super::create
+this.text = "&Redo~tCtrl+Y"
+this.shortcut = 345
+end on
+
+on m_redo.destroy
+call super::destroy
+end on
+
+event clicked;uo_edit.of_send(uo_edit.SCI_REDO,0,0)
+
+end event
+
+type m_sep_0 from menu within m_pop_edit
+end type
+
+on m_sep_0.create
+call super::create
+this.text = "-"
+end on
+
+on m_sep_0.destroy
+call super::destroy
+end on
+
+type m_cut from menu within m_pop_edit
+end type
+
+on m_cut.create
+call super::create
+this.text = "Cu&t"
+end on
+
+on m_cut.destroy
+call super::destroy
+end on
+
+event clicked;uo_edit.of_send(uo_edit.SCI_CUT,0,0)
+
+end event
+
+type m_copy from menu within m_pop_edit
+end type
+
+on m_copy.create
+call super::create
+this.text = "&Copy"
+end on
+
+on m_copy.destroy
+call super::destroy
+end on
+
+event clicked;uo_edit.of_send(uo_edit.SCI_COPY,0,0)
+
+end event
+
+type m_copyspecial from menu within m_pop_edit
+m_copyrtf m_copyrtf
+m_copyvarprint m_copyvarprint
+end type
+
+on m_copyspecial.create
+call super::create
+this.text = "Copy &Special"
+this.m_copyrtf=create m_copyrtf
+this.m_copyvarprint=create m_copyvarprint
+this.Item[UpperBound(this.Item)+1]=this.m_copyrtf
+this.Item[UpperBound(this.Item)+1]=this.m_copyvarprint
+end on
+
+on m_copyspecial.destroy
+call super::destroy
+destroy(this.m_copyrtf)
+destroy(this.m_copyvarprint)
+end on
+
+type m_copyrtf from menu within m_copyspecial
+end type
+
+event clicked;w_main.event ue_men_copyrtf()
+end event
+
+on m_copyrtf.create
+call super::create
+this.text = "Copy &RTF"
+end on
+
+on m_copyrtf.destroy
+call super::destroy
+end on
+
+type m_copyvarprint from menu within m_copyspecial
+end type
+
+event clicked;w_main.event ue_men_copyvarprint()
+
+end event
+
+on m_copyvarprint.create
+call super::create
+this.text = "Copy &Variables for Print"
+end on
+
+on m_copyvarprint.destroy
+call super::destroy
+end on
+
+type m_paste from menu within m_pop_edit
+end type
+
+on m_paste.create
+call super::create
+this.text = "&Paste"
+end on
+
+on m_paste.destroy
+call super::destroy
+end on
+
+event clicked;uo_edit.of_send(uo_edit.SCI_PASTE,0,0)
+
+end event
+
+type m_delete from menu within m_pop_edit
+end type
+
+on m_delete.create
+call super::create
+this.text = "&Delete"
+end on
+
+on m_delete.destroy
+call super::destroy
+end on
+
+event clicked;uo_edit.of_send(uo_edit.SCI_CLEAR,0,0)
+
+end event
+
+type m_sep_1 from menu within m_pop_edit
+end type
+
+on m_sep_1.create
+call super::create
+this.text = "-"
+end on
+
+on m_sep_1.destroy
+call super::destroy
+end on
+
+type m_selectall from menu within m_pop_edit
+end type
+
+on m_selectall.create
+call super::create
+this.text = "Select &All"
+end on
+
+on m_selectall.destroy
+call super::destroy
+end on
+
+event clicked;uo_edit.of_send(uo_edit.SCI_SELECTALL,0,0)
+
+end event
+
+type m_sep_2 from menu within m_pop_edit
+end type
+
+on m_sep_2.create
+call super::create
+this.text = "-"
+end on
+
+on m_sep_2.destroy
+call super::destroy
+end on
+
+type m_findselected from menu within m_pop_edit
+end type
+
+event clicked;w_main.event ue_find()
+
+end event
+
+on m_findselected.create
+call super::create
+this.text = "Find Selected..."
+end on
+
+on m_findselected.destroy
+call super::destroy
+end on
+
+type m_sep_sql from menu within m_pop_edit
+end type
+
+on m_sep_sql.create
+call super::create
+this.text = "-"
+end on
+
+on m_sep_sql.destroy
+call super::destroy
+end on
+

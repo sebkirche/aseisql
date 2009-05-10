@@ -1,0 +1,16 @@
+HA$PBExportHeader$f_converteol.srf
+global type f_converteol from function_object
+end type
+
+forward prototypes
+global function string f_converteol (readonly string s)
+end prototypes
+
+global function string f_converteol (readonly string s);if cfg.of_getoption(cfg.is_UnixEOL) then
+	return f_replaceall(s,'~r~n','~n')
+else
+	return s
+end if
+
+end function
+

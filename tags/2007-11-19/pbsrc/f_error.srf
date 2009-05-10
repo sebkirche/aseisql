@@ -1,0 +1,13 @@
+HA$PBExportHeader$f_error.srf
+global type f_error from function_object
+end type
+
+forward prototypes
+global function boolean f_error (readonly string msg)
+end prototypes
+
+global function boolean f_error (readonly string msg);MessageBox(app().displayname+" - Error",msg,StopSign!)
+return true
+
+end function
+

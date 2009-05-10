@@ -1,0 +1,26 @@
+HA$PBExportHeader$f_replaceall.srf
+global type f_replaceall from function_object
+end type
+
+forward prototypes
+global function string f_replaceall (string source, string replacewhat, string replaceby)
+end prototypes
+
+global function string f_replaceall (string source, string replacewhat, string replaceby);string res
+long p,f,l
+res=''
+f=1
+l=len(replacewhat)
+DO
+	p=pos(source,replaceWhat,f)
+	if p>0 then
+		res+=mid(source,f,p -f)+replaceBy
+		f=p+l
+	else
+		res+=mid(source,f)
+	end if
+LOOP WHILE p>0
+return(res)
+
+end function
+

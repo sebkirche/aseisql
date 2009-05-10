@@ -1,0 +1,10 @@
+HA$PBExportHeader$t_column_info.srs
+global type t_column_info from structure
+	string		name
+	long		displaylen
+	string		sqltype
+	string		tag
+	long		maxcharlen
+	long		maxpixels
+end type
+

@@ -1,0 +1,12 @@
+HA$PBExportHeader$app.srf
+global type app from function_object
+end type
+
+forward prototypes
+global function application app ()
+end prototypes
+
+global function application app ();return getApplication()
+
+end function
+

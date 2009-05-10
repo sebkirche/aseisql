@@ -1,0 +1,13 @@
+atl71.dll
+GdiPlus.dll
+libjcc.dll
+libjlog.dll
+msvcp71.dll
+msvcr71.dll
+pbacc100.dll
+pbdwe100.dll
+pbshr100.dll
+pbvm100.dll
+PBXerces100.dll
+xerces-c_2_6.dll
+xerces-depdom_2_6.dll

@@ -1,0 +1,7 @@
+LIBRARY		SciPrint
+
+DESCRIPTION	'SciPrint library'
+
+EXPORTS
+        SciPrint
+		EnumerateFonts

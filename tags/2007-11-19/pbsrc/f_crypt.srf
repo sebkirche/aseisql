@@ -1,0 +1,106 @@
+HA$PBExportHeader$f_crypt.srf
+global type f_crypt from function_object
+end type
+
+forward prototypes
+global function string f_crypt (string ls_pass, boolean lb_crypt)
+end prototypes
+
+global function string f_crypt (string ls_pass, boolean lb_crypt);long i,len,len0,hi
+ulong u
+string key='HJSLFDYARMBACMEKRKJGJFDDBCMFKD'
+string hexa='0123456789abcdef'
+long keycycle
+string ret,su
+ulong lenkey
+
+
+if lb_crypt then
+	len0=len(ls_pass)
+	keycycle=mod(cpu()/1000,len(key))
+	key=mid(key,keycycle+1)+left(key,keycycle)
+	if len0<len(key) then 
+		for i=1 to len(key) - len0
+			ls_pass+=''+char( 47+rand(74) ) //chars : 0-9,A-Z,a-z
+		next
+	end if
+	len=len(ls_pass)
+	//write to output
+	//create a magic number for length
+	for hi=1 to 8 //4 bytes
+		if mod(hi,2)>0 then
+			lenkey+=( 47+rand(74) ) * hi * 16
+		end if
+	next
+	//write len
+	u=len0 - lenkey //magic number
+	for hi=1 to 8 //4 bytes
+		ret+=mid(hexa,mod(u,16)+1,1)
+		u=u/16
+	next
+	//write chars
+	for i=1 to len
+		u=asc(mid(ls_pass,i,1))
+		u+=asc(mid(key,mod(i,len(key))+1,1))
+		for hi=1 to 4 //2 bytes
+			ret+=mid(hexa,mod(u,16)+1,1)
+			u=u/16
+		next
+	next
+	//write magic number
+	u=lenkey //magic number
+	for hi=1 to 8 //4 bytes
+		ret+=mid(hexa,mod(u,16)+1,1)
+		u=u/16
+	next
+	u=keycycle //keycycle
+	for hi=1 to 8 //4 bytes
+		ret+=mid(hexa,mod(u,16)+1,1)
+		u=u/16
+	next
+else
+	ls_pass=lower(ls_pass)
+	//get keycycle
+	su=right(ls_pass,8)
+	ls_pass=left(ls_pass,len(ls_pass)-8)
+	u=0
+	for hi=len(su) to 1 step -1
+		u=u*16 + pos(hexa,mid(su,hi,1)) -1
+	next
+	keycycle=u
+	key=mid(key,keycycle+1)+left(key,keycycle)
+	//get lenkey
+	su=right(ls_pass,8)
+	ls_pass=left(ls_pass,len(ls_pass)-8)
+	u=0
+	for hi=len(su) to 1 step -1
+		u=u*16 + pos(hexa,mid(su,hi,1)) -1
+	next
+	lenkey=u
+	//get len
+	su=left(ls_pass,8)
+	ls_pass=mid(ls_pass,9)
+	u=0
+	for hi=len(su) to 1 step -1
+		u=u*16 + pos(hexa,mid(su,hi,1)) -1
+	next
+	len0=u + lenkey
+	//get chars
+	for i=1 to len0
+		su=mid(ls_pass, (i -1)*4 +1,4)
+		u=0
+		for hi=len(su) to 1 step -1
+			u=u*16 + pos(hexa,mid(su,hi,1)) -1
+		next
+		u -= asc(mid(key,mod(i,len(key))+1,1))
+		ret+=''+char(u)
+	next
+	
+	
+end if
+
+
+return ret
+
+end function
+
