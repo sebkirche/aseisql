@@ -131,6 +131,7 @@ event ue_find ( )
 event ue_men_showspaces ( )
 event ue_men_executeexport ( )
 event ue_men_exportdata ( )
+event ue_sybexec_setfieldinfo pbm_custom10
 mdi_1 mdi_1
 st_tip2 st_tip2
 lv_log lv_log
@@ -1444,6 +1445,20 @@ if query<>'' then
 end if
 
 
+
+
+end event
+
+event ue_sybexec_setfieldinfo;string s
+uo_resultset none
+
+if lparam=0 then
+	setNull(s)
+else
+	gn_unicode.of_mblong2string(sqlca.of_utf8(), lparam,s)
+end if
+
+if isValid(irs_current) then irs_current.of_sybexec_setfieldinfo(wparam,s)
 
 
 end event
