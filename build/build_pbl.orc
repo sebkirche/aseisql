@@ -14,8 +14,10 @@ sys rename ..\..\pb\xxsyc.dll pbsyc100.dll
 
 # replace $WCREV$ in build.ini and put result in the future exe directory
 sys subwcrev ..\ build.ini ..\..\pb\build.ini
+sys version.cmd ..\..\pb\build.ini
 
 cd ..\..\pb
+
 
 echo create PBLs
 # create libraries from target file expected PRJNAME variable to be defined.

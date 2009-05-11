@@ -17,6 +17,7 @@ sys pbdll_cp.cmd ..\..\exe
 
 # replace $WCREV$ in build.ini and put result in the future exe directory
 sys subwcrev ..\ build.ini ..\..\exe\build.ini
+sys version.cmd ..\..\exe\build.ini
 
 cd ..\..\exe
 
