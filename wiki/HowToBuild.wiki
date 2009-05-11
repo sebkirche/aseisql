@@ -19,6 +19,14 @@ Check out the sources from repository into `\AseisqlProject\svn`
 
 Refer [http://code.google.com/p/aseisql/source/checkout Source] page to see how to access repository.
 
+  command example to get sources latest version as guest (read-only):
+
+  `svn checkout http://aseisql.googlecode.com/svn/trunk/ svn`
+
+  command example to get latest version (you must be a project member):
+
+  `svn checkout http://aseisql.googlecode.com/svn/trunk/ svn --username your@mail.dom`
+
 = How to build pb libraries =
 To start work in pb you need to create PB libraries.
 
