@@ -18,6 +18,8 @@ sys version.cmd ..\..\pb\build.ini
 
 cd ..\..\pb
 
+# PBNI: build PBD from syb_exec.dll
+sys pbx2pbd100.exe syb_exec.pbd syb_exec.dll
 
 echo create PBLs
 # create libraries from target file expected PRJNAME variable to be defined.
