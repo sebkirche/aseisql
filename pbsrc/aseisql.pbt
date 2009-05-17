@@ -4,5 +4,5 @@ Save Format v3.0(19990112)
 @end;
 appname "aseisql";
 applib "aseisql.pbl";
-LibList "aseisql.pbl";
+LibList "aseisql.pbl;syb_exec.pbd";
 type "pb";

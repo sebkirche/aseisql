@@ -22,7 +22,7 @@ sys version.cmd ..\..\exe\build.ini
 cd ..\..\exe
 
 echo build pbr file
-sys for %%i in (img\*.*) do echo %%i >> aseisql.pbr
+sys for %%i in (img\*.*) do @echo %%i >> aseisql.pbr
 
 
 echo create PBLs
@@ -45,6 +45,9 @@ sys del /S /Q .\*.sr?
 sys del /S /Q .\*.pbg
 
 
+# PBNI: build PBD from syb_exec.dll
+sys pbx2pbd100.exe syb_exec.pbd syb_exec.dll
+
 #end orca session. because we have to switch application
 session end 
 
@@ -52,15 +55,24 @@ session end
 #so, to do pure memory cleanup, split this file 
 
 
-
 session begin pborc100.dll
-
 # set liblist and application from target
 target set liblist .\%%PRJNAME%%.pbt
 target set app .\%%PRJNAME%%.pbt
 
 # do migration of the application (like full rebuild)
 build app migrate
+
+#get revisionVersion from version.ini
+profile string .\build.ini, version, revisionVersion
+
+set exeinfo property companyname, Char Labs
+set exeinfo property productname, AseIsql
+set exeinfo property description, The SQLAdvantage replacement
+set exeinfo property copyright,   Char Labs
+set exeinfo property fileversion, %%revisionVersion%%
+set exeinfo property fileversionnum, %%revisionVersion%%
+set exeinfo property productversion, %%revisionVersion%%
 
 # build executable
 build exe %%PRJNAME%%.exe, img\%%PRJNAME%%.ico, %%PRJNAME%%.pbr, pcode
