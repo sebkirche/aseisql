@@ -22,7 +22,7 @@ sys version.cmd ..\..\exe\build.ini
 cd ..\..\exe
 
 echo build pbr file
-sys for %%i in (img\*.*) do @echo %%i >> aseisql.pbr
+sys for %%i in (img\*.*) do @echo %%i>> %%PRJNAME%%.pbr
 
 
 echo create PBLs
