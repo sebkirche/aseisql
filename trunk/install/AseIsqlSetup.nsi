@@ -5,7 +5,7 @@ Name "ASE ISQL"
 OutFile "AseIsqlSetup.exe"
 
 SetCompressor lzma
-Icon "..\img\sybase.ico"
+Icon "..\pbsrc\img\aseisql.ico"
 
 ; The default installation directory
 InstallDir $PROGRAMFILES\AseIsql
@@ -32,13 +32,13 @@ Section "ASE ISQL"
 	SetOutPath $INSTDIR
 	
 	SetOverwrite on
-	File "..\aseisql\*.dll"
-	File "..\aseisql\*.exe"
-	File "..\aseisql\*.hlp"
-	File "..\aseisql\*.pbd"
-	File "..\aseisql\stubs.sql"
+	File "..\..\exe\*.dll"
+	File "..\..\exe\*.exe"
+	File "..\..\exe\*.hlp"
+	File "..\..\exe\*.pbd"
+	File "..\..\exe\stubs.sql"
 	SetOverwrite off
-	File "..\aseisql\ustubs.sql"
+	File "..\..\exe\ustubs.sql"
 	SetOverwrite on
 	
 	CreateShortCut "$SMPROGRAMS\Sybase\ASE ISQL.lnk" "$INSTDIR\aseisql.exe"
