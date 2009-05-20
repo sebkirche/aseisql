@@ -2523,13 +2523,16 @@ type m_about from menu within m_help
 end type
 
 event clicked;date d=today()
+String version=ProfileString ( '.\build.ini', 'version', 'revisionVersion', 'undefined' )
 
 MessageBox(app().displayname,app().displayname+' (Unicode)'+&
 	'~n is a free tool'+&
-	'~ncreated by Dmitry Lukyanov (http://LDU.da.ru)'+&
+	'~ncreated by Dmitry Lukyanov (http://dm.char.com.ua/ase/aseisql.htm)'+&
 	'~nas a replacement of Sybase SQL Advantage'+&
 	'~n~nColored by Scintilla (http://scintilla.sourceforge.net)'+&
-	'~n~nBuilt on '+string(d,'yyyy-mm-dd')+' (YMD)')
+	'~n~nVersion '+version+&
+	'~nBuilt on '+string(d,'yyyy-mm-dd')+' (YMD)')
+
 end event
 
 on m_about.create
