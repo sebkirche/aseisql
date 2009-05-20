@@ -2530,7 +2530,7 @@ MessageBox(app().displayname,app().displayname+' (Unicode)'+&
 	'~ncreated by Dmitry Lukyanov (http://dm.char.com.ua/ase/aseisql.htm)'+&
 	'~nas a replacement of Sybase SQL Advantage'+&
 	'~n~nColored by Scintilla (http://scintilla.sourceforge.net)'+&
-	'~n~nVersion '+version+&
+	'~n~nVersion: '+version+&
 	'~nBuilt on '+string(d,'yyyy-mm-dd')+' (YMD)')
 
 end event
