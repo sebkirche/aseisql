@@ -4,6 +4,8 @@ global type uo_log from listview
 end type
 type rect from structure within uo_log
 end type
+type repaint_timer from timing within uo_log
+end type
 end forward
 
 type rect from structure
@@ -34,6 +36,7 @@ string smallpicturename[] = {"img\info.gif","img\error.gif",""}
 long smallpicturemaskcolor = 536870912
 long statepicturemaskcolor = 536870912
 event ue_resize pbm_size
+repaint_timer repaint_timer
 end type
 global uo_log uo_log
 
@@ -44,7 +47,8 @@ end prototypes
 
 type variables
 private long oldheight
-
+private boolean ib_painting=true
+private boolean ib_scroll=true
 end variables
 
 forward prototypes
@@ -55,6 +59,7 @@ public function boolean of_isvisible (long index)
 public function long of_getitematpointer ()
 public subroutine of_copy (boolean ab_selected)
 public subroutine of_scrollto (long index)
+public subroutine of_log (integer ai_picture, readonly any aa_data, readonly string as_labels[])
 end prototypes
 
 event ue_resize;int ww=4
@@ -132,31 +137,31 @@ public subroutine of_copy (boolean ab_selected);long i,count
 listviewitem lvi
 string ls,ls_copy
 boolean ctrl
+n_string_builder lb_buffer
 
-ctrl=KeyDown(KeyControl!)
 
-count=totalItems()
+lb_buffer = create n_string_builder
 
-for i=1 to count
-	getItem(i,lvi)
-	if not ab_selected or lvi.selected then
+ctrl = keydown(keycontrol!)
+
+count = totalitems()
+
+for i = 1 to count
+	getitem(i, lvi)
+	if (not ab_selected) or lvi.selected then
 		if ctrl then
-			getItem(i,1,ls)
-			ls_copy+=ls+'~t'
-			getItem(i,2,ls)
-			ls_copy+=ls+'~t'
-			getItem(i,3,ls)
-			ls_copy+=ls+'~t'
-			getItem(i,4,ls)
-			ls_copy+=ls
-		else
-			getItem(i,4,ls)
-			ls_copy+=ls
+			getitem(i, 1, ls)
+			lb_buffer.of_build_string(ls + "~t")
+			getitem(i, 2, ls)
+			lb_buffer.of_build_string(ls + "~t")
+			getitem(i, 3, ls)
+			lb_buffer.of_build_string(ls + "~t")
 		end if
-		if i<count then ls_copy+='~r~n'
+		getitem(i, 4, ls)
+		lb_buffer.of_build_string(ls + "~r~n")
 	end if
 next
-clipboard(ls_copy)
+clipboard(lb_buffer.of_string())
 
 end subroutine
 
@@ -166,10 +171,40 @@ send(handle(this),LVM_SCROLL,0,index - 1)
 
 end subroutine
 
+public subroutine of_log (integer ai_picture, readonly any aa_data, readonly string as_labels[]);long index, ll_i
+long ll_msglen
+listviewitem lvi
+string ls_errno
+
+if ib_painting then
+	ib_scroll = of_isvisible(totalitems())
+	if visible and ib_scroll then
+		setredraw(false)
+		ib_painting = false
+		repaint_timer.start(1.0/30.0)
+	end if
+end if
+
+lvi.pictureindex = ai_picture
+lvi.data = aa_data
+lvi.label = as_labels[1]
+
+index = additem(lvi)
+for ll_i = 2 to upperbound(as_labels)
+	setitem(index,  ll_i,  as_labels[ll_i])
+next
+
+IF ib_painting and ib_scroll THEN of_ensurevisible(index)
+
+
+end subroutine
+
 on uo_log.create
+this.repaint_timer=create repaint_timer
 end on
 
 on uo_log.destroy
+destroy(this.repaint_timer)
 end on
 
 event constructor;AddColumn ( "time", Left!, 396 )
@@ -178,4 +213,28 @@ AddColumn ( "object", Left!, 742 )
 AddColumn ( "message", Left!, 200 )
 
 end event
+
+type repaint_timer from timing within uo_log descriptor "pb_nvo" = "true" 
+end type
+
+on repaint_timer.create
+call super::create
+TriggerEvent( this, "constructor" )
+end on
+
+on repaint_timer.destroy
+TriggerEvent( this, "destructor" )
+call super::destroy
+end on
+
+event timer;stop()
+
+if not ib_painting then
+	if ib_scroll then parent.of_ensurevisible(parent.totalitems())
+	parent.setredraw(true)
+	ib_painting = true
+end if
+
+end event
+
 
