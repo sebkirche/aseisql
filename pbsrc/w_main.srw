@@ -2354,43 +2354,37 @@ return true
 
 end function
 
-public subroutine of_log (long al_number, long al_severity, string as_procedure, long al_line, readonly string as_message);long index,ll_msglen
-ListViewItem lvi
+public subroutine of_log (long al_number, long al_severity, string as_procedure, long al_line, readonly string as_message);integer li_picture
+string ls_label
 string ls_errno
-boolean lb_scroll
 
-lb_scroll=lv_log.of_isvisible( lv_log.totalItems() )
-lvi.data=max(al_severity,0)
-lvi.label=string(now(),'hh.mm.ss:fff')
-if al_severity>0 then
-	lvi.PictureIndex=2
-	if al_severity<11 then lvi.PictureIndex=1
-	if as_procedure='' then as_procedure='<SQL>'
-	as_procedure+=' ('+string(al_line)+')'
-	ls_errno=string(al_number)
+ls_label = string(now(),  "hh.mm.ss:fff")
+if al_severity > 0 then
+	li_picture = 2
+	if al_severity < 11 then li_picture = 1
+	if as_procedure = "" then as_procedure = "<SQL>"
+	as_procedure = as_procedure + " (" + string(al_line) + ")"
+	ls_errno = string(al_number)
 else
-	ls_errno=''
+	ls_errno = ""
 end if
 
 if isValid( this.irs_current ) and al_severity>=0 and sqlca.ib_executing then
 	if this.irs_current.ib_multi_resultsets then
-		this.irs_current.event ue_message(lvi.PictureIndex, lvi.label, ls_errno, as_procedure, as_message )
+		this.irs_current.event ue_message(li_picture, ls_label, ls_errno, as_procedure, as_message )
 		return
 	end if
 end if
+
 //add into standard logger
-index=lv_log.AddItem ( lvi )
-lv_log.SetItem ( index, 2, ls_errno )
-lv_log.SetItem ( index, 3, as_procedure )
-lv_log.SetItem ( index, 4, as_message )
+lv_log.of_log(li_picture, MAX(al_severity, 0), {ls_label, ls_errno, as_procedure, as_message})
 
-if lb_scroll then lv_log.of_ensurevisible(index)
-
-if lvi.PictureIndex=2 then 
-	il_execerror++
+if li_picture = 2 then
+	il_execerror ++
 end if
-if not ib_showlog and lvi.PictureIndex>=this.il_logshowlevel and this.il_logshowlevel>-1 then
-	this.post event ue_men_showlog()
+
+if (not ib_showlog) and (li_picture >= il_logshowlevel) and (il_logshowlevel > -1) then
+	post event ue_men_showlog()
 end if
 
 end subroutine
@@ -2852,4 +2846,5 @@ lv_log.move(0,st_split.y+st_split.height)
 tab_1.setFocus()
 
 end event
+
 

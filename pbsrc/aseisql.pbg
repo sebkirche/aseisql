@@ -111,4 +111,5 @@ Save Format v3.0(19990112)
  "w_browser.srw" "aseisql.pbl";
  "uo_tooltip.sru" "aseisql.pbl";
  "w_progress.srw" "aseisql.pbl";
+ "n_string_builder.sru" "aseisql.pbl";
 @end;
