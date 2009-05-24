@@ -71,6 +71,7 @@ public function integer of_reservedlist (string fa_word)
 protected subroutine of_analysis ()
 protected subroutine of_init (readonly string fa_data)
 public function string of_format (readonly string fa_text)
+public function character of_char (long i)
 end prototypes
 
 protected function integer of_kindofsymb (string fa_symb);/*letter -  return 1*/
@@ -213,11 +214,11 @@ DO WHILE ll_current <= l_textlen
 		ll_notab = 0
 		//IF of_getlex(ll_current) = s_end and ls_char = 'e' THEN ll_notab = 1 else ll_notab = 0
 		IF of_reservedlist(of_getlex(ll_current)) = 1 THEN ll_notab = 1
-		IF ls_char = '/' and c_textin[ll_current+1] = '*' THEN ll_notab = 1
+		IF ls_char = '/' and of_char(ll_current+1) = '*' THEN ll_notab = 1
 		IF ls_char = '*' THEN ll_notab = 1
-		IF ls_char = '-' and c_textin[ll_current+1] = '-' THEN ll_notab = 1
+		IF ls_char = '-' and of_char(ll_current+1) = '-' THEN ll_notab = 1
 		if ll_current+2<=l_textlen then
-			IF ls_char = '/' and c_textin[ll_current+1] = '*' and c_textin[ll_current+2] = '*' THEN lb_multilinecomment = true
+			IF ls_char = '/' and of_char(ll_current+1) = '*' and of_char(ll_current+2) = '*' THEN lb_multilinecomment = true
 		end if
 		IF of_getlex(ll_current) = s_end and Lower(ls_char) = 'e' THEN ll_notab = 2
 		IF lb_multilinecomment = false THEN
@@ -259,6 +260,10 @@ public function string of_format (readonly string fa_text);/*Main function*/
 this.of_init (fa_text) /*Init data*/
 this.of_analysis() /*Anlysis data*/
 return s_textout /*return result*/
+end function
+
+public function character of_char (long i);if i<0 or i>l_textlen then return ''
+return c_textin[i]
 end function
 
 on n_asql.create
