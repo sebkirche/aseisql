@@ -1,0 +1,14 @@
+HA$PBExportHeader$f_confirm.srf
+global type f_confirm from function_object
+end type
+
+forward prototypes
+global function boolean f_confirm (readonly string msg)
+end prototypes
+
+global function boolean f_confirm (readonly string msg);int ret
+ret=MessageBox(app().displayname+" - Confirm",msg,Question!,OKCancel!)
+return ret=1
+
+end function
+
