@@ -632,7 +632,7 @@ uo_editpage e
 if not of_getcurrentedit(e) then return
 open(w_history)
 s=message.stringparm
-if len(s)>0 then e.uo_edit.of_send(e.uo_edit.SCI_REPLACESEL,0,s)
+if len(s)>0 then e.of_replaceselected(s)
 
 end event
 
@@ -2846,5 +2846,4 @@ lv_log.move(0,st_split.y+st_split.height)
 tab_1.setFocus()
 
 end event
-
 
