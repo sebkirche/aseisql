@@ -628,11 +628,19 @@ of_updateview()
 end event
 
 event ue_men_sqlhistory();string s
+uo_tabpage t
 uo_editpage e
-if not of_getcurrentedit(e) then return
-open(w_history)
-s=message.stringparm
-if len(s)>0 then e.of_replaceselected(s)
+
+t=of_getcurrentpage()
+if t.of_iseditor() then
+	//opened from editor
+	e=t
+	openWithParm(w_history,1)
+	s=message.stringparm
+	if len(s)>0 then e.of_replaceselected(s)
+else
+	openWithParm(w_history,0)
+end if
 
 end event
 

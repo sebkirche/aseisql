@@ -73,7 +73,8 @@ destroy(this.plb_1)
 destroy(this.mle_1)
 end on
 
-event open;f_autosize(this)
+event open;if message.doubleparm=0 then cb_ok.hide( )
+f_autosize(this)
 f_centerwindow(this)
 
 
