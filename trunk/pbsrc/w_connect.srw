@@ -843,13 +843,15 @@ string s,uid,srv,db,cs
 i=parent.lv_1.selectedIndex()
 
 if i>0 then
-	parent.lv_1.getItem(i,1,s)
-	of_parse(s,uid,srv,db,cs)
-	parent.lv_1.getItem(i,2,uid)
-	
-	s=of_profilekey(uid,srv,db,cs)
-	cfg.of_deletekey('profiles',s)
-	parent.lv_1.deleteitem(i)
+	if f_confirm("Are you sure you want to delete selected profile?") then
+		parent.lv_1.getItem(i,1,s)
+		of_parse(s,uid,srv,db,cs)
+		parent.lv_1.getItem(i,2,uid)
+		
+		s=of_profilekey(uid,srv,db,cs)
+		cfg.of_deletekey('profiles',s)
+		parent.lv_1.deleteitem(i)
+	end if
 end if
 
 end event
