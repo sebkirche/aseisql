@@ -44,6 +44,7 @@ Save Format v3.0(19990112)
  "d_edit_userlist.srd" "aseisql.pbl";
  "t_column_info.srs" "aseisql.pbl";
  "uo_resultset_text.sru" "aseisql.pbl";
+ "n_string_builder.sru" "aseisql.pbl";
  "f_getfilepart.srf" "aseisql.pbl";
  "n_hashtable.sru" "aseisql.pbl";
  "uo_split_bar.sru" "aseisql.pbl";
@@ -88,6 +89,7 @@ Save Format v3.0(19990112)
  "d_triggers.srd" "aseisql.pbl";
  "f_autosize.srf" "aseisql.pbl";
  "m_pop_edit.srm" "aseisql.pbl";
+ "f_confirm.srf" "aseisql.pbl";
  "m_pop_log.srm" "aseisql.pbl";
  "uo_br_file.sru" "aseisql.pbl";
  "d_columns.srd" "aseisql.pbl";
@@ -111,5 +113,4 @@ Save Format v3.0(19990112)
  "w_browser.srw" "aseisql.pbl";
  "uo_tooltip.sru" "aseisql.pbl";
  "w_progress.srw" "aseisql.pbl";
- "n_string_builder.sru" "aseisql.pbl";
 @end;
