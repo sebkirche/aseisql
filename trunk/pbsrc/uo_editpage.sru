@@ -919,10 +919,8 @@ return true
 
 end function
 
-public subroutine of_replaceselected (readonly string as_text);uo_edit.of_send(uo_edit.SCI_SETUNDOCOLLECTION,0,0)
-
-uo_edit.of_send(uo_edit.SCI_REPLACESEL,0,as_text)
-
+public subroutine of_replaceselected (readonly string as_text);uo_edit.of_send(uo_edit.SCI_REPLACESEL,0,as_text)
+uo_edit.of_send(uo_edit.SCI_SETUNDOCOLLECTION,0,0)
 uo_edit.of_send(uo_edit.SCI_CONVERTEOLS,uo_edit.SC_EOL_CRLF,0)
 uo_edit.of_send(uo_edit.SCI_SETUNDOCOLLECTION,1,0)
 
