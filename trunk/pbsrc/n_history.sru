@@ -18,6 +18,7 @@ public subroutine of_setmru (readonly string s)
 private function integer of_findindex (readonly character mru[], long hash, readonly string s)
 public function string of_getmru ()
 public subroutine of_add (readonly string s)
+public subroutine of_delete (readonly string s)
 end prototypes
 
 public subroutine of_setmru (readonly string s);cfg.of_setstring ( "options", "history.mru", s )
@@ -70,6 +71,31 @@ else
 	mru=c+mru
 	cfg.of_settext('history.'+c,s)
 	cfg.of_setlong('history.'+c,'hash',hash)
+end if
+of_setmru(mru)
+
+end subroutine
+
+public subroutine of_delete (readonly string s);//
+
+string mru
+int index
+long hash,mrulen
+string c
+
+mru=of_getmru()
+hash=len(s)  //our hash - it's just string length
+
+index=of_findindex(mru,hash,s)
+
+if index>0 then
+	c=mid(mru,index,1)
+	//the string is in history
+	//let's modify index
+	mru=left(mru,index - 1)+ mid(mru,index+1)
+	//clear data
+	cfg.of_settext('history.'+c,"")
+	cfg.of_setlong('history.'+c,'hash',0)
 end if
 of_setmru(mru)
 
