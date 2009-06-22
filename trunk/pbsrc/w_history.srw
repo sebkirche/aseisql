@@ -159,7 +159,12 @@ end type
 
 event keydown;//
 long i,count
-if key=KeyDelete! and this.TotalSelected()>0 then
+if key=KeyA! and keyflags=2 /*ctrl*/ then
+	count=this.TotalItems()
+	for i=1 to count
+		this.setState(i,true)
+	next
+elseif key=KeyDelete! and this.TotalSelected()>0 then
 	if f_confirm("Are you sure you want to delete selected history items ?") then
 		count=this.TotalItems()
 		for i=1 to count
