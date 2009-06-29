@@ -2,6 +2,8 @@ HA$PBExportHeader$w_connect.srw
 forward
 global type w_connect from window
 end type
+type st_tooltip from uo_tooltip within w_connect
+end type
 type tab_1 from tab within w_connect
 end type
 type page_connect from userobject within tab_1
@@ -69,7 +71,7 @@ type cb_4 from commandbutton within page_profiles
 end type
 type cb_2 from commandbutton within page_profiles
 end type
-type lv_1 from listview within page_profiles
+type lv_1 from uo_lv within page_profiles
 end type
 type page_profiles from userobject within tab_1
 cb_6 cb_6
@@ -93,8 +95,8 @@ end type
 end forward
 
 global type w_connect from window
-integer width = 1993
-integer height = 1592
+integer width = 2021
+integer height = 1832
 boolean titlebar = true
 string title = "Sybase ASE Logon"
 boolean controlmenu = true
@@ -102,6 +104,7 @@ windowtype windowtype = response!
 long backcolor = 67108864
 event ue_syb_dir pbm_custom05
 event ue_syb_dir_info pbm_custom08
+st_tooltip st_tooltip
 tab_1 tab_1
 end type
 global w_connect w_connect
@@ -114,7 +117,6 @@ end prototypes
 type variables
 
 end variables
-
 forward prototypes
 public function string of_profilekey (readonly string uid, readonly string srv, readonly string db, readonly string cs)
 public function boolean of_profiles (readonly string key2select)
@@ -138,11 +140,11 @@ end event
 
 public function string of_profilekey (readonly string uid, readonly string srv, readonly string db, readonly string cs);string s
 
-s=srv
-if db>'' then s+='.'+db
-if cs>'' then s+='/'+cs
+s=uid+'@'+srv
+if db>'' then s+='/'+db
 
-if uid>'' then s=uid+'@'+s
+if cs>'' then s+='?cs='+cs
+//if uid>'' then s+=' : '+uid
 
 return s
 
@@ -150,10 +152,14 @@ end function
 
 public function boolean of_profiles (readonly string key2select);listview lv
 string keys[]
-string ls_pass,ls_uid,ls_srv,ls_db, ls_cs,s
+string empty[]
+string values[]
+
+string ls_uid,ls_srv,ls_db, ls_cs//,s
+string ls_pwd, ls_enc_pwd, ls_enc_dat
 listviewitem lvi
 
-long i,count,pos,row
+long i,count,pos,row,delme
 
 
 lv=tab_1.page_profiles.lv_1
@@ -164,22 +170,49 @@ cfg.of_getkeys( 'profiles', keys)
 
 count=upperbound(keys)
 for i=1 to count
-	ls_pass=f_crypt(cfg.of_getstring('profiles',keys[i]),false)
-	
-	of_parse(keys[i],ls_uid,ls_srv,ls_db,ls_cs)
+	values=empty
+	if cfg.of_getsarray( 'profiles', keys[i], values) then
+		//new profiles style (v3)
+		//nothing to do
+	else
+		//do an array here
+		//and overwrite the old-style profile
+		
+		of_parse(keys[i],ls_uid,ls_srv,ls_db,ls_cs)
+		values[upperbound(values)+1]='server='+ls_srv
+		values[upperbound(values)+1]='database='+ls_db
+		if ls_cs>'' then values[upperbound(values)+1]='charset='+ls_cs
+		values[upperbound(values)+1]='login='+ls_uid
+		
+		ls_pwd=f_crypt(cfg.of_getstring('profiles',keys[i]),false)
+		
+		if mid(ls_pwd,1,1)=char(1) then
+			//v2 style
+			values[upperbound(values)+1]='password='+f_crypt(mid(ls_pwd,4),true)
+			if mid(ls_pwd,2,1)='1' then values[upperbound(values)+1]='crypt.password=1'
+			if mid(ls_pwd,3,1)='1' then values[upperbound(values)+1]='crypt.data=1'
+		else
+			//v1 style
+			values[upperbound(values)+1]='password='+f_crypt(ls_pwd,true)
+		end if
+		
+		//write the new style profile into config
+		cfg.of_deletekey( 'profiles',keys[i])
+		keys[i]=of_profilekey(ls_uid,ls_srv,ls_db,ls_cs)
+		cfg.of_setsarray('profiles',keys[i],values)
+	end if
 	
 	lvi.pictureindex=1
-	lvi.label=of_profilekey('',ls_srv,ls_db,ls_cs)
-	lvi.data=ls_pass
-	
+	lvi.label=keys[i]
+	lvi.data=values
+	lvi.selected= ( keys[i]=key2select )
 	row=lv.additem( lvi )
-	lv.setitem( row, 2, ls_uid)
 next
 
 //sort list
-lv.Sort ( Ascending! )
+//lv.Sort ( Ascending! )
 
-
+/*
 if key2select>'' then
 	//find and select the item
 	of_parse(key2select,ls_uid,ls_srv,ls_db,ls_cs)
@@ -200,6 +233,7 @@ if key2select>'' then
 
 
 end if
+*/
 
 return true
 
@@ -246,11 +280,14 @@ tab_1.page_info.mle_info.text+=key+':~t'+value+'~r~n'
 end subroutine
 
 on w_connect.create
+this.st_tooltip=create st_tooltip
 this.tab_1=create tab_1
-this.Control[]={this.tab_1}
+this.Control[]={this.st_tooltip,&
+this.tab_1}
 end on
 
 on w_connect.destroy
+destroy(this.st_tooltip)
 destroy(this.tab_1)
 end on
 
@@ -290,6 +327,8 @@ tab_1.page_connect.ddlb_hostname.additem(host)
 tab_1.page_connect.sle_database.text=db
 
 tab_1.page_profiles.lv_1.post resize(tab_1.page_profiles.lv_1.width,tab_1.page_profiles.lv_1.height+5)
+st_tooltip.of_settooltip(tab_1.page_profiles.lv_1)
+st_tooltip.of_setdelay( 2000 )
 
 of_profiles('')
 
@@ -298,6 +337,11 @@ f_centerWindow(this)
 //-------------------
 
 end event
+
+type st_tooltip from uo_tooltip within w_connect
+integer x = 1422
+integer y = 24
+end type
 
 type tab_1 from tab within w_connect
 integer x = 9
@@ -519,33 +563,29 @@ string text = "Save Profile"
 end type
 
 event clicked;string key
-string value
+string values[]
 
-key=of_profilekey(tab_1.page_connect.sle_login.text, &
-	tab_1.page_connect.ddplb_srv.text, &
-	tab_1.page_connect.sle_database.text, &
-	tab_1.page_connect.ddlb_charset.text )
+values[upperbound(values)+1]='server='+tab_1.page_connect.ddplb_srv.text
+values[upperbound(values)+1]='database='+tab_1.page_connect.sle_database.text
+values[upperbound(values)+1]='login='+tab_1.page_connect.sle_login.text
+if tab_1.page_connect.ddlb_charset.text>'' then values[upperbound(values)+1]='charset='+tab_1.page_connect.ddlb_charset.text
+values[upperbound(values)+1]='password='+f_crypt(tab_1.page_connect.sle_pass.text,true)
 
-value=''+char(1)
-if tab_1.page_connect.cbx_pwenc.checked then 
-	value+='1'
-else
-	value+='0'
-end if
-if tab_1.page_connect.cbx_datenc.checked then 
-	value+='1'
-else
-	value+='0'
-end if
+if tab_1.page_connect.cbx_pwenc.checked then values[upperbound(values)+1]='crypt.password=1'
+if tab_1.page_connect.cbx_datenc.checked then values[upperbound(values)+1]='crypt.data=1'
 
-value+=tab_1.page_connect.sle_pass.text
+key=of_profilekey(tab_1.page_connect.sle_login.text, tab_1.page_connect.ddplb_srv.text, &
+		tab_1.page_connect.sle_database.text, tab_1.page_connect.ddlb_charset.text )
 
-value=f_crypt(value,true)
+//prompt here the name of the key
+key=f_prompt('Provide the name of the profile:',key)
+//cancel pressed?
+if key='' then return
 
-cfg.of_setstring( 'profiles', key, value)
-
+//save
+cfg.of_setsarray( 'profiles', key, values)
+//display
 of_profiles(key)
-
 tab_1.selecttab(2)
 
 end event
@@ -845,12 +885,10 @@ i=parent.lv_1.selectedIndex()
 if i>0 then
 	if f_confirm("Are you sure you want to delete selected profile?") then
 		parent.lv_1.getItem(i,1,s)
-		of_parse(s,uid,srv,db,cs)
-		parent.lv_1.getItem(i,2,uid)
-		
-		s=of_profilekey(uid,srv,db,cs)
 		cfg.of_deletekey('profiles',s)
+		parent.lv_1.setRedraw(false)
 		parent.lv_1.deleteitem(i)
+		parent.lv_1.setRedraw(true)
 	end if
 end if
 
@@ -874,28 +912,30 @@ end type
 event clicked;long i
 listviewitem lvi
 string s,uid,srv,db,cs
+string values[]
+n_hashtable hash
+
+
 i=parent.lv_1.selectedIndex()
 
 if i>0 then
 	parent.lv_1.getItem(i,lvi)
-	of_parse(lvi.label,uid,srv,db,cs)
-	parent.lv_1.getItem(i,2,uid)
+	//is_currentkey=lvi.label
 	
-	tab_1.page_connect.sle_login.text=uid
+	hash=create n_hashtable
+	values=lvi.data
+	hash.of_init(values)
 	
-	if mid(lvi.data,1,1)=char(1) then
-		tab_1.page_connect.sle_pass.text=mid(lvi.data,4)
-		tab_1.page_connect.cbx_pwenc.checked=mid(lvi.data,2,1)='1'
-		tab_1.page_connect.cbx_datenc.checked=mid(lvi.data,3,1)='1'
-	else
-		tab_1.page_connect.sle_pass.text=lvi.data
-		tab_1.page_connect.cbx_pwenc.checked=false
-		tab_1.page_connect.cbx_datenc.checked=false
-	end if
+	tab_1.page_connect.sle_login.text=hash.of_get( 'login', '')
+	tab_1.page_connect.sle_pass.text=f_crypt(hash.of_get( 'password', ''),false)
+	tab_1.page_connect.cbx_pwenc.checked=hash.of_get( 'crypt.password', '')='1'
+	tab_1.page_connect.cbx_datenc.checked=hash.of_get( 'crypt.data', '')='1'
+	tab_1.page_connect.sle_database.text=hash.of_get( 'database', '')
+	tab_1.page_connect.ddplb_srv.selectitem( hash.of_get( 'server', ''), 0)
+	tab_1.page_connect.ddlb_charset.text=hash.of_get( 'charset', '')
 	
-	tab_1.page_connect.sle_database.text=db
-	tab_1.page_connect.ddplb_srv.selectitem( srv, 0)
-	tab_1.page_connect.ddlb_charset.text=cs
+	destroy hash
+	
 	tab_1.selecttab(1)
 end if
 
@@ -944,27 +984,17 @@ end if
 
 end event
 
-type lv_1 from listview within page_profiles
+type lv_1 from uo_lv within page_profiles
 event ue_resize pbm_size
+event ue_needtooltip ( ref string s )
 integer x = 18
 integer y = 36
 integer width = 1294
 integer height = 700
 integer taborder = 10
-integer textsize = -8
-integer weight = 400
-fontcharset fontcharset = russiancharset!
-fontpitch fontpitch = variable!
-fontfamily fontfamily = swiss!
-string facename = "Microsoft Sans Serif"
-long textcolor = 33554432
-borderstyle borderstyle = stylelowered!
-boolean hideselection = false
-boolean fullrowselect = true
-listviewview view = listviewreport!
-long largepicturemaskcolor = 536870912
-long smallpicturemaskcolor = 536870912
-long statepicturemaskcolor = 536870912
+boolean autoarrange = true
+boolean editlabels = true
+grsorttype sorttype = ascending!
 end type
 
 event ue_resize;int ww=4
@@ -980,8 +1010,29 @@ send(handle(this),4096+30/*LVM_SETCOLUMNWIDTH*/,count - 1,UnitsToPixels(max(10,n
 
 end event
 
-event constructor;this.addcolumn( 'Server', Left!, 850)
-this.addcolumn( 'Login', Left!, 400)
+event ue_needtooltip(ref string s);long row,i,count
+listviewitem lvi
+string values[]
+
+row=this.of_getitematpointer()
+s=""
+if this.GetItem ( row, lvi )=1 then
+	values=lvi.data
+	count=upperbound(values)
+	for i=1 to count
+		if left(values[i],9)<>'password=' then
+			if s<>'' then s+='~r~n'
+			s+=values[i]
+		end if
+	next
+else
+	s="not found item "+string(row)
+end if
+
+end event
+
+event constructor;this.addcolumn( 'Profile', Left!, 1250)
+//this.addcolumn( 'Login', Left!, 400)
 
 end event
 
@@ -992,6 +1043,15 @@ end if
 end event
 
 event doubleclicked;parent.cb_5.post event clicked()
+
+end event
+
+event endlabeledit;call super::endlabeledit;listviewitem lvi
+
+if this.getItem(index,lvi)=1 then
+	cfg.of_deletekey( 'profiles',lvi.label)
+	cfg.of_setsarray('profiles',newlabel,lvi.data)
+end if
 
 end event
 

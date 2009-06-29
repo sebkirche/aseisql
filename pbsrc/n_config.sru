@@ -59,6 +59,8 @@ public function boolean of_deletekey (readonly string section, readonly string k
 public function boolean of_toolbar_save (readonly window w)
 public function boolean of_toolbar_restore (readonly window w)
 public function long of_gettoolbars (readonly menu m, ref integer ai_toolbars[])
+public function boolean of_getsarray (string section, string key, ref string value[])
+public function integer of_setsarray (string section, string key, string value[])
 end prototypes
 
 public function boolean  of_getboolean (string section, string key, boolean default);if lower( of_getstring(section,key,string(default)))=lower(string(true)) then return(true)
@@ -358,6 +360,18 @@ if isValid(m) then
 	next
 end if
 return upperbound(ai_toolbars)
+
+end function
+
+public function boolean of_getsarray (string section, string key, ref string value[]);//return(profilestring(inifilename,section,key,default))
+
+if RegistryGet ( RegKey+section, key, RegMultiString!, value )=1 then return true
+return false
+
+
+end function
+
+public function integer of_setsarray (string section, string key, string value[]);return RegistrySet ( RegKey+section, key, RegMultiString!, value )
 
 end function
 
