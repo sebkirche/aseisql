@@ -4,6 +4,7 @@ Save Format v3.0(19990112)
 @end;
 @begin Objects
  "f_crypt.srf" "aseisql.pbl";
+ "f_prompt.srf" "aseisql.pbl";
  "f_trim.srf" "aseisql.pbl";
  "uo_tablist.sru" "aseisql.pbl";
  "w_options.srw" "aseisql.pbl";
@@ -21,6 +22,7 @@ Save Format v3.0(19990112)
  "w_history.srw" "aseisql.pbl";
  "n_asql.sru" "aseisql.pbl";
  "w_froot.srw" "aseisql.pbl";
+ "w_prompt.srw" "aseisql.pbl";
  "uo_fonts.sru" "aseisql.pbl";
  "w_export.srw" "aseisql.pbl";
  "w_main.srw" "aseisql.pbl";
