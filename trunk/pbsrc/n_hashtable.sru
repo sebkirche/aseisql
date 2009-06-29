@@ -62,6 +62,7 @@ public function boolean of_keyexists (readonly any aa_key)
 public function boolean of_rehash ()
 public function boolean of_rehash (readonly boolean ab_optimize)
 public subroutine of_set (readonly any aa_key, readonly any aa_value)
+public function boolean of_init (readonly string values[])
 end prototypes
 
 event uef_log();/*
@@ -955,6 +956,49 @@ CHOOSE CASE ist_elements[ll_index].flag
 		ist_elements[ll_index].value = aa_value
 END CHOOSE
 end subroutine
+
+public function boolean of_init (readonly string values[]);/*********************************************************************
+<AUTH>LC - Laurent CHASTEL - FM Logistic - FM2i - Entrep$$HEX1$$4404$$ENDHEX$$t Opale 2000 </AUTH>
+
+<DESC>Initialize with 75 elements
+     <TODO>
+     </TODO>
+</DESC>
+  
+<ACCESS>public </ACCESS>
+
+<USAGE>Boolean [n_hashtable].of_Init()</USAGE>
+
+<ARGS></ARGS>
+
+<RETURN>Boolean</RETURN>
+
+Date :  25/03/2003
+	
+Log		:
+...Date.....Auteur..................Objet............................
+_____________________________________________________________________
+
+********************************************************************/
+long i,count,pos
+string key, value
+
+count=upperbound(values)
+of_init(count+1)
+
+//initialize hash from string array
+for i=1 to count
+	if char(values[i])=';' then continue
+	pos=pos(values[i],'=')
+	if pos>0 then
+		key=trim(mid(values[i],1,pos -1))
+		value=trim(mid(values[i],pos +1))
+		this.of_set(key,value)
+	end if
+next
+return true
+
+end function
 
 on n_hashtable.create
 call super::create
