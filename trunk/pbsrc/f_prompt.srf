@@ -1,0 +1,23 @@
+HA$PBExportHeader$f_prompt.srf
+global type f_prompt from function_object
+end type
+
+forward prototypes
+global function string f_prompt (readonly string as_text, readonly string default)
+end prototypes
+
+global function string f_prompt (readonly string as_text, readonly string default);string s
+n_hashtable hash
+hash=create n_hashtable
+hash.of_init(3)
+hash.of_set('text',as_text)
+hash.of_set('value',default)
+
+openWithParm(w_prompt,hash)
+s=message.stringparm
+
+destroy hash
+return s
+
+end function
+
