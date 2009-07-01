@@ -900,7 +900,7 @@ while @@sqlstatus=0 begin
 			select object_id('%PARM:Object name%'),6,@i,'   ) '+@suffix
 	end
 	
-	select @i=@i+1
+	select @i=max(id_order)+1 from #tmp where id_obj=object_id('block_b') and id_part=6
 	fetch cprotect into @prefix, @suffix, @columns
 end
 close cprotect
