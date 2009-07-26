@@ -5,7 +5,7 @@ Name "ASE ISQL"
 OutFile "AseIsqlSetup.exe"
 
 SetCompressor lzma
-Icon "..\pbsrc\img\aseisql.ico"
+Icon "install.ico"
 
 ; The default installation directory
 InstallDir $PROGRAMFILES\AseIsql
