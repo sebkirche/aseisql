@@ -62,7 +62,8 @@ string is_obj_database
 string is_obj_owner
 string is_obj_name
 long il_clone=0
-privatewrite string is_object_footer=''
+privatewrite string is_object_footer='null'
+privatewrite string is_object_header='null'
 
 privatewrite long il_italic=33554432
 privatewrite long il_bold  =16777216
@@ -120,7 +121,6 @@ long il_hotlink_len=-1
 string is_hotlink_text=''
 
 end variables
-
 forward prototypes
 public subroutine of_print ()
 public subroutine of_setfocus ()
@@ -152,6 +152,7 @@ public subroutine of_setobjectfooter (readonly string s)
 public function string of_getobjfooter (boolean ab_addgo)
 public function boolean of_open (string fname, long encoding)
 public subroutine of_replaceselected (readonly string as_text)
+public subroutine of_setobjectheader (readonly string s)
 end prototypes
 
 event resize;this.uo_edit.resize(newwidth,newheight)
@@ -371,28 +372,11 @@ return true
 
 end function
 
-public function string of_getobjheader ();string s
-CHOOSE CASE true
-	CASE il_pagetype=typeEditObject and il_objtype=gn_sqlmenu.typeProcedure
-		s="use "+is_obj_database+&
-		"~r~ngo~r~n"+&
-		"if exists(select 1~r~n"+&
-		"		from sysobjects~r~n"+&
-		"		where id=object_id('"+is_obj_owner+"."+is_obj_name+"')~r~n"+&
-		"		and type='P')~r~n"+&
-		"	drop procedure "+is_obj_owner+"."+is_obj_name+"~r~n"+&
-		"go~r~n"
-	CASE il_pagetype=typeEditObject and il_objtype=gn_sqlmenu.typeView
-		s="use "+is_obj_database+&
-		"~r~ngo~r~n"+&
-		"if exists(select 1~r~n"+&
-		"		from sysobjects~r~n"+&
-		"		where id=object_id('"+is_obj_owner+"."+is_obj_name+"')~r~n"+&
-		"		and type='V')~r~n"+&
-		"	drop view "+is_obj_owner+"."+is_obj_name+"~r~n"+&
-		"go~r~n"
-END CHOOSE
-return s
+public function string of_getobjheader ();if is_object_header='null' then
+	is_object_header=gn_sqlmenu.of_getobjectheader( il_objtype, is_obj_database, is_obj_owner, is_obj_name)
+end if
+
+return is_object_header
 
 end function
 
@@ -884,22 +868,12 @@ end subroutine
 
 public function string of_getobjfooter (boolean ab_addgo);string s
 
-if is_object_footer<>'' then 
-	s=is_object_footer
-else
-	CHOOSE CASE true
-		CASE il_pagetype=typeEditObject and il_objtype=gn_sqlmenu.typeProcedure
-			s=''
-		CASE il_pagetype=typeEditObject and il_objtype=gn_sqlmenu.typeView
-			s=''
-		CASE il_pagetype=typeEditObject and il_objtype=gn_sqlmenu.typeTrigger
-			s=''
-		CASE ELSE
-			return ''
-	END CHOOSE
+if is_object_footer='null' then 
+	is_object_footer=gn_sqlmenu.of_getobjectfooter( this.is_obj_owner+'.'+this.is_obj_name )
 end if
-if ab_addgo then s='~r~ngo~r~n'+s+'~r~ngo~r~n'
-return s
+
+if ab_addgo and is_object_footer<>'' then return '~r~ngo~r~n'+is_object_footer+'~r~ngo~r~n'
+return is_object_footer
 
 end function
 
@@ -923,6 +897,10 @@ public subroutine of_replaceselected (readonly string as_text);uo_edit.of_send(u
 uo_edit.of_send(uo_edit.SCI_SETUNDOCOLLECTION,0,0)
 uo_edit.of_send(uo_edit.SCI_CONVERTEOLS,uo_edit.SC_EOL_CRLF,0)
 uo_edit.of_send(uo_edit.SCI_SETUNDOCOLLECTION,1,0)
+
+end subroutine
+
+public subroutine of_setobjectheader (readonly string s);is_object_header=s
 
 end subroutine
 
@@ -1378,5 +1356,4 @@ end on
 event timer;this.stop()
 parent.triggerevent('scn_dwellchar')
 end event
-
 

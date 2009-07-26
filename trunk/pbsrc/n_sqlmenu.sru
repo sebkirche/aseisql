@@ -94,6 +94,8 @@ private function m_dynamic of_additem (readonly menu m, readonly string as_text,
 public function string of_getobjectfooter (readonly string as_name)
 public function string of_getmenustub (readonly string as_menuname, readonly string as_param, readonly string as_value)
 public function boolean of_addstubsmenu (readonly menu m, readonly integer ai_type, readonly string as_parm, readonly string as_value)
+public function string of_typename (integer al_type)
+public function string of_getobjectheader (readonly long al_type, readonly string as_database, readonly string as_owner, readonly string as_name)
 end prototypes
 
 event ue_copy();if ii_type=typeStubs then
@@ -928,6 +930,42 @@ if h<>-1 then
 end if
 
 return true
+
+end function
+
+public function string of_typename (integer al_type);string item
+
+CHOOSE CASE al_type
+	CASE typeUserTable,typeSystemTable
+		item='Table'
+	CASE typeProcedure
+		item='Procedure'
+	CASE typeTrigger
+		item='Trigger'
+	CASE typeView
+		item='View'
+END CHOOSE
+
+return item
+
+end function
+
+public function string of_getobjectheader (readonly long al_type, readonly string as_database, readonly string as_owner, readonly string as_name);long h
+treeviewitem tvi
+uo_dynamic_tv tv
+string s
+
+
+//openWithParm(w_browser,'hide')
+tv=w_browser.tab_1.page_st.tv_1
+h=tv.of_findChildByName(tv.FindItem(rootTreeItem!,0),'Menu',tvi)
+if h=-1 then return ''
+
+h=tv.of_findChildByName(h,of_typename(al_type)+' header',tvi)
+if h=-1 then return ''
+
+s=of_macro(tvi.data,'Object name~t'+as_owner+'.'+as_name+'~r~nDatabase~t'+as_database,'')
+return s
 
 end function
 
