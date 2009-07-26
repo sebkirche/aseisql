@@ -1027,15 +1027,21 @@ select oref.name from sysreferences r,sysobjects oref
 --<Menu\sp_depends>--
 --EX: U,S,V,P,TR
 exec sp_depends '%PARM:Object name%'
---<Menu\Procedure Rights>--
---EX: P
+--<Menu\Object rights>--
+--EX: S,U,V,P
 select case when p.protecttype<2 then 'grant' else 'revoke' end + 
-		' execute on %PARM:Object name% ' +
+		' ' + case
+		when action = 224 then 'execute'
+		when action = 193 then 'select'
+		when action = 195 then 'insert'
+		when action = 196 then 'delete'
+		when action = 197 then 'update'
+		end + ' on %PARM:Object name% ' +
 		case when p.protecttype<2 then 'to' else 'from' end +' '+user_name(uid)+
 		case when p.protecttype=0 then ' with grant option ' else ' ' end +
-		'/*'+user_name(grantor)+'*/' command
+		'/*'+user_name(grantor)+'*/' + char(13) + char(10) command
 	from sysprotects p
-	where p.action in (224)
+	where p.action in (193,195,196,197,224)
 	and p.protecttype in (0,1,2)
 	and id=object_id('%PARM:Object name%')
 --<Menu\Type info>--

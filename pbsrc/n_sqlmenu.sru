@@ -863,7 +863,7 @@ tv=w_browser.tab_1.page_st.tv_1
 h=tv.of_findChildByName(tv.FindItem(rootTreeItem!,0),'Menu',tvi)
 if h=-1 then return ''
 
-h=tv.of_findChildByName(h,'Procedure Rights',tvi)
+h=tv.of_findChildByName(h,'Object rights',tvi)
 if h=-1 then return ''
 
 s=of_macro(tvi.data,'Object name~t'+as_name,'')

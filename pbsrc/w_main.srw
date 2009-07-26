@@ -377,7 +377,7 @@ event ue_men_connect();if keydown(KeyControl!) and sqlca.servername>'' and sqlca
 end if
 //
 if sqlca.of_isconnected() then
-	if MessageBox(app().displayname, 'You are already connected to server "'+sqlca.ServerName+'"~r~n Do you want to disconnect now?',Question!,YesNo!)=2 then return
+	// if MessageBox(app().displayname, 'You are already connected to server "'+sqlca.ServerName+'"~r~n Do you want to disconnect now?',Question!,YesNo!)=2 then return
 	this.triggerEvent('ue_men_disconnect')
 end if
 
@@ -1814,9 +1814,7 @@ e.is_obj_name=ls_name
 e.il_clone=ver
 
 e.of_settext( gn_sqlmenu.of_proctext(as_name) )
-if al_objtype=gn_sqlmenu.typeProcedure then
-	e.of_setobjectfooter(gn_sqlmenu.of_getobjectfooter(as_name))
-end if
+e.of_setobjectfooter(gn_sqlmenu.of_getobjectfooter(as_name))
 if lb_activate then tab_1.selectTab(e)
 
 return true
@@ -2854,4 +2852,5 @@ lv_log.move(0,st_split.y+st_split.height)
 tab_1.setFocus()
 
 end event
+
 
