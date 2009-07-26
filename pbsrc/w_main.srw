@@ -1817,7 +1817,8 @@ e.is_obj_name=ls_name
 e.il_clone=ver
 
 e.of_settext( gn_sqlmenu.of_proctext(as_name) )
-e.of_setobjectfooter(gn_sqlmenu.of_getobjectfooter(as_name))
+
+//e.of_setobjectfooter(gn_sqlmenu.of_getobjectfooter(as_name)) //moved to uo_editpage.of_getobjfooter()
 if lb_activate then tab_1.selectTab(e)
 
 return true
