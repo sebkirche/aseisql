@@ -889,7 +889,7 @@ if is_object_footer<>'' then
 else
 	CHOOSE CASE true
 		CASE il_pagetype=typeEditObject and il_objtype=gn_sqlmenu.typeProcedure
-			s="grant exec on "+is_obj_owner+"."+is_obj_name+" to public"
+			s=''
 		CASE il_pagetype=typeEditObject and il_objtype=gn_sqlmenu.typeView
 			s=''
 		CASE il_pagetype=typeEditObject and il_objtype=gn_sqlmenu.typeTrigger
@@ -1378,4 +1378,5 @@ end on
 event timer;this.stop()
 parent.triggerevent('scn_dwellchar')
 end event
+
 
