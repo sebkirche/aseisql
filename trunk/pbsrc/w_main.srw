@@ -378,7 +378,9 @@ event ue_men_connect();if keydown(KeyControl!) and sqlca.servername>'' and sqlca
 end if
 //
 if sqlca.of_isconnected() then
-	// if MessageBox(app().displayname, 'You are already connected to server "'+sqlca.ServerName+'"~r~n Do you want to disconnect now?',Question!,YesNo!)=2 then return
+	if cfg.ib_confirm_disconnect then
+		if MessageBox(app().displayname, 'You are already connected to server "'+sqlca.ServerName+'"~r~n Do you want to disconnect now?',Question!,YesNo!)=2 then return
+	end if
 	this.triggerEvent('ue_men_disconnect')
 end if
 

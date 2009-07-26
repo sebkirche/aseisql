@@ -65,8 +65,10 @@ this.OpenUserObject ( uo_opt[upperbound(uo_opt)+1], 'uo_option_resultset', 512, 
 this.OpenUserObject ( uo_opt[upperbound(uo_opt)+1], 'uo_option_tab', 512, 16 )
 this.OpenUserObject ( uo_opt[upperbound(uo_opt)+1], 'uo_option_log', 512, 16 )
 this.OpenUserObject ( uo_opt[upperbound(uo_opt)+1], 'uo_option_browse', 512, 16 )
+this.OpenUserObject ( uo_opt[upperbound(uo_opt)+1], 'uo_option_history', 512, 16 )
 this.OpenUserObject ( uo_opt[upperbound(uo_opt)+1], 'uo_option_file', 512, 16 )
 this.OpenUserObject ( uo_opt[upperbound(uo_opt)+1], 'uo_option_debug', 512, 16 )
+this.OpenUserObject ( uo_opt[upperbound(uo_opt)+1], 'uo_option_confirmation', 512, 16 )
 
 for i=1 to upperbound(uo_opt)
 	uo_opt[i].event ue_init()
@@ -122,6 +124,9 @@ event clicked;int i
 for i=1 to upperbound(uo_opt)
 	uo_opt[i].of_apply()
 next
+
+//store options. so no need to do that on each page
+cfg.of_options( true )
 
 this.enabled=false
 cb_ok.enabled=false

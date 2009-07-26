@@ -48,6 +48,18 @@ string mru
 int index
 long hash,mrulen
 string c
+int f
+
+if cfg.ib_history_log then
+	//cfg.of_getoption(cfg.is_UnixEOL)
+	//DM: i think we should not check EOL type because all sql in history in windows mode.
+	f=FileOpen(cfg.is_history_log_file, TextMode!, Write!, LockWrite!, Append!, EncodingANSI!)
+	FileWriteEx(f, ' ------------------------- '+String(Today(), "yyyy-mm-dd hh:mm:ss")+' ------------------------- ')
+	FileWriteEx(f, '~r~n')
+	FileWriteEx(f, s)
+	FileWriteEx(f, '~r~n~r~n')
+	FileClose(f)
+end if
 
 mru=of_getmru()
 hash=len(s)  //our hash - it's just string length
