@@ -263,6 +263,7 @@ public function boolean of_workspacesave (readonly string as_file)
 public function boolean of_openfile (readonly string as_filename, boolean ab_clone, long encoding)
 public subroutine of_log (long al_number, long al_severity, string as_procedure, long al_line, readonly string as_message)
 public subroutine of_log (readonly string as_msg)
+public subroutine of_setcolor (string c)
 end prototypes
 
 event ue_sybexec_resultset;uo_resultset none //to make unvalid current resultset
@@ -2399,6 +2400,10 @@ public subroutine of_log (readonly string as_msg);of_log(0,-1,'',0,as_msg)
 
 end subroutine
 
+public subroutine of_setcolor (string c);this.icon='img\aseisql-'+c+'.ico'
+
+end subroutine
+
 on w_main.create
 if this.MenuName = "m_main" then this.MenuID = create m_main
 this.mdi_1=create mdi_1
@@ -2852,5 +2857,4 @@ lv_log.move(0,st_split.y+st_split.height)
 tab_1.setFocus()
 
 end event
-
 
