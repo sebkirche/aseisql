@@ -51,8 +51,11 @@ public long il_resultset_font_size=8
 
 public long il_format_datetime=1
 
-end variables
+public boolean ib_confirm_disconnect=true
+public boolean ib_history_log=false
+public string is_history_log_file=''
 
+end variables
 forward prototypes
 public subroutine of_setoption (readonly string name, boolean b)
 public function boolean of_getoption (readonly string name)
@@ -98,6 +101,16 @@ end function
 public subroutine of_options (boolean ab_store);//loads or stores options
 //public boolean ib_debug_log
 //public boolean ib_debug_correctrow
+
+of_options(ab_store,'history.log',ib_history_log)
+of_options(ab_store,'history.log.file',is_history_log_file)
+
+if not ab_store and is_history_log_file='' then
+	RegistryGet('HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders','Personal',is_history_log_file)
+	is_history_log_file+='\aseisql-history.sql'
+end if
+
+of_options(ab_store,'confirm.disconnect',ib_confirm_disconnect)
 
 of_options(ab_store,'debug.log',ib_debug_log)
 of_options(ab_store,'debug.correct.row',ib_debug_correctrow)
