@@ -32,6 +32,7 @@ Save Format v3.0(19990112)
  "uo_resultset_grid.sru" "aseisql.pbl";
  "uo_option_debug.sru" "aseisql.pbl";
  "d_export_tables.srd" "aseisql.pbl";
+ "uo_option_confirmation.sru" "aseisql.pbl";
  "d_export_info.srd" "aseisql.pbl";
  "uo_br_database.sru" "aseisql.pbl";
  "f_remove_space.srf" "aseisql.pbl";
@@ -77,6 +78,7 @@ Save Format v3.0(19990112)
  "f_converteol.srf" "aseisql.pbl";
  "uo_tabpage.sru" "aseisql.pbl";
  "uv_collateview.sru" "aseisql.pbl";
+ "uo_option_history.sru" "aseisql.pbl";
  "d_procexec.srd" "aseisql.pbl";
  "w_data_edit.srw" "aseisql.pbl";
  "m_dynamic.srm" "aseisql.pbl";
