@@ -1027,6 +1027,26 @@ select oref.name from sysreferences r,sysobjects oref
 --<Menu\sp_depends>--
 --EX: U,S,V,P,TR
 exec sp_depends '%PARM:Object name%'
+--<Menu\Procedure header>--
+use %PARM:Database%
+go
+if exists(select 1
+		from sysobjects
+		where id=object_id('%PARM:Object name%')
+		and type='P')
+	drop procedure %PARM:Object name%
+go
+
+--<Menu\View header>--
+use %PARM:Database%
+go
+if exists(select 1
+		from sysobjects
+		where id=object_id('%PARM:Object name%')
+		and type='V')
+	drop view %PARM:Object name%
+go
+
 --<Menu\Object rights>--
 --EX: S,U,V,P
 select case when p.protecttype<2 then 'grant' else 'revoke' end + 
