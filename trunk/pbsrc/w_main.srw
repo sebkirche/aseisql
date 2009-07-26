@@ -2400,7 +2400,12 @@ public subroutine of_log (readonly string as_msg);of_log(0,-1,'',0,as_msg)
 
 end subroutine
 
-public subroutine of_setcolor (string c);this.icon='img\aseisql-'+c+'.ico'
+public subroutine of_setcolor (string c);c=lower(c)
+if c='' or c='default' then 
+	this.icon=''
+else
+	this.icon='img\aseisql-'+c+'.ico'
+end if
 
 end subroutine
 

@@ -8,6 +8,10 @@ type tab_1 from tab within w_connect
 end type
 type page_connect from userobject within tab_1
 end type
+type ddplb_color from dropdownpicturelistbox within page_connect
+end type
+type st_2 from statictext within page_connect
+end type
 type cbx_datenc from checkbox within page_connect
 end type
 type cbx_pwenc from checkbox within page_connect
@@ -43,6 +47,8 @@ end type
 type ddlb_charset from dropdownlistbox within page_connect
 end type
 type page_connect from userobject within tab_1
+ddplb_color ddplb_color
+st_2 st_2
 cbx_datenc cbx_datenc
 cbx_pwenc cbx_pwenc
 ddlb_hostname ddlb_hostname
@@ -117,6 +123,7 @@ end prototypes
 type variables
 
 end variables
+
 forward prototypes
 public function string of_profilekey (readonly string uid, readonly string srv, readonly string db, readonly string cs)
 public function boolean of_profiles (readonly string key2select)
@@ -158,6 +165,7 @@ string values[]
 string ls_uid,ls_srv,ls_db, ls_cs//,s
 string ls_pwd, ls_enc_pwd, ls_enc_dat
 listviewitem lvi
+n_hashtable hash
 
 long i,count,pos,row,delme
 
@@ -201,8 +209,19 @@ for i=1 to count
 		keys[i]=of_profilekey(ls_uid,ls_srv,ls_db,ls_cs)
 		cfg.of_setsarray('profiles',keys[i],values)
 	end if
-	
+
 	lvi.pictureindex=1
+
+	hash=create n_hashtable
+	hash.of_init(values)
+	//if more colors required, let's find/add picture in the listview
+	choose case hash.of_get( 'color', '')
+		case 'green'
+			lvi.pictureindex=2
+		case 'yellow'
+			lvi.pictureindex=3
+	end choose
+
 	lvi.label=keys[i]
 	lvi.data=values
 	lvi.selected= ( keys[i]=key2select )
@@ -347,7 +366,7 @@ type tab_1 from tab within w_connect
 integer x = 9
 integer y = 8
 integer width = 1769
-integer height = 928
+integer height = 1052
 integer taborder = 10
 integer textsize = -8
 integer weight = 400
@@ -394,12 +413,14 @@ event destroy ( )
 integer x = 18
 integer y = 112
 integer width = 1733
-integer height = 800
+integer height = 924
 long backcolor = 67108864
 string text = "Connection"
 long tabtextcolor = 33554432
 string picturename = "img\connect.ico"
 long picturemaskcolor = 536870912
+ddplb_color ddplb_color
+st_2 st_2
 cbx_datenc cbx_datenc
 cbx_pwenc cbx_pwenc
 ddlb_hostname ddlb_hostname
@@ -420,6 +441,8 @@ ddlb_charset ddlb_charset
 end type
 
 on page_connect.create
+this.ddplb_color=create ddplb_color
+this.st_2=create st_2
 this.cbx_datenc=create cbx_datenc
 this.cbx_pwenc=create cbx_pwenc
 this.ddlb_hostname=create ddlb_hostname
@@ -437,7 +460,9 @@ this.st_7=create st_7
 this.sle_database=create sle_database
 this.st_6=create st_6
 this.ddlb_charset=create ddlb_charset
-this.Control[]={this.cbx_datenc,&
+this.Control[]={this.ddplb_color,&
+this.st_2,&
+this.cbx_datenc,&
 this.cbx_pwenc,&
 this.ddlb_hostname,&
 this.st_1,&
@@ -457,6 +482,8 @@ this.ddlb_charset}
 end on
 
 on page_connect.destroy
+destroy(this.ddplb_color)
+destroy(this.st_2)
 destroy(this.cbx_datenc)
 destroy(this.cbx_pwenc)
 destroy(this.ddlb_hostname)
@@ -476,10 +503,52 @@ destroy(this.st_6)
 destroy(this.ddlb_charset)
 end on
 
+type ddplb_color from dropdownpicturelistbox within page_connect
+integer x = 347
+integer y = 716
+integer width = 965
+integer height = 324
+integer taborder = 60
+integer textsize = -8
+integer weight = 400
+fontcharset fontcharset = russiancharset!
+fontpitch fontpitch = variable!
+fontfamily fontfamily = swiss!
+string facename = "Microsoft Sans Serif"
+long textcolor = 33554432
+string item[] = {"default","green","yellow"}
+borderstyle borderstyle = stylelowered!
+integer itempictureindex[] = {1,2,3}
+string picturename[] = {"img\aseisql.ico","img\aseisql-green.ico","img\aseisql-yellow.ico"}
+integer picturewidth = 16
+integer pictureheight = 16
+long picturemaskcolor = 536870912
+end type
+
+event constructor;this.selectitem( 1 )
+
+end event
+
+type st_2 from statictext within page_connect
+integer x = 32
+integer y = 732
+integer width = 293
+integer height = 52
+integer textsize = -8
+integer weight = 400
+fontcharset fontcharset = russiancharset!
+fontpitch fontpitch = variable!
+fontfamily fontfamily = swiss!
+string facename = "Microsoft Sans Serif"
+long textcolor = 33554432
+long backcolor = 67108864
+string text = "Color :"
+boolean focusrectangle = false
+end type
+
 type cbx_datenc from checkbox within page_connect
-boolean visible = false
 integer x = 905
-integer y = 720
+integer y = 836
 integer width = 411
 integer height = 64
 integer taborder = 92
@@ -496,7 +565,7 @@ end type
 
 type cbx_pwenc from checkbox within page_connect
 integer x = 347
-integer y = 720
+integer y = 836
 integer width = 553
 integer height = 64
 integer taborder = 91
@@ -513,7 +582,7 @@ end type
 
 type ddlb_hostname from dropdownlistbox within page_connect
 integer x = 347
-integer y = 612
+integer y = 608
 integer width = 965
 integer height = 692
 integer taborder = 90
@@ -532,7 +601,7 @@ end type
 
 type st_1 from statictext within page_connect
 integer x = 32
-integer y = 620
+integer y = 612
 integer width = 293
 integer height = 60
 integer textsize = -8
@@ -570,6 +639,8 @@ values[upperbound(values)+1]='database='+tab_1.page_connect.sle_database.text
 values[upperbound(values)+1]='login='+tab_1.page_connect.sle_login.text
 if tab_1.page_connect.ddlb_charset.text>'' then values[upperbound(values)+1]='charset='+tab_1.page_connect.ddlb_charset.text
 values[upperbound(values)+1]='password='+f_crypt(tab_1.page_connect.sle_pass.text,true)
+//color
+values[upperbound(values)+1]='color='+tab_1.page_connect.ddplb_color.text
 
 if tab_1.page_connect.cbx_pwenc.checked then values[upperbound(values)+1]='crypt.password=1'
 if tab_1.page_connect.cbx_datenc.checked then values[upperbound(values)+1]='crypt.data=1'
@@ -634,6 +705,8 @@ if not sqlca.of_connect(tab_1.page_connect.ddplb_srv.text, tab_1.page_connect.sl
 		tab_1.page_connect.sle_login.text, tab_1.page_connect.sle_pass.text, tab_1.page_connect.ddlb_charset.text,&
 		cfg.of_getHostName(), &
 		tab_1.page_connect.cbx_pwenc.checked,tab_1.page_connect.cbx_datenc.checked) then return 0
+w_main.of_setcolor(tab_1.page_connect.ddplb_color.text)
+//new function of_connect must be created with just one parameter hashtable
 
 cfg.of_setString('connect','server',tab_1.page_connect.ddplb_srv.text)
 cfg.of_setString('connect','login',tab_1.page_connect.sle_login.text)
@@ -757,7 +830,7 @@ end type
 
 type st_7 from statictext within page_connect
 integer x = 37
-integer y = 272
+integer y = 276
 integer width = 293
 integer height = 60
 integer textsize = -8
@@ -828,7 +901,7 @@ type page_profiles from userobject within tab_1
 integer x = 18
 integer y = 112
 integer width = 1733
-integer height = 800
+integer height = 924
 long backcolor = 67108864
 string text = "Profiles"
 long tabtextcolor = 33554432
@@ -934,6 +1007,8 @@ if i>0 then
 	tab_1.page_connect.ddplb_srv.selectitem( hash.of_get( 'server', ''), 0)
 	tab_1.page_connect.ddlb_charset.text=hash.of_get( 'charset', '')
 	
+	tab_1.page_connect.ddplb_color.text=hash.of_get( 'color', 'default')
+	
 	destroy hash
 	
 	tab_1.selecttab(1)
@@ -990,11 +1065,14 @@ event ue_needtooltip ( ref string s )
 integer x = 18
 integer y = 36
 integer width = 1294
-integer height = 700
+integer height = 856
 integer taborder = 10
 boolean autoarrange = true
 boolean editlabels = true
 grsorttype sorttype = ascending!
+string smallpicturename[] = {"img\aseisql.ico","img\aseisql-green.ico","img\aseisql-yellow.ico"}
+integer smallpicturewidth = 16
+integer smallpictureheight = 16
 end type
 
 event ue_resize;int ww=4
@@ -1059,7 +1137,7 @@ type page_info from userobject within tab_1
 integer x = 18
 integer y = 112
 integer width = 1733
-integer height = 800
+integer height = 924
 long backcolor = 67108864
 string text = "Information"
 long tabtextcolor = 33554432
@@ -1082,7 +1160,7 @@ type mle_info from multilineedit within page_info
 integer x = 27
 integer y = 32
 integer width = 1669
-integer height = 696
+integer height = 856
 integer taborder = 40
 integer textsize = -8
 integer weight = 400
