@@ -1,0 +1,19 @@
+#summary List of Hot Keys and Shortcuts.
+#labels Draft
+
+= List of Hot Keys and Shortcuts of AseIsql =
+<wiki:toc />
+
+
+=== Editor ===
+|| *key* || *action* ||
+|| F9 || Execute selected text, or whole text if nothing selected on the edit page ||
+|| Alt+F9 || Execute current line in the editor. ||
+
+
+=== Resultset ===
+|| *key* || *action* ||
+|| F5 || Re-Execute query that has been used for current resultset ||
+|| Alt+Click on header || Data sort (currently string sort is used) ||
+|| Alt+Click on data || Data filter (only items with the same values remains in resultset) ||
+|| Esc || Stop retrieving resultset ||
