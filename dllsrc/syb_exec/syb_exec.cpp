@@ -47,6 +47,7 @@ bool TriggerEvent(pbobject *object,char * event,long wparm, long lparm, long * r
 
 LRESULT SendData(SQLCONTEXT*ctx,UINT Msg, WPARAM wParam, LPARAM lParam){
 	if(!ctx){
+		DBG(fprintf(flog,"SendData(ctx=NULL,msg=%d,wparm=%d,lparm=%d)\n",Msg, wParam, lParam));
 		FatalError("Error initializing SQLCONTEXT.");
 		return 0;
 	}
