@@ -48,7 +48,12 @@ bool TriggerEvent(pbobject *object,char * event,long wparm, long lparm, long * r
 LRESULT SendData(SQLCONTEXT*ctx,UINT Msg, WPARAM wParam, LPARAM lParam){
 	if(!ctx){
 		mstring s=mstring();
-		s.sprintf( "Error initializing SQLCONTEXT.\nmsg=%i wparam=%i lparam=%i" ,Msg, wParam, lParam);
+		s.sprintf( "Error initializing SQLCONTEXT.\nmsg=%i wparam=%i lparam=%i\n" ,Msg, wParam, lParam);
+		if(Msh==PEM_SQL_MESSAGE){
+			SQLMESSAGE m;
+			s.append("Sql message: ");
+			s.append(m.text);
+		}
 		FatalError(s.c_str());
 		return 0;
 	}
