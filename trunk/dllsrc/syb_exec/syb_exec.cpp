@@ -49,7 +49,7 @@ LRESULT SendData(SQLCONTEXT*ctx,UINT Msg, WPARAM wParam, LPARAM lParam){
 	if(!ctx){
 		mstring s=mstring();
 		s.sprintf( "Error initializing SQLCONTEXT.\nmsg=%i wparam=%i lparam=%i\n" ,Msg, wParam, lParam);
-		if(Msh==PEM_SQL_MESSAGE){
+		if(Msg==PEM_SQL_MESSAGE){
 			SQLMESSAGE m;
 			s.append("Sql message: ");
 			s.append(m.text);
