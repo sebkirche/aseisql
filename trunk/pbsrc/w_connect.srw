@@ -220,6 +220,8 @@ for i=1 to count
 			lvi.pictureindex=2
 		case 'yellow'
 			lvi.pictureindex=3
+		case 'red'
+			lvi.pictureindex=4
 	end choose
 
 	lvi.label=keys[i]
@@ -516,10 +518,10 @@ fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
 string facename = "Microsoft Sans Serif"
 long textcolor = 33554432
-string item[] = {"default","green","yellow"}
+string item[] = {"default","green","yellow","red"}
 borderstyle borderstyle = stylelowered!
 integer itempictureindex[] = {1,2,3}
-string picturename[] = {"img\aseisql.ico","img\aseisql-green.ico","img\aseisql-yellow.ico"}
+string picturename[] = {"img\aseisql.ico","img\aseisql-green.ico","img\aseisql-yellow.ico","img\aseisql-red.ico"}
 integer picturewidth = 16
 integer pictureheight = 16
 long picturemaskcolor = 536870912
@@ -1070,7 +1072,7 @@ integer taborder = 10
 boolean autoarrange = true
 boolean editlabels = true
 grsorttype sorttype = ascending!
-string smallpicturename[] = {"img\aseisql.ico","img\aseisql-green.ico","img\aseisql-yellow.ico"}
+string smallpicturename[] = {"img\aseisql.ico","img\aseisql-green.ico","img\aseisql-yellow.ico","img\aseisql-red.ico"}
 integer smallpicturewidth = 16
 integer smallpictureheight = 16
 end type
