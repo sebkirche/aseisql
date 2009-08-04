@@ -50,9 +50,17 @@ LRESULT SendData(SQLCONTEXT*ctx,UINT Msg, WPARAM wParam, LPARAM lParam){
 		mstring s=mstring();
 		s.sprintf( "Error initializing SQLCONTEXT.\nmsg=%i wparam=%i lparam=%i\n" ,Msg, wParam, lParam);
 		if(Msg==PEM_SQL_MESSAGE){
+			//let's ignore sql messages when context not initialized
+			//this is because 
+			//in windows vista the sql messages could be sent after select finished.
+			//in debug mode let's dosplay error message...
+#ifdef MYDEBUG
 			SQLMESSAGE*m=(SQLMESSAGE*)lParam;
 			s.append("Sql message: ");
 			s.append(m->text);
+#else
+			return 0;
+#endif
 		}
 		FatalError(s.c_str());
 		return 0;
