@@ -47,8 +47,9 @@ bool TriggerEvent(pbobject *object,char * event,long wparm, long lparm, long * r
 
 LRESULT SendData(SQLCONTEXT*ctx,UINT Msg, WPARAM wParam, LPARAM lParam){
 	if(!ctx){
-		DBG(fprintf(flog,"SendData(ctx=NULL,msg=%d,wparm=%d,lparm=%d)\n",Msg, wParam, lParam));
-		FatalError("Error initializing SQLCONTEXT.");
+		mstring s=mstring();
+		s.sprintf( "Error initializing SQLCONTEXT.\nmsg=%i wparam=%i lparam=%i" ,Msg, wParam, lParam);
+		FatalError(s.c_str());
 		return 0;
 	}
 	if(ctx->hwnd){
@@ -939,10 +940,10 @@ int __stdcall sql_execute(CS_CONNECTION	*connection,char * query,HWND hwnd){
 	}else{
 		ERR(&sct,"sql_execute: ct_cmd_alloc() failed");
 	}
+	sqlctx_finit(&sct);
 	DBG(fprintf(flog,"sql_execute exit\n"));
 	DBG(fflush(flog));
 	DBG(fclose(flog));
-	sqlctx_finit(&sct);
 	return (retcode == CS_SUCCEED) ? 1 : 0;
 }
 
