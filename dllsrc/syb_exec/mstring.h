@@ -396,6 +396,8 @@ class mstring {
 			::_vstprintf(ptr+length, lpszFormat, argListSave);
 
 			va_end(argListSave);
+			//re-init length variable
+			length=_tcslen(ptr);
 		}
 		
 		
