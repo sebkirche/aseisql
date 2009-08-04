@@ -52,7 +52,7 @@ LRESULT SendData(SQLCONTEXT*ctx,UINT Msg, WPARAM wParam, LPARAM lParam){
 		if(Msg==PEM_SQL_MESSAGE){
 			SQLMESSAGE*m=(SQLMESSAGE*)lParam;
 			s.append("Sql message: ");
-			s.append(m.text);
+			s.append(m->text);
 		}
 		FatalError(s.c_str());
 		return 0;
