@@ -71,6 +71,7 @@ privatewrite string is_encoding=''
 end variables
 
 forward prototypes
+public function boolean of_getopenname (readonly window w, readonly string title, ref string path, ref string as_files[], readonly string ext, string filter, ref long filterindex)
 public function boolean of_getopenname (readonly window w, readonly string title, ref string path, readonly string ext, string filter, ref long filterindex)
 public function boolean of_readtext (readonly string filename, ref string text, integer encoding)
 private function encoding of_getencoding (ref blob b, long len)
@@ -80,15 +81,15 @@ public function boolean of_writetext (readonly string filename, readonly string 
 public function boolean of_writetext (readonly string filename, readonly string text, string se)
 end prototypes
 
-public function boolean of_getopenname (readonly window w, readonly string title, ref string path, readonly string ext, string filter, ref long filterindex);//returns the id of the selected filter
+public function boolean of_getopenname (readonly window w, readonly string title, ref string path, ref string as_files[], readonly string ext, string filter, ref long filterindex);//returns the id of the selected filter
 //-1 on error
 
 T_OPENFILENAME OpenFileName
 long MAXFILENAME=10000
-long i,count
+long ll_pos, ll_index
 uint ch=0
 string s
-
+string lsa_files[]
 
 OpenFileName.lStructSize	= 76
 OpenFileName.hWndOwner		= Handle(w)
@@ -96,11 +97,12 @@ OpenFileName.hInstance		= 0
 filter+=',,'
 OpenFileName.lpstrFilter	= blob(filter)
 //replace coma by zero-char
-count=len(Filter)
-for i=1 to count
-	//unicode!!!
-	if mid(Filter,i,1)=',' then blobedit(OpenFileName.lpstrFilter,1+(i - 1)*2,ch)
-next
+ll_pos=0
+do while true
+	ll_pos = pos(Filter,',',ll_pos+1)
+	if ll_pos<1 then exit
+	blobedit(OpenFileName.lpstrFilter,1+(ll_pos - 1)*2,ch)
+loop
 
 OpenFileName.lpstrCustomFilter	= 0
 OpenFileName.nMaxCustomFilter		= 0
@@ -117,6 +119,13 @@ OpenFileName.lpstrInitialDir		= 0
 OpenFileName.lpstrTitle				= title
 
 OpenFileName.Flags					= OFN_EXPLORER+OFN_FILEMUSTEXIST+OFN_HIDEREADONLY
+
+if upperbound(as_files)=0 then
+	OpenFileName.Flags+=OFN_ALLOWMULTISELECT
+elseif as_files[1]<>'SINGLE' then
+	OpenFileName.Flags+=OFN_ALLOWMULTISELECT
+end if
+
 OpenFileName.nFileOffSet			= 0
 OpenFileName.nFileExtension		= 0
 OpenFileName.lpstrDefExt			= ext
@@ -128,10 +137,28 @@ OpenFileName.lpTemplateName		= 0
 If GetOpenFileName(OpenFileName)<>0 Then // Pressed OK button
 	path=string(OpenFileName.lpstrFile)
 	FilterIndex=OpenFileName.nFilterIndex
+	ll_index=0
+	
+	OpenFileName.lpstrFile=blobmid(OpenFileName.lpstrFile,(len(path)+1)*2+1)
+	do
+		s=string(OpenFileName.lpstrFile)
+		if s='' then exit
+		ll_index++
+		lsa_files[ll_index]=s
+		OpenFileName.lpstrFile=blobmid(OpenFileName.lpstrFile,(len(s)+1)*2+1)
+	loop while true
+	
+	as_files=lsa_files
 	return true
 end if
 
 return false
+
+end function
+
+public function boolean of_getopenname (readonly window w, readonly string title, ref string path, readonly string ext, string filter, ref long filterindex);string lsa_files[]
+lsa_files={'SINGLE'}
+return of_getopenname(w,title,path,lsa_files,ext,filter,filterindex)
 
 end function
 
@@ -352,4 +379,5 @@ on n_file.destroy
 TriggerEvent( this, "destructor" )
 call super::destroy
 end on
+
 
