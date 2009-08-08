@@ -404,8 +404,8 @@ end event
 
 event ue_men_open();n_file f
 
-string pathname
-long index=1
+string pathname, lsa_files[]
+long index=1, ll_i
 string filter
 
 filter= "SQL Files (Autodetect),*.sql;*.pro,"+&
@@ -414,8 +414,14 @@ filter= "SQL Files (Autodetect),*.sql;*.pro,"+&
 			"SQL Files (UTF16),*.sql;*.pro,"+&
 			"All Files (Autodetect),*.*,"
 
-if f.of_getopenname(this, "Open SQL File", pathname, "sql", filter, index) then
-	of_openfile(pathname,false,index)
+if f.of_getopenname(this, "Open SQL File", pathname, lsa_files, "sql", filter, index) then
+	if upperbound(lsa_files)=0 then
+		of_openfile(pathname,false,index)
+	else
+		for ll_i = lowerbound(lsa_files) to upperbound(lsa_files)
+			of_openfile(pathname+'\'+lsa_files[ll_i],false,index)
+		next
+	end if
 end if
 
 
@@ -2865,4 +2871,5 @@ lv_log.move(0,st_split.y+st_split.height)
 tab_1.setFocus()
 
 end event
+
 
