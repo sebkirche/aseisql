@@ -147,11 +147,10 @@ end event
 
 public function string of_profilekey (readonly string uid, readonly string srv, readonly string db, readonly string cs);string s
 
-s=uid+'@'+srv
-if db>'' then s+='/'+db
-
+s=srv
+if db>'' then s+='.'+db
+if uid>'' then s+='@'+uid
 if cs>'' then s+='?cs='+cs
-//if uid>'' then s+=' : '+uid
 
 return s
 
