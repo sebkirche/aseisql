@@ -1359,10 +1359,14 @@ end if
 end event
 
 event ue_men_cancel_all();//
-il_stop_code=6001
-
+long i
 of_log(0,0,'',0,'(Cancel query.)')
 post SetMicroHelp('Cancelling...')
+//new cancel all
+i=this.in_sqlexec_trig.of_cancel_all( sqlca )
+if i<>1 then of_log(0,0,'',0,'Cancel returned '+string(i))
+
+il_stop_code=6001
 of_updatemenustatus()
 
 end event
@@ -2871,5 +2875,4 @@ lv_log.move(0,st_split.y+st_split.height)
 tab_1.setFocus()
 
 end event
-
 

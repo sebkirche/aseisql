@@ -15,8 +15,9 @@ function boolean FreeLibrary(long hLibModule)library 'kernel32'
 
 function long sql_dbgrpc_control(long con,int spid, string parm,long hwnd) library "syb_exec.dll" alias for "sql_dbgrpc_control;Ansi"
 
-end prototypes
+private function long sql_cancel_all(long DBHandle) LIBRARY "syb_exec.dll" alias for "sql_cancel_all"
 
+end prototypes
 type variables
 long sql_hinst
 string terminator='go'
@@ -34,6 +35,7 @@ public subroutine dbgrpc_control (long dbhandle, readonly long spid, readonly st
 private function blob of_s2b (readonly string s, boolean utf8)
 public subroutine of_go (long dbhandle, boolean utf8, readonly string fullquery[], long locator, readonly n_sqlexeclocator an_locator)
 public function string of_exec2str (readonly n_tr tr, readonly string as_query, readonly string as_cdelim, readonly string as_rdelim)
+public function long of_cancel_all (readonly transaction tr)
 end prototypes
 
 public subroutine of_dummy ();return
@@ -179,6 +181,10 @@ loop while pos>0
 	
 
 return ls_ret
+
+end function
+
+public function long of_cancel_all (readonly transaction tr);return sql_cancel_all( tr.dbHandle() )
 
 end function
 
