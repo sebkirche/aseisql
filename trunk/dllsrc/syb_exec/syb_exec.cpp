@@ -1110,6 +1110,10 @@ bool __stdcall sql_property_set(int prop, int value){
 	return true;
 }
 
+int __stdcall sql_cancel_all(CS_CONNECTION	*connection){
+	return (int)ct_cancel(connection, NULL, CS_CANCEL_ALL);
+}
+
 }//extern "C"
 
 

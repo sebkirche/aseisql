@@ -8,3 +8,4 @@ EXPORTS
 	isLegalUTF8			@6
 	sql_property_set	@7
 	sql_execute2		@8
+	sql_cancel_all		@9
