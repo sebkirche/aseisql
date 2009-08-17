@@ -27,6 +27,7 @@ n_sqlparser in_sqlparser
 long il_query_id=0
 
 end variables
+
 forward prototypes
 public subroutine of_dummy ()
 public subroutine dbgrpc_control (long dbhandle, readonly long spid, readonly string parm, long locator, readonly n_sqlexeclocator an_locator)
@@ -81,7 +82,7 @@ for ll_qry=1 to ll_qrycount
 			query=mid(fullquery[ll_qry],pos0)
 		end if
 		if len(f_trim(query,space))>0 then
-			an_locator.event ue_sqlexec_preview(pos0,query,il_query_id)
+			an_locator.event ue_sqlexec_preview(pos0,fullquery[ll_qry],il_query_id)
 			bquery=of_s2b(query,utf8)
 			sql_execute(DBHandle,bquery, locator )
 		end if
