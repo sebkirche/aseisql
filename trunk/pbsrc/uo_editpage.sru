@@ -121,6 +121,7 @@ long il_hotlink_len=-1
 string is_hotlink_text=''
 
 end variables
+
 forward prototypes
 public subroutine of_print ()
 public subroutine of_setfocus ()
@@ -954,6 +955,18 @@ if len(s)>0 then
 end if
 
 return true
+
+end event
+
+event ue_init;call super::ue_init;if this.il_pagetype=this.typeeditobject then
+	//force retrieving object header and footer on object init
+	of_getobjfooter(false)
+	of_getobjheader()
+else
+	//initialize header and footer with
+	is_object_footer=''
+	is_object_header=''
+end if
 
 end event
 
