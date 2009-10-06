@@ -2146,7 +2146,7 @@ end function
 
 public function boolean of_workspaceopen (readonly string as_file);int li_f
 long i
-string ls,ls_srv,ls_uid,ls_pwd,ls_db,ls_cs,ls_host
+string ls,ls_srv,ls_uid,ls_pwd,ls_db,ls_cs,ls_host,ls_color
 boolean lb_pwenc,lb_datenc
 string ls_stat='default'
 string ls_open[]
@@ -2194,6 +2194,8 @@ if li_f<>-1 then
 							lb_pwenc=( lower(trim(mid(ls,i+1)))='true' )
 						case 'encrypt.data'
 							lb_datenc=( lower(trim(mid(ls,i+1)))='true' )
+						case 'color'
+							ls_color=lower(trim(mid(ls,i+1)))
 					end choose
 				end if
 			case 'open'
@@ -2218,6 +2220,7 @@ if li_f<>-1 then
 		if sqlca.of_connect( ls_srv, ls_db, ls_uid, ls_pwd, ls_cs, ls_host, lb_pwenc, lb_datenc ) then
 			this.of_setconnect(true)
 		end if
+		this.of_setcolor(ls_color)
 	end if
 	for i=1 to upperbound(ls_open)
 		if left(ls_open[i],5)='file=' then
@@ -2259,7 +2262,7 @@ public function boolean of_workspacesave (readonly string as_file);int li_f
 long i
 uo_tabpage t
 uo_editpage e
-string ls_wspath
+string ls_wspath,ls_color
 
 li_f=FileOpen ( as_file, LineMode!,Write!,LockWrite!,Replace!)
 ls_wspath=lower(f_getfilepart(as_file,1))
@@ -2284,6 +2287,12 @@ if li_f<>-1 then
 		FileWrite ( li_f, '#Password         =' )
 		FileWrite ( li_f, 'EncryptedPassword=' +f_crypt(sqlca.logpass,true))
 	end if
+	if this.icon<>'' then
+		ls_color=mid(this.icon,13)
+		ls_color=left(ls_color,pos(ls_color,'.')-1)
+	end if
+	FileWrite ( li_f,    'Color            ='+ls_color)
+	
 	if pos(sqlca.dbparm,',Sec_Confidential=1')>0 then FileWrite ( li_f, 'Encrypt.Data     =true')
 	if pos(sqlca.dbparm,",PWEncrypt='No'")<1     then FileWrite ( li_f, 'Encrypt.Password =true')
 	
