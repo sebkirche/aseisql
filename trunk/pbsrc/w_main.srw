@@ -1820,11 +1820,12 @@ if ls_owner<>'dbo' then ls_text+=ls_owner+'.'
 ls_text+=ls_name
 if ver>0 then ls_text+=' :'+string(ver)
 
-e.of_init(ls_text,e.typeEditObject,al_objtype,sqlca.servername+'.'+ls_db+'.'+ls_owner+'.'+ls_name)
 e.is_obj_database=ls_db
 e.is_obj_owner=ls_owner
 e.is_obj_name=ls_name
 e.il_clone=ver
+
+e.of_init(ls_text,e.typeEditObject,al_objtype,sqlca.servername+'.'+ls_db+'.'+ls_owner+'.'+ls_name)
 
 e.of_settext( gn_sqlmenu.of_proctext(as_name) )
 
