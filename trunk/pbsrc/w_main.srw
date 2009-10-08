@@ -359,7 +359,7 @@ return 0
 
 end event
 
-event getminmaxinfo;long ww=500
+event getminmaxinfo;long ww=580
 long hh=300
 
 RtlMoveMemory(minmaxinfo+24,ww,4)
@@ -396,8 +396,6 @@ sqlca.of_disconnect()
 
 of_setconnect(false)
 
-w_statusbar.f_setText('server','')
-w_statusbar.f_setText('login','')
 of_checkdb()
 
 end event
@@ -1593,8 +1591,14 @@ public subroutine of_setconnect (boolean b);if b then
 	spid=long(f_selectstring("select convert(varchar(20),@@spid)","0"))
 	w_statusbar.f_setText('server',sqlca.servername)
 	w_statusbar.f_setText('login',sqlca.LogID)
+	w_statusbar.f_setText('spid',string(spid))
 	sqlca.database=''
 	of_checkdb()
+else
+	spid=0
+	w_statusbar.f_setText('server','')
+	w_statusbar.f_setText('login','')
+	w_statusbar.f_setText('spid','')
 end if
 
 of_updatemenustatus()
@@ -2542,6 +2546,7 @@ w_statusbar.f_addtext ( "pos", 260, Left! )
 w_statusbar.f_addtext ( "server", 400, Left! )
 w_statusbar.f_addtext ( "charset", 200, Left! )
 w_statusbar.f_addtext ( "login", 260, Left! )
+w_statusbar.f_addtext ( "spid", 160, Left! )
 w_statusbar.f_addtext_ex ( "database", 400, Left!, '' )
 
 w_statusbar.f_setText ( "pos", "1:1" )
@@ -2682,6 +2687,10 @@ CHOOSE CASE s
 		return 'Current database.~r~nClick to select.'
 	CASE 'change'
 		return 'Edit change flag'
+	CASE 'spid'
+		r='Current session process ID'
+		if spid<>0 then r+='~r~n@@spid = '+string(spid)
+		return r
 END CHOOSE
 return ''
 
