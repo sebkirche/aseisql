@@ -801,7 +801,7 @@ while (@@sqlstatus = 0) begin
 	select @txt = @txt + @colname + '   ' + @coltype
 	if (@coltype = 'char' or @coltype = 'varchar') select @txt = @txt + '('+convert(varchar(10),@collength)+')'
 	if (@coltype like 'uni%char') select @txt = @txt + '('+convert(varchar(10),@collength/2)+')'
-	if (@coltype = 'numeric') select @txt = @txt + '('+convert(varchar(10),@prec)+','+convert(varchar(10),@scale)+')'
+	if (@coltype in ('numeric','decimal')) select @txt = @txt + '('+convert(varchar(10),@prec)+','+convert(varchar(10),@scale)+')'
 	if @default! = null select @txt = @txt + '  ' + @default
 	if @default is null and @cdefault>0 begin
 		select @default=u.name+'.'+o.name from sysobjects o,sysusers u where o.id=@cdefault and o.uid=u.uid
