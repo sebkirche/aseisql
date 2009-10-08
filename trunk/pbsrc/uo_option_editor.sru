@@ -253,7 +253,7 @@ string facename = "Microsoft Sans Serif"
 long textcolor = 33554432
 boolean sorted = false
 boolean vscrollbar = true
-string item[] = {"3","4","5","6","7","8","9","10","11","12"}
+string item[] = {"2","3","4","5","6","7","8","9","10","11","12"}
 borderstyle borderstyle = stylelowered!
 end type
 
