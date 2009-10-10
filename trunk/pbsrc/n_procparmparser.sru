@@ -317,7 +317,10 @@ do while true
 			parm[UpperBound(parm)+1].name=lex.text
 		CASE 9 //parameter type
 			if of_getLexema(buffer,lex) then return true
-			parm[UpperBound(parm)].datatype=lex.text
+			parm[UpperBound(parm)].datatype+=' '+lex.text
+			if upper(lex.text)='UNSIGNED' then
+				status=8
+			end if
 		CASE 10 //parameter type (
 			if of_skipSpace(buffer) then return true
 			if char(buffer)='(' then
