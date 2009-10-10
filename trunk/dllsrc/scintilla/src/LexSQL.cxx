@@ -247,6 +247,7 @@ static void ColouriseSQLDoc(unsigned int startPos, int length,
 	int comm_nest=0;
 	int beginFlag=0;
 	int endFlag=0;
+	int prevState=SCE_SQL_DEFAULT;
 	int foldLevelOld=SC_FOLDLEVELBASE;  //the original fold level for current line
 	int foldLevel=SC_FOLDLEVELBASE;     //the current fold level (changed during line analyse) 
 	
@@ -259,6 +260,7 @@ static void ColouriseSQLDoc(unsigned int startPos, int length,
 		}
 		initStyle = SCE_SQL_DEFAULT;
 	}
+	prevState=initStyle;
 	
 /*
 FILE *log=fopen("sci.log","at");
@@ -442,6 +444,15 @@ fclose(log);
 				}
 			}
 		}
+		//process for the comment folding
+		if(state==SCE_SQL_COMMENT && prevState!=SCE_SQL_COMMENT){
+			beginFlag=1;
+		}else if(state!=SCE_SQL_COMMENT && prevState==SCE_SQL_COMMENT){
+			endFlag=1;
+			foldLevel--;
+		}
+		
+		prevState=state;
 		chPrev = ch;
 	}
 	styler.ColourTo(lengthDoc - 1, state);
