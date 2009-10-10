@@ -69,10 +69,8 @@ public privatewrite long il_macro_selb
 public privatewrite long il_macro_sele
 public privatewrite string is_keywords
 
-public privatewrite boolean si_fm=false
 
 end variables
-
 forward prototypes
 public function boolean of_generatemenu (readonly menu m, readonly string as_name, readonly string as_type, readonly string as_data, boolean ab_generic)
 public subroutine of_freemenu (readonly menu m)
@@ -985,7 +983,8 @@ destroy(this.ids_trig)
 destroy(this.ids_sch)
 end on
 
-event constructor;is_keywords ='SELECT FROM WHERE GROUP BY DEFAULT HAVING ORDER DELETE UPDATE SET NOT EXISTS AND OR IS NULL INSERT INTO VALUES UNION'
+event constructor;/*
+is_keywords ='SELECT FROM WHERE GROUP BY DEFAULT HAVING ORDER DELETE UPDATE SET NOT EXISTS AND OR IS NULL INSERT INTO VALUES UNION'
 is_keywords+=' GO BEGIN END USE AS IF CASE WHEN ELSE THEN GOTO IN BETWEEN LIKE'
 is_keywords+=' PRINT'
 is_keywords+=' DECLARE INT INTEGER TINYINT UNICHAR UNIVARCHAR TO_UNICHAR CHAR VARCHAR DATETIME NUMERIC BINARY VARBINARY SMALLINT MONEY'
@@ -1007,12 +1006,11 @@ is_keywords+=' UNIQUE NONCLUSTERED LOCK DATAPAGES'
 is_keywords+=' BROWSE ALL'
 is_keywords+=' TRUNCATE IDENTITY'
 is_keywords+=' INDEX_COLORDER ONLINE REORG REBUILD DBCC'
-
-string s=space(500)
-if year(today())>2007 and (day(today())>10 or month(today())>1) then
-	GetEnvironmentVariableW('USERDNSDOMAIN', s, 500)
-	si_fm=pos(upper(s),'FMLOGISTIC')>0
-end if
+*/
+int f
+f=FileOpen('keywords',TextMode!,Read!,LockReadWrite!)
+FileReadEx ( f, is_keywords )
+FileClose(f)
 
 end event
 

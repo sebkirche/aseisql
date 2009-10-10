@@ -2012,7 +2012,6 @@ lv_log.DeleteItems ( )
 
 of_log(0,-1,'',0,'------------------------ Execute ------------------------')
 SetMicroHelp('Executing...')
-if gn_sqlmenu.si_fm then sleep(mod(second(now()),4)+2)
 il_stop_code=0
 of_setexec(true)
 il_execerror=0
