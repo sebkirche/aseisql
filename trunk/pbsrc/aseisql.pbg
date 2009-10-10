@@ -99,6 +99,7 @@ Save Format v3.0(19990112)
  "d_columns.srd" "aseisql.pbl";
  "w_connect.srw" "aseisql.pbl";
  "n_sqlexec.sru" "aseisql.pbl";
+ "t_hitinfo.srs" "aseisql.pbl";
  "aseisql.sra" "aseisql.pbl";
  "w_procexec.srw" "aseisql.pbl";
  "m_dbitem.srm" "aseisql.pbl";
