@@ -7,9 +7,9 @@ session begin pborc100.dll
 timestamp
 
 # export sources from svn repository to future libraries directory
-sys svn export ..\pbsrc  ..\..\pb
+sys svn export ..\pbsrc   ..\..\pb
 sys copy /Y ..\dll\*.dll  ..\..\pb
-sys copy /Y ..\sql\*.sql  ..\..\pb
+sys copy /Y ..\sql\*.*    ..\..\pb
 sys rename ..\..\pb\xxsyc.dll pbsyc100.dll
 
 # replace $WCREV$ in build.ini and put result in the future exe directory
