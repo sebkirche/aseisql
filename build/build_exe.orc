@@ -9,7 +9,7 @@ timestamp
 # export sources from svn repository to future exe
 sys   svn export ..\pbsrc            ..\..\exe
 sys   copy /Y    ..\dll\*.dll        ..\..\exe
-sys   copy /Y    ..\sql\*.sql        ..\..\exe
+sys   copy /Y    ..\sql\*.*          ..\..\exe
 sys   copy /Y    ..\help\hlp\*.hlp   ..\..\exe
 sys   rename     ..\..\exe\xxsyc.dll pbsyc100.dll
 
