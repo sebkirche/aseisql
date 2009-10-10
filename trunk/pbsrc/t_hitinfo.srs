@@ -1,0 +1,7 @@
+HA$PBExportHeader$t_hitinfo.srs
+global type t_hitinfo from structure
+	long		x
+	long		y
+	long		flags
+end type
+
