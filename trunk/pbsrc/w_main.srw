@@ -40,8 +40,8 @@ type WIN32_FIND_DATA from structure
 end type
 
 global type w_main from window
-integer width = 3150
-integer height = 5028
+integer width = 3186
+integer height = 5208
 boolean titlebar = true
 string title = "ASE isql"
 string menuname = "m_main"
@@ -159,6 +159,8 @@ function boolean FindClose(long hFindFile)library "kernel32.dll"
 subroutine DragAcceptFiles(long _hWnd,boolean fAccept)library 'shell32'
 subroutine DragFinish(long hDrop)library 'shell32'
 function long DragQueryFile(long hDrop,long iFile,ref string filename, long buflen)library 'shell32' alias for 'DragQueryFileW'
+
+function long SendMessage(long w, long msg,long wparm,ref t_hitinfo lparm)library 'user32.dll' alias for SendMessageW
 
 
 //??????????deprecated??????????????
@@ -1749,7 +1751,7 @@ if p.of_iseditor() then
 	m.m_view.m_showspaces.checked=(e.uo_edit.of_send(e.uo_edit.SCI_GETVIEWWS,0,0)<>0)
 end if
 
-m.m_window.m_close.enabled=(not sqlca.ib_executing or p.of_iseditor()) and of_gettabindex()>1
+m.m_window.m_close.enabled = p.of_canclose() // (not sqlca.ib_executing or p.of_iseditor()) and of_gettabindex()>1
 m.m_window.m_closeresultsets.enabled=not sqlca.ib_executing and p.of_getresultsetcount()>0
 
 if isValid(w_browser) then
@@ -2554,6 +2556,7 @@ openWithParm(w_browser,'hide')
 
 tab_1.OpenTab(e,0)
 e.of_init('Query',e.typeEdit,0,'Ctrl+Q to activate')
+e.of_setlocked( true )
 tab_1.selecttab( e )
 
 
@@ -2814,6 +2817,7 @@ event constructor;call super::constructor;this.of_setDelay(15000)
 end event
 
 type tab_1 from tab within w_main
+event mbuttondown pbm_mbuttondown
 integer y = 224
 integer width = 2446
 integer height = 1344
@@ -2828,6 +2832,37 @@ boolean raggedright = true
 boolean powertips = true
 integer selectedtab = 1
 end type
+
+event mbuttondown;t_hitinfo h
+long tcm_hittestinfo=4864+13
+uo_tabpage p
+long i
+
+
+h.x=UnitsToPixels(xpos,XUnitsToPixels!)
+h.y=UnitsToPixels(ypos,YUnitsToPixels!)
+i=sendMessage(handle(this),tcm_hittestinfo,0,h)
+i++
+
+if i>1 then 
+
+	
+	p=tab_1.control[i]
+	if i=of_gettabindex() then
+		//the case when the page to be closed is selected
+		m_main m
+		m=parent.menuid
+		if m.m_window.m_close.enabled then m.m_window.m_close.event clicked( )
+	else
+		if p.of_canclose() then
+			//the case when the page to be closed is not selected
+			of_closeTab(p)
+			of_updatemenustatus()
+		end if
+	end if
+end if
+
+end event
 
 event selectionchanged;uo_tabpage p
 uo_editpage e

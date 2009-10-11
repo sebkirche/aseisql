@@ -40,6 +40,8 @@ public privatewrite long il_objtype //from n_sqlmenu
 //encoding used to display file encoding
 public protectedwrite string is_encoding  =''
 
+public privatewrite boolean ib_locked=false //if page is locked and could not be closed (normally only first page)
+
 end variables
 
 forward prototypes
@@ -51,6 +53,8 @@ public function boolean of_save (boolean ab_prompt)
 public function boolean of_iseditor ()
 public function boolean of_init (readonly string as_name, long al_type, long al_objtype, readonly string as_tooltip)
 public function boolean of_find (readonly string find_text, boolean find_case, boolean find_wword, boolean find_wstart, boolean find_back)
+public function boolean of_canclose ()
+public subroutine of_setlocked (boolean b)
 end prototypes
 
 event ue_init();//use this event to continue tab initialization
@@ -136,6 +140,19 @@ end function
 public function boolean of_find (readonly string find_text, boolean find_case, boolean find_wword, boolean find_wstart, boolean find_back);return false
 
 end function
+
+public function boolean of_canclose ();//returns true if it's possible to close this page in terms of application
+
+if (not sqlca.ib_executing or this.of_iseditor()) and not this.ib_locked then
+	return true
+end if
+return false
+
+end function
+
+public subroutine of_setlocked (boolean b);this.ib_locked=b
+
+end subroutine
 
 on uo_tabpage.create
 end on
