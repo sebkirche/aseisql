@@ -723,6 +723,7 @@ end function
 
 public function boolean of_changecase (readonly string as_mode);long pos, pose, i=-1, ll_style
 char c
+string ls_old,ls_new
 //
 //mode: up,lo,ti,ku,kl
 choose case as_mode
@@ -743,25 +744,33 @@ end if
 
 uo_edit.of_send(uo_edit.SCI_COLOURISE,0,-1) //colorize all
 
+if this.of_getselectedtext(ls_old)>0 then
+	if as_mode='up' then 
+		ls_new=upper(ls_old)
+	elseif as_mode='lo' then
+		ls_new=lower(ls_old)
+	else
+		for i=pos to pose - 1
+			ll_style=uo_edit.of_send(uo_edit.SCI_GETSTYLEAT,i,0)
+			if ll_style=4 then 
+				if as_mode='ku' then
+					ls_new+=upper(mid(ls_old,i - pos+1,1))
+				else
+					ls_new+=lower(mid(ls_old,i - pos+1,1))
+				end if
+			else
+				ls_new+=mid(ls_old,i - pos+1,1)
+			end if
+		next
+	end if
+	
+end if
+
 uo_edit.of_send(uo_edit.SCI_BEGINUNDOACTION,0,0)
+uo_edit.of_send(uo_edit.SCI_SETSEL,pos,pose)
+of_replaceselected(ls_new)
 
-for i=pos to pose - 1
-	uo_edit.of_send(uo_edit.SCI_SETSEL,i,i+1)
-	choose case as_mode
-		case 'up'
-			uo_edit.of_send(uo_edit.SCI_UPPERCASE,0,0)
-		case 'lo'
-			uo_edit.of_send(uo_edit.SCI_LOWERCASE,0,0)
-		case 'ku'
-			ll_style=uo_edit.of_send(uo_edit.SCI_GETSTYLEAT,i,0)
-			if ll_style=4 then uo_edit.of_send(uo_edit.SCI_UPPERCASE,0,0)
-		case 'kl'
-			ll_style=uo_edit.of_send(uo_edit.SCI_GETSTYLEAT,i,0)
-			if ll_style=4 then uo_edit.of_send(uo_edit.SCI_LOWERCASE,0,0)
-	end choose
-next
 uo_edit.of_send(uo_edit.SCI_ENDUNDOACTION,0,0)
-
 uo_edit.of_send(uo_edit.SCI_SETSEL,pos,pose)
 
 return true
