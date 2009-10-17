@@ -5,21 +5,18 @@ header(height=64 color="536870912" )
 summary(height=0 color="536870912" )
 footer(height=0 color="536870912" )
 detail(height=64 color="536870912" )
-table(column=(type=char(255) updatewhereclause=yes name=name dbname="sysobjects.name" )
- column=(type=char(10) updatewhereclause=yes name=type dbname="type" )
- retrieve="select user_name(uid)+'.'+name as name,convert(varchar(10),type) type
+table(column=(type=char(10) updatewhereclause=yes name=type dbname="type" )
+ retrieve="select convert(varchar(10),type) type
 	from sysobjects 
-	where type in ('U','S','P','V','TR') 
+	where type in ('U','S','P','V','TR','SF') 
 	and id=object_id(:name)
 union
-select name,'TYPE'
+select 'TYPE'
 	from systypes 
 	where name=:name
 " arguments=(("name", string)) )
-text(band=header alignment="2" text="Name" border="0" color="33554432" x="9" y="8" height="52" width="1344" html.valueishtml="0"  name=name_t visible="1"  font.face="Microsoft Sans Serif" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="204" background.mode="1" background.color="536870912" )
-text(band=header alignment="2" text="Type" border="0" color="33554432" x="1362" y="8" height="52" width="302" html.valueishtml="0"  name=type_t visible="1"  font.face="Microsoft Sans Serif" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="204" background.mode="1" background.color="536870912" )
-column(band=detail id=1 alignment="0" tabsequence=32766 border="0" color="33554432" x="9" y="8" height="52" width="1344" format="[general]" html.valueishtml="0"  name=name visible="1" edit.limit=128 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Microsoft Sans Serif" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="204" background.mode="1" background.color="536870912" )
-column(band=detail id=2 alignment="0" tabsequence=32766 border="0" color="33554432" x="1362" y="8" height="52" width="302" format="[general]" html.valueishtml="0"  name=type visible="1" edit.limit=10 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Microsoft Sans Serif" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="204" background.mode="1" background.color="536870912" )
+text(band=header alignment="2" text="Type" border="0" color="33554432" x="9" y="8" height="52" width="302" html.valueishtml="0"  name=type_t visible="1"  font.face="Microsoft Sans Serif" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="204" background.mode="1" background.color="536870912" )
+column(band=detail id=1 alignment="0" tabsequence=32766 border="0" color="33554432" x="9" y="8" height="52" width="302" format="[general]" html.valueishtml="0"  name=type visible="1" edit.limit=10 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Microsoft Sans Serif" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="204" background.mode="1" background.color="536870912" )
 htmltable(border="1" )
 htmlgen(clientevents="1" clientvalidation="1" clientcomputedfields="1" clientformatting="0" clientscriptable="0" generatejavascript="1" encodeselflinkargs="1" netscapelayers="0" )
 xhtmlgen() cssgen(sessionspecific="0" )
@@ -30,3 +27,4 @@ export.xml(headgroups="1" includewhitespace="0" metadatatype=0 savemetadata=0 )
 import.xml()
 export.pdf(method=0 distill.custompostscript="0" xslfop.print="0" )
 export.xhtml()
+ 

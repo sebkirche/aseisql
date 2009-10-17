@@ -32,6 +32,7 @@ event ue_copytemplate ( )
 event ue_stubsmenu ( )
 event ue_procexec ( )
 event ue_stubsmenu2 ( )
+event ue_open_sfunction ( )
 ids_col ids_col
 ids_trig ids_trig
 ids_sch ids_sch
@@ -50,6 +51,7 @@ public privatewrite int typeUserTable=4
 public privatewrite int typeSystemTable=11
 public privatewrite int typeProcedure=5
 public privatewrite int typeTrigger=13
+public privatewrite int typeSFunction=14
 public privatewrite int typeView=6
 public privatewrite int typeUserType=7
 public privatewrite int typeStubs=9
@@ -71,6 +73,7 @@ public privatewrite string is_keywords
 
 
 end variables
+
 forward prototypes
 public function boolean of_generatemenu (readonly menu m, readonly string as_name, readonly string as_type, readonly string as_data, boolean ab_generic)
 public subroutine of_freemenu (readonly menu m)
@@ -350,6 +353,10 @@ end if
 
 end event
 
+event ue_open_sfunction();w_main.of_openobject(is_name,typeSFunction,false)
+
+end event
+
 public function boolean of_generatemenu (readonly menu m, readonly string as_name, readonly string as_type, readonly string as_data, boolean ab_generic);return of_generatemenu(m,as_name, of_stype2int(as_type), as_data, ab_generic)
 
 end function
@@ -487,6 +494,8 @@ public function integer of_stype2int (readonly string s);CHOOSE CASE s
 		return typeProcedure
 	CASE "TR"
 		return typeTrigger
+	CASE "SF"
+		return typeSFunction
 	CASE "V"
 		return typeView
 	CASE "TYPE"
@@ -508,7 +517,7 @@ string ls
 
 
 CHOOSE CASE ai_type
-	CASE typeProcedure, typeStubs, typeSystemTable, typeUserTable, typeUserType, typeView,typeTrigger
+	CASE typeProcedure, typeStubs, typeSystemTable, typeUserTable, typeUserType, typeView,typeTrigger,typeSFunction
 	CASE typeDatabase
 		return of_generatedbmenu(m)
 	CASE ELSE
@@ -517,7 +526,7 @@ END CHOOSE
 
 if ab_generic then
 	CHOOSE CASE ai_type
-		CASE typeProcedure, typeStubs, typeSystemTable, typeUserTable, typeUserType, typeView,typeTrigger
+		CASE typeProcedure, typeStubs, typeSystemTable, typeUserTable, typeUserType, typeView,typeTrigger,typeSFunction
 			of_additem(m,"Copy","ue_copy",true)
 			of_additem(m,"Paste","ue_paste",w_main.of_iseditoractive())
 	END CHOOSE
@@ -531,7 +540,7 @@ if ab_generic then
 	if sqlca.ib_executing then return true
 	
 	CHOOSE CASE ai_type
-		CASE typeProcedure, /*typeSystemTable, typeUserTable,*/ typeUserType, typeView, typeTrigger
+		CASE typeProcedure, /*typeSystemTable, typeUserTable,*/ typeUserType, typeView, typeTrigger,typeSFunction
 			of_additem(m,"-","",true)
 	END CHOOSE
 end if
@@ -543,15 +552,16 @@ if sqlca.ib_executing then return false
 CHOOSE CASE ai_type
 	CASE typeTrigger
 		of_additem(m,"Open Trigger","ue_trigger_open",true)
-//		of_additem(m,"-","",true)
-//		of_additem(m,"sp_depends "+as_name,"ue_exectext",true)
 END CHOOSE
 
 CHOOSE CASE ai_type
 	CASE typeView
 		of_additem(m,"Open View","ue_view_open",true)
-//		of_additem(m,"-","",true)
-//		of_additem(m,"sp_depends "+as_name,"ue_exectext",true)
+END CHOOSE
+
+CHOOSE CASE ai_type
+	CASE typeSFunction
+		of_additem(m,"Open Function","ue_open_sfunction",true)
 END CHOOSE
 
 CHOOSE CASE ai_type
@@ -563,16 +573,6 @@ CHOOSE CASE ai_type
 //		of_additem(m,"-","",true)
 //		of_additem(m,"sp_depends "+as_name,"ue_exectext",true)
 END CHOOSE
-
-//CHOOSE CASE ai_type
-//	CASE typeUserType
-//		of_additem(m,"Type Info","ue_typeinfo",true)
-//END CHOOSE
-
-//CHOOSE CASE ai_type
-//	CASE typeSystemTable, typeUserTable, typeView
-//		of_additem(m,"View Data","ue_viewdata",true)
-//END CHOOSE
 
 of_addstubsmenu(m,ai_type)
 
@@ -942,6 +942,8 @@ CHOOSE CASE al_type
 		item='Trigger'
 	CASE typeView
 		item='View'
+	CASE typeSFunction
+		item='Function'
 END CHOOSE
 
 return item

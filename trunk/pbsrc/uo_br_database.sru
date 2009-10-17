@@ -51,6 +51,7 @@ public subroutine of_popup ()
 public function boolean of_retrieve ()
 public function string of_getlike ()
 public subroutine of_setfilter (boolean b)
+public function string of_hide_dbo (readonly string s)
 end prototypes
 
 event ue_init();this.event ue_changestatus()
@@ -119,7 +120,7 @@ if len(trim(sle_search.text))>0 then
 		count=min(count,il_maxsearch)
 		for row=1 to count
 			tvi.data=dw_search.GetItemString(row,"type")
-			tvi.label=dw_search.GetItemString(row,"name")
+			tvi.label=of_hide_dbo( dw_search.GetItemString(row,"name") )
 			tvi.pictureIndex=gn_sqlmenu.of_stype2int(tvi.data)
 			tvi.SelectedPictureIndex=tvi.pictureIndex
 			tv_1.insertitemlast( hSearch, tvi)
@@ -195,6 +196,9 @@ hSystemTables=tv_1.insertitemlast( hroot, tvi)
 tvi.data='P'
 tvi.label='Procedures'
 hProcedures=tv_1.insertitemlast( hroot, tvi)
+tvi.data='SF'
+tvi.label=gn_sqlmenu.of_typename( gn_sqlmenu.of_stype2int(tvi.data) )
+hProcedures=tv_1.insertitemlast( hroot, tvi)
 tvi.data='TR'
 tvi.label='Triggers'
 hProcedures=tv_1.insertitemlast( hroot, tvi)
@@ -235,6 +239,14 @@ else
 end if
 
 end subroutine
+
+public function string of_hide_dbo (readonly string s);if cfg.ib_hide_dbo then
+	if left(s,4)='dbo.' then
+		return mid(s,5)
+	end if
+end if
+return s
+end function
 
 on uo_br_database.create
 this.dw_search=create dw_search
@@ -337,7 +349,7 @@ integer taborder = 10
 fontcharset fontcharset = ansi!
 string facename = "Microsoft Sans Serif"
 boolean hideselection = false
-string picturename[] = {"DBConnect!","Custom039!","Custom050!","img\table.bmp","img\proc_g.bmp","img\view.bmp","Structure5!","PasteStatement!","Custom092!","img\search.gif","img\tablesys.bmp","UserObject!","img\trigger.bmp"}
+string picturename[] = {"DBConnect!","Custom039!","Custom050!","img\table.bmp","img\proc_g.bmp","img\view.bmp","Structure5!","PasteStatement!","Custom092!","img\search.gif","img\tablesys.bmp","UserObject!","img\trigger.bmp","img\func_g.bmp"}
 long picturemaskcolor = 12632256
 end type
 
@@ -385,6 +397,8 @@ CHOOSE CASE newlevel
 				query="select type,user_name(uid)+'.'+name from sysobjects where type='S' "+ls_filter+"order by 2"
 			CASE 'P' /*Procedures*/
 				query="select type,user_name(uid)+'.'+name from sysobjects where type='P' "+ls_filter+"order by 2"
+			CASE 'SF' /*SQL Function*/
+				query="select type,user_name(uid)+'.'+name from sysobjects where type='SF' "+ls_filter+"order by 2"
 			CASE 'TR' /*Triggers*/
 				query="select type,user_name(uid)+'.'+name from sysobjects where type='TR' "+ls_filter+"order by 2"
 			CASE 'V' /*Views*/
@@ -401,7 +415,7 @@ event db_retrieve_row;call super::db_retrieve_row;//
 newitem.pictureindex=gn_sqlmenu.of_stype2int(string(outparm[1]))
 newitem.selectedpictureindex=newitem.pictureindex
 newitem.data=''
-newitem.label=outparm[2]
+newitem.label=of_hide_dbo( outparm[2] )
 newitem.children=false
 
 end event

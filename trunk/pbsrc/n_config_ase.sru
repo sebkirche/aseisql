@@ -54,6 +54,7 @@ public long il_format_datetime=1
 public boolean ib_confirm_disconnect=true
 public boolean ib_history_log=false
 public string is_history_log_file=''
+public boolean ib_hide_dbo=false
 
 end variables
 forward prototypes
@@ -128,6 +129,8 @@ of_options(ab_store,'resultset.font.size',il_resultset_font_size)
 
 of_options(ab_store,'format.datetime',il_format_datetime)
 sql_property_set(0 /*PROP_DATETIME_FORMAT*/, il_format_datetime)
+
+of_options(ab_store,'hide.dbo',ib_hide_dbo)
 
 end subroutine
 

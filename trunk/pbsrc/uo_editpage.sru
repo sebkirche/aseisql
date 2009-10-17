@@ -300,6 +300,8 @@ if is_filepath='' then
 					is_filepath+=this.is_obj_name+'.'+is_extension
 				CASE gn_sqlmenu.typeTrigger
 					is_filepath=this.is_obj_name+'.'+is_extension
+				CASE gn_sqlmenu.typeSFunction
+					is_filepath=this.is_obj_name+'.'+is_extension
 				CASE gn_sqlmenu.typeView
 					is_filepath=this.is_obj_name+'.'+is_extension
 			END CHOOSE

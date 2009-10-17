@@ -9,7 +9,7 @@ table(column=(type=char(255) updatewhereclause=yes name=name dbname="sysobjects.
  column=(type=char(10) updatewhereclause=yes name=type dbname="type" )
  retrieve="select user_name(uid)+'.'+name,convert(varchar(10),type) type 
 from sysobjects 
-where type in ('U','S','P','V','TR') and name like :name
+where type in ('U','S','P','V','TR','SF') and name like :name
 union
 select name,'TYPE' from systypes where name like :name
 order by 2,1
