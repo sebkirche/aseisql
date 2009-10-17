@@ -112,6 +112,8 @@ CHOOSE CASE il_pagetype
 				picturename='img\trigger.bmp'
 			CASE gn_sqlmenu.typeView
 				picturename='img\view.bmp'
+			CASE gn_sqlmenu.typeSFunction
+				picturename='img\func_g.bmp'
 			CASE ELSE
 				picturename='NotFound!'
 		END CHOOSE
