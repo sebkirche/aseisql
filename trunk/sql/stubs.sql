@@ -293,6 +293,20 @@ end
 close %PARM:Cursor name%
 deallocate cursor %PARM:Cursor name%
 
+
+
+--<General\function>--
+create function %PARAM:Function name% (
+	@param1 type1, 
+	@param2 type2,
+	...
+) returns ret_type
+as
+begin
+	declare @ret ret_type
+	return @ret
+end
+
 --<General\select *>--
  select * from %SELB%
 	where 
@@ -1025,7 +1039,7 @@ select oref.name from sysreferences r,sysobjects oref
  where r.reftabid=object_id('%PARM:Object name%')
  and oref.id=r.tableid
 --<Menu\sp_depends>--
---EX: U,S,V,P,TR
+--EX: U,S,V,P,TR,SF
 exec sp_depends '%PARM:Object name%'
 --<Menu\Procedure header>--
 use %PARM:Database%
@@ -1035,6 +1049,16 @@ if exists(select 1
 		where id=object_id('%PARM:Object name%')
 		and type='P')
 	drop procedure %PARM:Object name%
+go
+
+--<Menu\Function header>--
+use %PARM:Database%
+go
+if exists(select 1
+		from sysobjects
+		where id=object_id('%PARM:Object name%')
+		and type='SF')
+	drop function %PARM:Object name%
 go
 
 --<Menu\View header>--
@@ -1048,7 +1072,7 @@ if exists(select 1
 go
 
 --<Menu\Object rights>--
---EX: S,U,V,P
+--EX: S,U,V,P,SF
 select case when p.protecttype<2 then 'grant' else 'revoke' end + 
 		' ' + case
 		when action = 224 then 'execute'
