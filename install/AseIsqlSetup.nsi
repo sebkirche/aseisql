@@ -36,6 +36,7 @@ Section "ASE ISQL"
 	File "..\..\exe\*.exe"
 	File "..\..\exe\*.hlp"
 	File "..\..\exe\*.pbd"
+	File "..\..\exe\keywords"
 	File "..\..\exe\stubs.sql"
 	SetOverwrite off
 	File "..\..\exe\ustubs.sql"
