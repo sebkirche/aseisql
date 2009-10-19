@@ -71,9 +71,7 @@ public privatewrite long il_macro_selb
 public privatewrite long il_macro_sele
 public privatewrite string is_keywords
 
-
 end variables
-
 forward prototypes
 public function boolean of_generatemenu (readonly menu m, readonly string as_name, readonly string as_type, readonly string as_data, boolean ab_generic)
 public subroutine of_freemenu (readonly menu m)
@@ -1010,7 +1008,7 @@ is_keywords+=' TRUNCATE IDENTITY'
 is_keywords+=' INDEX_COLORDER ONLINE REORG REBUILD DBCC'
 */
 int f
-f=FileOpen('keywords',TextMode!,Read!,LockReadWrite!)
+f=FileOpen(cfg.is_initpath+'keywords',TextMode!,Read!,LockReadWrite!)
 FileReadEx ( f, is_keywords )
 FileClose(f)
 

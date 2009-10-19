@@ -40,8 +40,8 @@ type WIN32_FIND_DATA from structure
 end type
 
 global type w_main from window
-integer width = 3186
-integer height = 5208
+integer width = 3223
+integer height = 5388
 boolean titlebar = true
 string title = "ASE isql"
 string menuname = "m_main"
@@ -148,7 +148,9 @@ subroutine RtlMoveMemory( long dest, ref long src, long srclen ) library 'kernel
 //disable mdiclient window
 function boolean EnableWindow(long hWnd,boolean bEnable)library "user32"
 //new session
-function long GetModuleFileName(long hModule,ref string lpFilename,long nSize)library 'kernel32' alias for "GetModuleFileNameW"
+//moved to cfg
+//function long GetModuleFileName(long hModule,ref string lpFilename,long nSize)library 'kernel32' alias for "GetModuleFileNameW"
+
 //of_openfile
 function long GetFullPathName(string src,long nBufferLength,ref string dst,ref long fnameoff)library "Kernel32" Alias for "GetFullPathNameW"
 function long FindFirstFile(string lpFileName,ref WIN32_FIND_DATA ffd)library "kernel32.dll" alias for "FindFirstFileW"
@@ -175,7 +177,6 @@ function long SendMessage(long w, long msg,long wparm,ref t_hitinfo lparm)librar
 
 
 end prototypes
-
 type variables
 string is_workspacename
 string is_workspacepath
@@ -486,10 +487,10 @@ end choose
 end event
 
 event ue_men_newsession();//
-string s=space(4000)
+string s
 
-GetModuleFileName(0,s,len(s))
-s='"'+s+'"'
+//GetModuleFileName(0,s,len(s))
+s='"'+cfg.is_modulefilename+'"'
 if sqlca.of_isconnected( ) and keydown(KeyControl!) then s+=' -S'+sqlca.servername+' -U'+sqlca.logid+' -P'+sqlca.logpass +' -D'+sqlca.database+' -J'+sqlca.is_charset
 run(s)
 
@@ -1089,14 +1090,7 @@ e.uo_edit.of_send( e.uo_edit.SCI_SETSEL,ls,le)
 
 end event
 
-event ue_men_help();string fname
-if handle(app())<>0 then
-	fname=space(4000)
-	w_main.GetModuleFileName(0,fname,len(fname))
-	fname=f_getfilepart(fname,1)
-else
-	fname=getCurrentDirectory()+'\'
-end if
+event ue_men_help();//string fname
 
 long ls,le,pos
 uo_editpage e
@@ -1118,13 +1112,13 @@ if of_getcurrentedit(e) then
 		e.uo_edit.of_send(e.uo_edit.SCI_SETSEL,ls, le)
 		e.uo_edit.of_sendRef(e.uo_edit.SCI_GETSELTEXT,0, word)
 		if pos(word,'~r')=0 and pos(word,'~n')=0 then
-			ShowHelp ( fname+"aseqr.hlp", Keyword! , word )
+			ShowHelp ( cfg.is_initpath+"aseqr.hlp", Keyword! , word )
 			return
 		end if
 	end if
 end if
 
-ShowHelp ( fname+"aseqr.hlp", Index! )
+ShowHelp ( cfg.is_initpath+"aseqr.hlp", Index! )
 
 end event
 
