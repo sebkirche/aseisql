@@ -27,6 +27,7 @@ global n_config n_config
 type prototypes
 private function boolean GetWindowPlacement(long hWnd,ref t_windowplacement lpwndpl )library "user32" alias for "GetWindowPlacement"
 private function boolean SetWindowPlacement(long hWnd,ref t_windowplacement lpwndpl )library "user32" alias for "SetWindowPlacement"
+private function long GetModuleFileName(long hModule, ref string lpFilename,	long nSize) library "kernel" alias for "GetModuleFileNameW"
 
 end prototypes
 
@@ -34,6 +35,9 @@ type variables
 protected:
 	//string iniFileName
 	string RegKey
+
+public privatewrite string is_modulefilename
+public privatewrite string is_initpath
 
 end variables
 
@@ -386,6 +390,18 @@ call super::destroy
 end on
 
 event constructor;regkey='HKEY_CURRENT_USER\Software\FM2i\'+GetApplication().classname()+'\'
+
+if handle(app())=0 then
+	//we are in pb
+	is_initpath=getCurrentDirectory()
+	if pos('\/',right(is_initpath,1))<=0 then is_initpath+='\'
+else
+	//we are in exe
+	is_modulefilename=space(5000)
+	GetModuleFileName(0, is_modulefilename, 5000)
+	is_modulefilename=trim(is_modulefilename)
+	is_initpath=f_getfilepart(is_modulefilename,1)
+end if
 
 end event
 

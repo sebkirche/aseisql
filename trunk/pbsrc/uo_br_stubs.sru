@@ -92,13 +92,7 @@ string name
 string ls_text
 long len,root
 
-if handle(app())<>0 then
-	fname=space(4000)
-	w_main.GetModuleFileName(0,fname,len(fname))
-	fname=f_getfilepart(fname,1)
-end if
-
-fname+=file//'stubs.sql'
+fname=cfg.is_initpath+file//'stubs.sql'
 //messageBox('',fname)
 
 f=fileopen(fname)
