@@ -27,10 +27,9 @@ global n_config n_config
 type prototypes
 private function boolean GetWindowPlacement(long hWnd,ref t_windowplacement lpwndpl )library "user32" alias for "GetWindowPlacement"
 private function boolean SetWindowPlacement(long hWnd,ref t_windowplacement lpwndpl )library "user32" alias for "SetWindowPlacement"
-private function long GetModuleFileName(long hModule, ref string lpFilename,	long nSize) library "kernel" alias for "GetModuleFileNameW"
+private function long GetModuleFileName(long hModule, ref string lpFilename,	long nSize) library "kernel32" alias for "GetModuleFileNameW"
 
 end prototypes
-
 type variables
 protected:
 	//string iniFileName
