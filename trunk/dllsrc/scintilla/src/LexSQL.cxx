@@ -446,9 +446,10 @@ fclose(log);
 		}
 		//process for the comment folding
 		if(state==SCE_SQL_COMMENT && prevState!=SCE_SQL_COMMENT){
-			beginFlag=1;
+			//beginFlag=1;  //this is necessary only for begin XXX
+			foldLevel++;
 		}else if(state!=SCE_SQL_COMMENT && prevState==SCE_SQL_COMMENT){
-			endFlag=1;
+			//endFlag=1;
 			foldLevel--;
 		}
 		
