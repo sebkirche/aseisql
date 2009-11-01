@@ -42,7 +42,6 @@ Save Format v3.0(19990112)
  "d_search_exact.srd" "aseisql.pbl";
  "uo_option_tab.sru" "aseisql.pbl";
  "n_resultset_info.sru" "aseisql.pbl";
- "w_export_exec.srw" "aseisql.pbl";
  "f_replaceall.srf" "aseisql.pbl";
  "d_edit_userlist.srd" "aseisql.pbl";
  "t_column_info.srs" "aseisql.pbl";
