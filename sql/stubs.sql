@@ -42,6 +42,8 @@ set dateformat <format>
 set fipsflagger {on | off}
 --<General\Set\flushmessage {on | off}>--
 set flushmessage {on | off}
+--<General\Set\fmtonly {on | off}>--
+set fmtonly on %SELB% off
 --<General\Set\forceplan {on | off}>--
 set forceplan {on | off}
 --<General\Set\identity_insert>--
@@ -91,7 +93,7 @@ set scan_parallel_degree <number>
 --<General\Set\session authorization <login_name>>--
 set session authorization <login_name>
 --<General\Set\showplan {on | off}>--
-set showplan {on | off}
+set showplan on %SELB% off
 --<General\Set\sort_resources {on | off}>--
 set sort_resources {on | off}
 --<General\Set\sort_merge {on | off}>--
