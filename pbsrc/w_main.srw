@@ -177,6 +177,7 @@ function long SendMessage(long w, long msg,long wparm,ref t_hitinfo lparm)librar
 
 
 end prototypes
+
 type variables
 string is_workspacename
 string is_workspacepath
@@ -1431,11 +1432,16 @@ this.of_updatemenustatus()
 end event
 
 event ue_men_executeexport();uo_editpage e
+string s
 
 if not of_getcurrentedit(e) then return
 
+openWithParm(w_export,'sql')
+if message.stringparm='' then return
+
 cfg.of_pushmode('export')
 of_execute(e,'',true)
+cfg.of_popmode()
 
 end event
 
@@ -1457,6 +1463,7 @@ next
 if query<>'' then
 	cfg.of_pushmode('export')
 	of_execute(e,query,true)
+	cfg.of_popmode()
 end if
 
 
@@ -1694,7 +1701,7 @@ m.m_command.m_executex.enabled=m.m_command.m_execute.enabled
 //reexecute is different from execute
 m.m_command.m_reexecute.enabled=not sqlca.ib_executing and con and not p.of_iseditor() and p.il_pagetype<>p.typersprocess
 
-m.m_tools.m_executeexport.enabled=false and not sqlca.ib_executing and con
+m.m_tools.m_executeexport.enabled=not sqlca.ib_executing and con
 m.m_tools.m_exportdatatosql.enabled=not sqlca.ib_executing and con
 
 
