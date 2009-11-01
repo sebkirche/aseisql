@@ -6,9 +6,9 @@ type st_4 from statictext within w_export
 end type
 type ddlb_group from dropdownlistbox within w_export
 end type
-type cb_5 from commandbutton within w_export
+type cb_sel_none from commandbutton within w_export
 end type
-type cb_4 from commandbutton within w_export
+type cb_sel_all from commandbutton within w_export
 end type
 type cb_3 from commandbutton within w_export
 end type
@@ -42,8 +42,8 @@ string icon = "AppIcon!"
 boolean center = true
 st_4 st_4
 ddlb_group ddlb_group
-cb_5 cb_5
-cb_4 cb_4
+cb_sel_none cb_sel_none
+cb_sel_all cb_sel_all
 cb_3 cb_3
 cb_2 cb_2
 ddlb_enc ddlb_enc
@@ -56,11 +56,16 @@ sle_dir sle_dir
 end type
 global w_export w_export
 
+type variables
+string is_mode
+
+end variables
+
 on w_export.create
 this.st_4=create st_4
 this.ddlb_group=create ddlb_group
-this.cb_5=create cb_5
-this.cb_4=create cb_4
+this.cb_sel_none=create cb_sel_none
+this.cb_sel_all=create cb_sel_all
 this.cb_3=create cb_3
 this.cb_2=create cb_2
 this.ddlb_enc=create ddlb_enc
@@ -72,8 +77,8 @@ this.cb_1=create cb_1
 this.sle_dir=create sle_dir
 this.Control[]={this.st_4,&
 this.ddlb_group,&
-this.cb_5,&
-this.cb_4,&
+this.cb_sel_none,&
+this.cb_sel_all,&
 this.cb_3,&
 this.cb_2,&
 this.ddlb_enc,&
@@ -88,8 +93,8 @@ end on
 on w_export.destroy
 destroy(this.st_4)
 destroy(this.ddlb_group)
-destroy(this.cb_5)
-destroy(this.cb_4)
+destroy(this.cb_sel_none)
+destroy(this.cb_sel_all)
 destroy(this.cb_3)
 destroy(this.cb_2)
 destroy(this.ddlb_enc)
@@ -101,10 +106,20 @@ destroy(this.cb_1)
 destroy(this.sle_dir)
 end on
 
-event open;f_autosize(this)
+event open;this.is_mode=message.stringparm
+
+f_autosize(this)
 f_centerwindow(this)
-dw_1.setTransobject( sqlca )
-dw_1.retrieve( )
+if is_mode='sql' then
+	dw_1.enabled=false
+	cb_sel_all.enabled=false
+	cb_sel_none.enabled=false
+	dw_1.importstring( '1~tsql' )
+	dw_1.modify("datawindow.color='67108864'")
+else
+	dw_1.setTransobject( sqlca )
+	dw_1.retrieve( )
+end if
 
 sle_dir.text =cfg.of_getstring('options','export.directory','c:\')
 
@@ -150,7 +165,7 @@ string item[] = {"1","100","500","1000"}
 borderstyle borderstyle = stylelowered!
 end type
 
-type cb_5 from commandbutton within w_export
+type cb_sel_none from commandbutton within w_export
 integer x = 288
 integer y = 288
 integer width = 183
@@ -173,7 +188,7 @@ next
 
 end event
 
-type cb_4 from commandbutton within w_export
+type cb_sel_all from commandbutton within w_export
 integer x = 288
 integer y = 212
 integer width = 183
