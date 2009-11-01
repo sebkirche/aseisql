@@ -797,7 +797,9 @@ go
 declare @max_id_part int
 declare @max_id_order int
 insert into #tmp
-select obj.id, 1, 0, 'create table ' + user_name(obj.uid) +'.'+ obj.name + '(' 
+select obj.id, 1, 0, 'create'+
+case when sysstat2 & 1024 = 1024 then ' existing' else '' end 
++' table ' + user_name(obj.uid) +'.'+ obj.name + '(' 
 from sysobjects obj
 where obj.id=object_id('%PARM:Object name%')
 order by obj.name
@@ -867,6 +869,23 @@ insert into #tmp
 select obj.id, 4, 0, ')'
 from sysobjects obj
 where obj.id=object_id('%PARM:Object name%')
+
+insert into #tmp
+select obj.id, 4, 1, 'external '+
+		case 
+			when sa.object_info2=1 then 'table'
+			when  sa.object_info2=2 then 'directory'
+			when  sa.object_info2=3 then 'rpc'
+			when  sa.object_info2=4 then 'file'
+			when  sa.object_info2=5 then 'function'
+			when  sa.object_info2=6 then 'internal'
+			else '???'
+		end + ' at ''' + sa.char_value + ''''
+from sysobjects obj,sysattributes sa
+where obj.id=object_id('%PARM:Object name%')
+and obj.sysstat2 & 1024 = 1024
+and sa.object=obj.id
+
 select @max_id_part=max(id_part) from #tmp where id_part in (2,3)
 select @max_id_order=max(id_order) from #tmp where id_part=@max_id_part
 update #tmp set txt=txt+',' 
