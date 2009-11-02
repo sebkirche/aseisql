@@ -723,9 +723,11 @@ return true
 
 end function
 
-public function boolean of_changecase (readonly string as_mode);long pos, pose, i=-1, ll_style
+public function boolean of_changecase (readonly string as_mode);long pos, pose 
+long i,posi
+long ll_style,len
 char c
-string ls_old,ls_new
+string ls_old,ls_new,s
 //
 //mode: up,lo,ti,ku,kl
 choose case as_mode
@@ -737,6 +739,7 @@ end choose
 pos=uo_edit.of_send(uo_edit.SCI_GETSELECTIONSTART,0,0)
 pose=uo_edit.of_send(uo_edit.SCI_GETSELECTIONEND,0,0)
 
+//move position start and positionend to the word
 if as_mode='ku' or as_mode='kl' or pos=pose then
 	c=char(uo_edit.of_send(uo_edit.SCI_GETCHARAT,pos,0))
 	if pos(is_wordchars,c)>0 then pos=uo_edit.of_send(uo_edit.SCI_WORDSTARTPOSITION,pos,1)
@@ -746,34 +749,41 @@ end if
 
 uo_edit.of_send(uo_edit.SCI_COLOURISE,0,-1) //colorize all
 
+uo_edit.of_send(uo_edit.SCI_SETSEL,pos,pose)
+
 if this.of_getselectedtext(ls_old)>0 then
 	if as_mode='up' then 
 		ls_new=upper(ls_old)
 	elseif as_mode='lo' then
 		ls_new=lower(ls_old)
 	else
-		for i=pos to pose - 1
-			ll_style=uo_edit.of_send(uo_edit.SCI_GETSTYLEAT,i,0)
+		//we will go through all the chars and check the style of each one
+		//the style located not by chars but by UTF8 bytes :(
+		//so let's do some tricks
+		len=len(ls_old)
+		posi=pos
+		for i=1 to len
+			s=mid(ls_old,i,1)
+			ll_style=uo_edit.of_send(uo_edit.SCI_GETSTYLEAT,posi,0)
 			if ll_style=4 then 
 				if as_mode='ku' then
-					ls_new+=upper(mid(ls_old,i - pos+1,1))
+					ls_new+=upper(s)
 				else
-					ls_new+=lower(mid(ls_old,i - pos+1,1))
+					ls_new+=lower(s)
 				end if
 			else
-				ls_new+=mid(ls_old,i - pos+1,1)
+				ls_new+=s
 			end if
+			//position in utf8 bytes to retrieve style
+			posi+=gn_unicode.of_getuft8len(s)
 		next
 	end if
-	
+	uo_edit.of_send(uo_edit.SCI_BEGINUNDOACTION,0,0)
+	of_replaceselected(ls_new)
+	uo_edit.of_send(uo_edit.SCI_ENDUNDOACTION,0,0)
+	uo_edit.of_send(uo_edit.SCI_SETSEL,pos,pose)
 end if
 
-uo_edit.of_send(uo_edit.SCI_BEGINUNDOACTION,0,0)
-uo_edit.of_send(uo_edit.SCI_SETSEL,pos,pose)
-of_replaceselected(ls_new)
-
-uo_edit.of_send(uo_edit.SCI_ENDUNDOACTION,0,0)
-uo_edit.of_send(uo_edit.SCI_SETSEL,pos,pose)
 
 return true
 
@@ -1014,7 +1024,7 @@ of_styleload(false)
 
 //of_send(SCI_SETTABWIDTH,4,0)
 of_send(SCI_SETTABINDENTS,1,0)
-
+//of_send(SCI_SETUSETABS,0,0)
 
 of_send(SCI_SETMARGINWIDTHN,1, 0)
 of_send(SCI_SETMARGINWIDTHN,2, 0)
