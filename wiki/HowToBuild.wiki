@@ -7,7 +7,7 @@
  * Windows NT,XP,+
  * PowerBuilder version 10.2.0 build 8100
  * Path environment variable that refers to powerbuilder common libraries
- * TortoiseSVN and Subversion (command line tools) version 1.5.* (maybe later versions are working too)
+ * TortoiseSVN and Subversion (command line tools) version 1.5.`*`, 1.6.`*` (later versions should work too)
 
 = How to organize local workspace =
 This paragraph is only a proposal how to organize aseisql project workspace.
@@ -22,11 +22,11 @@ Refer [http://code.google.com/p/aseisql/source/checkout Source] page to see how 
 
   command example to get sources latest version as guest (read-only):
 
-  `svn checkout http://aseisql.googlecode.com/svn/trunk/ svn`
+  `svn checkout http://aseisql.googlecode.com/svn/trunk/ c:\projects\AseisqlProject\svn`
 
   command example to get latest version (you must be a project member):
 
-  `svn checkout http://aseisql.googlecode.com/svn/trunk/ svn --username your@mail.dom`
+  `svn checkout http://aseisql.googlecode.com/svn/trunk/ c:\projects\AseisqlProject\svn --username your@mail.dom`
 
 = How to build pb libraries =
 To start work in pb you need to create PB libraries.
