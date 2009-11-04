@@ -5,9 +5,9 @@ _document have to be reviewed_
 
 = Installation =
 
- # [http://tortoisesvn.tigris.org/ TortoiseSVN] (visual SVN interface for windows) 1.5
- # [http://subversion.tigris.org/ Subversion] (console SVN applications) 1.5
- # [http://dm.char.com.ua/pb/pbscc/pbscc.htm PbSccProxy] (ver 2008-06-22)
+ # [http://tortoisesvn.tigris.org/ TortoiseSVN] (visual SVN interface for windows) 1.5, 1.6
+ # [http://subversion.tigris.org/ Subversion] (console SVN applications) 1.5, 1.6
+ # [http://dm.char.com.ua/pb/pbscc/pbscc.htm PbSccProxy]
 
 = Notes =
 
