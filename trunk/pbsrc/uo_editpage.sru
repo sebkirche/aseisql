@@ -2,6 +2,8 @@ HA$PBExportHeader$uo_editpage.sru
 forward
 global type uo_editpage from uo_tabpage
 end type
+type mle_1 from multilineedit within uo_editpage
+end type
 type uo_edit from uo_scintilla within uo_editpage
 end type
 type win32_file_attribute_data from structure within uo_editpage
@@ -35,6 +37,7 @@ event resize pbm_size
 event scn_updateui ( )
 event ue_sqlexec_end ( long al_errcount )
 event scn_dwellchar ( )
+mle_1 mle_1
 uo_edit uo_edit
 in_timerac in_timerac
 end type
@@ -154,9 +157,13 @@ public function string of_getobjfooter (boolean ab_addgo)
 public function boolean of_open (string fname, long encoding)
 public subroutine of_replaceselected (readonly string as_text)
 public subroutine of_setobjectheader (readonly string s)
+public function string of_rtrim (readonly string s)
+public subroutine of_showheaderfooter (boolean show)
+public function boolean of_showheaderfooter ()
 end prototypes
 
-event resize;this.uo_edit.resize(newwidth,newheight)
+event resize;this.mle_1.width=newwidth
+this.uo_edit.resize(newwidth,newheight - uo_edit.y)
 
 end event
 
@@ -926,17 +933,54 @@ public subroutine of_setobjectheader (readonly string s);is_object_header=s
 
 end subroutine
 
+public function string of_rtrim (readonly string s);long i,len
+len=len(s)
+
+for i=len to 1 step -1
+	if asc(mid(s,i,1))<=32 then 
+		len --
+	else
+		exit
+	end if
+next
+return mid(s,1,len)
+
+end function
+
+public subroutine of_showheaderfooter (boolean show);if show then
+	if not mle_1.visible then
+		mle_1.visible=true
+		uo_edit.y=mle_1.height+pixelsToUnits(1,YPixelsToUnits!)
+		uo_edit.height -= uo_edit.y
+	end if
+else
+	if mle_1.visible then
+		mle_1.visible=false
+		uo_edit.y=0
+		uo_edit.height = this.height
+	end if
+end if
+
+end subroutine
+
+public function boolean of_showheaderfooter ();return mle_1.visible
+
+end function
+
 on uo_editpage.create
 int iCurrent
 call super::create
+this.mle_1=create mle_1
 this.uo_edit=create uo_edit
 this.in_timerac=create in_timerac
 iCurrent=UpperBound(this.Control)
-this.Control[iCurrent+1]=this.uo_edit
+this.Control[iCurrent+1]=this.mle_1
+this.Control[iCurrent+2]=this.uo_edit
 end on
 
 on uo_editpage.destroy
 call super::destroy
+destroy(this.mle_1)
 destroy(this.uo_edit)
 destroy(this.in_timerac)
 end on
@@ -988,11 +1032,33 @@ else
 	is_object_footer=''
 	is_object_header=''
 end if
+mle_1.text=of_rtrim('---------------------------------- HEADER -----------------------------~r~n'+is_object_header)
+mle_1.text+=of_rtrim('~r~n---------------------------------- FOOTER -----------------------------~r~n'+is_object_footer)
+
+of_showheaderfooter(false)
 
 end event
 
+type mle_1 from multilineedit within uo_editpage
+integer width = 480
+integer height = 324
+integer textsize = -8
+integer weight = 400
+fontcharset fontcharset = russiancharset!
+fontpitch fontpitch = fixed!
+fontfamily fontfamily = modern!
+string facename = "Courier New"
+long textcolor = 33554432
+long backcolor = 67108864
+boolean vscrollbar = true
+boolean autovscroll = true
+boolean displayonly = true
+borderstyle borderstyle = stylelowered!
+end type
+
 type uo_edit from uo_scintilla within uo_editpage
-integer taborder = 10
+integer y = 332
+integer taborder = 20
 end type
 
 on uo_edit.destroy

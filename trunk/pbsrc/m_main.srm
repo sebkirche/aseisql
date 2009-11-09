@@ -312,6 +312,8 @@ m_showlineendings m_showlineendings
 end type
 type m_showspaces from menu within m_view
 end type
+type m_showobjectheaderfooter from menu within m_view
+end type
 type m_view_separator2 from menu within m_view
 end type
 type m_gotoquerytabpage from menu within m_view
@@ -323,6 +325,7 @@ m_showlog m_showlog
 m_showbrowser m_showbrowser
 m_lineendings m_lineendings
 m_showspaces m_showspaces
+m_showobjectheaderfooter m_showobjectheaderfooter
 m_view_separator2 m_view_separator2
 m_gotoquerytabpage m_gotoquerytabpage
 end type
@@ -2097,7 +2100,7 @@ end event
 
 on m_executeexport.create
 call super::create
-this.text = "Execute && Export to SQL"
+this.text = "Execute && Export to SQL..."
 this.microhelp = "Do execute and export of the custom sql. Note: ~"for browse~" is required!"
 end on
 
@@ -2231,6 +2234,7 @@ m_showlog m_showlog
 m_showbrowser m_showbrowser
 m_lineendings m_lineendings
 m_showspaces m_showspaces
+m_showobjectheaderfooter m_showobjectheaderfooter
 m_view_separator2 m_view_separator2
 m_gotoquerytabpage m_gotoquerytabpage
 end type
@@ -2244,6 +2248,7 @@ this.m_showlog=create m_showlog
 this.m_showbrowser=create m_showbrowser
 this.m_lineendings=create m_lineendings
 this.m_showspaces=create m_showspaces
+this.m_showobjectheaderfooter=create m_showobjectheaderfooter
 this.m_view_separator2=create m_view_separator2
 this.m_gotoquerytabpage=create m_gotoquerytabpage
 this.Item[UpperBound(this.Item)+1]=this.m_options
@@ -2252,6 +2257,7 @@ this.Item[UpperBound(this.Item)+1]=this.m_showlog
 this.Item[UpperBound(this.Item)+1]=this.m_showbrowser
 this.Item[UpperBound(this.Item)+1]=this.m_lineendings
 this.Item[UpperBound(this.Item)+1]=this.m_showspaces
+this.Item[UpperBound(this.Item)+1]=this.m_showobjectheaderfooter
 this.Item[UpperBound(this.Item)+1]=this.m_view_separator2
 this.Item[UpperBound(this.Item)+1]=this.m_gotoquerytabpage
 end on
@@ -2264,6 +2270,7 @@ destroy(this.m_showlog)
 destroy(this.m_showbrowser)
 destroy(this.m_lineendings)
 destroy(this.m_showspaces)
+destroy(this.m_showobjectheaderfooter)
 destroy(this.m_view_separator2)
 destroy(this.m_gotoquerytabpage)
 end on
@@ -2451,6 +2458,24 @@ this.toolbaritemtext = "Show Spaces"
 end on
 
 on m_showspaces.destroy
+call super::destroy
+end on
+
+type m_showobjectheaderfooter from menu within m_view
+end type
+
+event clicked;parentWindow.postEvent('ue_men_showobjectheaderfooter')
+
+end event
+
+on m_showobjectheaderfooter.create
+call super::create
+this.text = "Show Object Header && Footer"
+this.toolbaritemname = "img\h_f.bmp"
+this.toolbaritemtext = "Show Object Header & Footer"
+end on
+
+on m_showobjectheaderfooter.destroy
 call super::destroy
 end on
 

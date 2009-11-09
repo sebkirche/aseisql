@@ -132,6 +132,7 @@ event ue_men_showspaces ( )
 event ue_men_executeexport ( )
 event ue_men_exportdata ( )
 event ue_sybexec_setfieldinfo pbm_custom10
+event ue_men_showobjectheaderfooter ( )
 mdi_1 mdi_1
 st_tip2 st_tip2
 lv_log lv_log
@@ -1483,6 +1484,14 @@ if isValid(irs_current) then irs_current.of_sybexec_setfieldinfo(wparam,s)
 
 end event
 
+event ue_men_showobjectheaderfooter();uo_editpage e
+
+if not of_getcurrentedit(e) then return
+e.of_showheaderfooter( not e.of_showheaderfooter() )
+this.of_updatemenustatus()
+
+end event
+
 public function boolean of_getcurrentedit (ref uo_editpage e);uo_tabpage t
 t=of_getcurrentpage()
 if t.of_iseditor() then 
@@ -1748,6 +1757,13 @@ end if
 m.m_view.m_showspaces.enabled=p.of_iseditor()
 if p.of_iseditor() then
 	m.m_view.m_showspaces.checked=(e.uo_edit.of_send(e.uo_edit.SCI_GETVIEWWS,0,0)<>0)
+end if
+
+m.m_view.m_showobjectheaderfooter.enabled=p.il_pagetype=p.typeeditobject
+if m.m_view.m_showobjectheaderfooter.enabled then
+	m.m_view.m_showobjectheaderfooter.checked=e.of_showheaderfooter()
+else
+	m.m_view.m_showobjectheaderfooter.checked=false
 end if
 
 m.m_window.m_close.enabled = p.of_canclose() // (not sqlca.ib_executing or p.of_iseditor()) and of_gettabindex()>1
