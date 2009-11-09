@@ -180,22 +180,25 @@ of_clear()
 dotpos=pos(nameofproc,'.')
 if dotPos>0 and pos(nameofproc,'.',dotPos+1)>0 then database=mid(nameofproc,1,dotPos)+'.'//including dot-dot
 
+sqlca.of_trimspaces( false )
 query='SELECT text,char_length(text) FROM '+database+'syscomments WHERE id=object_id("'+nameofproc+'") ORDER BY colid2,colid'
+
 //
 DECLARE proc_text DYNAMIC CURSOR FOR SQLSA;
 PREPARE SQLSA FROM :query;
 OPEN DYNAMIC proc_text;
-if sqlca.of_error() then return 0
-
-FETCH proc_text INTO :text,:textlen;
-do while sqlca.sqlcode=0
-	text += space(textlen - len(text))
-	if not of_parse(text) then exit
+if not sqlca.of_error() then 
 	FETCH proc_text INTO :text,:textlen;
-loop
-sqlca.of_error()
-close proc_text;
+	do while sqlca.sqlcode=0
+		//text += space(textlen - len(text)) //not needed when trim switched off
+		if not of_parse(text) then exit
+		FETCH proc_text INTO :text,:textlen;
+	loop
+	sqlca.of_error()
+	close proc_text;
+end if
 
+sqlca.of_trimspaces( true )
 return upperbound(parm)
 
 end function

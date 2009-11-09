@@ -36,6 +36,8 @@ public function boolean of_dbg_detach (long al_spid)
 public function boolean of_dbg_error (long ret)
 public function boolean of_utf8 ()
 public function boolean of_connect (readonly string as_srv, readonly string as_db, readonly string as_uid, readonly string as_pwd, readonly string as_charset, string as_hostname, readonly boolean ab_pwencrypt, readonly boolean ab_dataencrypt)
+public subroutine of_setdbparm (readonly string as_parm, readonly string as_value, boolean ab_quote)
+public subroutine of_trimspaces (boolean b)
 end prototypes
 
 public function boolean of_error ();if this.sqlcode=-1 then 
@@ -75,7 +77,6 @@ is_server_version=f_replaceall(s,'/','~r~n')
 
 this.is_charset_var=f_selectstring('select @@client_csname','')
 if this.is_charset_var>'' then this.is_charset_var='@@client_csname'
-
 
 return true
 
@@ -215,6 +216,60 @@ end if
 return of_connect()
 
 end function
+
+public subroutine of_setdbparm (readonly string as_parm, readonly string as_value, boolean ab_quote);string ls_dbparm
+long ll_pos, ll_pos1, ll_parm
+ls_dbparm = this.DbParm
+if ls_dbparm = '' then 
+	/* DBParm is empty */
+	if ab_quote then 
+		ls_dbparm = as_parm + '"' + as_value + "'"
+	else
+		ls_dbparm = as_parm + as_value
+	end if
+else
+	/* DBparm isn't empty */
+	ll_parm = pos(Upper(ls_dbparm),Upper(as_parm))
+	ll_pos = pos(Upper(ls_dbparm),'=',ll_parm)
+	ll_pos1 = pos(Upper(ls_dbparm),',',ll_parm)
+	if ll_parm<>0 then
+		/* param is already present in parameters*/
+		if ll_pos1 = 0 then
+			/* param in the end of string */
+			if ab_quote then
+				ls_dbparm = Left(ls_dbparm,ll_pos ) + "'" + as_value + "'"
+			else
+				ls_dbparm = Left(ls_dbparm,ll_pos ) + as_value
+			end if
+		else
+			/* some parameters after parm */	
+			if ab_quote then
+				ls_dbparm = Replace(ls_dbparm,ll_pos + 1,ll_pos1 - ll_pos - 1,"'"+as_value+"'")
+			else
+				ls_dbparm = Replace(ls_dbparm,ll_pos + 1,ll_pos1 - ll_pos - 1,as_value)
+			end if				
+		end if
+	else
+		/* add new parm */
+		if ab_quote then 
+			ls_dbparm = ls_dbparm + "," + as_parm + "=" + "'"+as_value+"'"
+		else
+			ls_dbparm = ls_dbparm + "," + as_parm + "=" + as_value
+		end if
+	end if
+end if 
+
+this.DbParm = ls_dbparm
+
+end subroutine
+
+public subroutine of_trimspaces (boolean b);if b then
+	this.of_setdbparm( 'TrimSpaces', '1', false)
+else
+	this.of_setdbparm( 'TrimSpaces', '0', false)
+end if
+
+end subroutine
 
 on n_tr.create
 call super::create
