@@ -72,6 +72,7 @@ public privatewrite long il_macro_sele
 public privatewrite string is_keywords
 
 end variables
+
 forward prototypes
 public function boolean of_generatemenu (readonly menu m, readonly string as_name, readonly string as_type, readonly string as_data, boolean ab_generic)
 public subroutine of_freemenu (readonly menu m)
@@ -371,39 +372,44 @@ next
 end subroutine
 
 public function string of_objtext (readonly string name);string query
-string stext,ptext
+string stext,ptext=''
 long slen
 
 //select text = B.text from opale2000.dbo.sysobjects A, opale2000.dbo.syscomments B 
 //where A.id = 1213348456 and A.id = B.id and number = 1 order by B.colid2, B.colid
 
-query='SELECT text,char_length(text) FROM syscomments WHERE id=object_id("'+name+'")'//with ORDER BY colid2,colid' it's not working!!!
+//with ORDER BY colid2,colid' it's not working!!!
+
+//ok. in some old versions of ASE char_length not working if "order by" is present in query
+//to correct this let's play with trimspaces transaction parameter
+//normally, without "space trim" char_length not needed... have to be checked
+
+//remove default PB behavior that trims spaces
+sqlca.of_trimspaces( false )
+
+query='SELECT text,char_length(text) FROM syscomments WHERE id=object_id("'+name+'") order by colid2, colid'
 
 DECLARE proc_text DYNAMIC CURSOR FOR SQLSA;
 PREPARE SQLSA FROM :query;
 OPEN DYNAMIC proc_text;
-if sqlca.of_Error() then return ''
-FETCH proc_text INTO :stext,:slen;
-if sqlca.sqlcode=100 then
-	if f_error("Can't find object ~r~n"+name) then return ''
-end if
-if sqlca.sqlcode=0 then
-	do while sqlca.sqlcode=0
-		stext += space(slen - len(stext))
-		ptext += stext
-		FETCH proc_text INTO :stext,:slen;
-		if sqlca.sqlcode<>0 then
-			sqlca.sqlcode=sqlca.sqlcode
-		end if
-	loop
-end if
-if sqlca.sqlcode<0 then
-	f_error(sqlca.sqlerrtext)
-end if
-close proc_text;
-
-ptext=trim(ptext)
-
+if not sqlca.of_Error() then 
+	FETCH proc_text INTO :stext,:slen;
+	if sqlca.sqlcode=100 then
+		f_error("Can't find object ~r~n"+name)
+	elseif sqlca.sqlcode=0 then
+		do while sqlca.sqlcode=0
+			//stext += space(slen - len(stext)) //without trimming we don't need this anymore
+			ptext += stext
+			FETCH proc_text INTO :stext,:slen;
+		loop
+		ptext=trim(ptext)
+	else
+		sqlca.of_Error()
+	end if
+	close proc_text;
+end if	
+//return default PB behavior that trims spaces
+sqlca.of_trimspaces( true )
 return ptext
 
 end function
