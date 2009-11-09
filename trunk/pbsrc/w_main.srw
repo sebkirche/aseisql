@@ -1440,8 +1440,7 @@ openWithParm(w_export,'sql')
 if message.stringparm='' then return
 
 cfg.of_pushmode('export')
-of_execute(e,'',true)
-cfg.of_popmode()
+if not of_execute(e,'',true) then cfg.of_popmode()
 
 end event
 
@@ -1462,8 +1461,7 @@ for i=1 to n
 next
 if query<>'' then
 	cfg.of_pushmode('export')
-	of_execute(e,query,true)
-	cfg.of_popmode()
+	if not of_execute(e,query,true) then cfg.of_popmode()
 end if
 
 
