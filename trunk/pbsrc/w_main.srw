@@ -1525,11 +1525,12 @@ return true
 end function
 
 public function uo_tabpage of_getcurrentpage ();long l
-
+uo_tabpage p
 //let's use windows message to get current tabpage instead of 
 //PB tab_1.selectedtab because in some situations it's not updated
 l=send(handle(tab_1),4864+11 /*TCM_GETCURSEL*/ ,0,0)+1
-return tab_1.control[l]
+if l>0 then return tab_1.control[l]
+return p
 
 end function
 
@@ -2667,6 +2668,14 @@ for i=1 to count
 		this.post SetToolbar( ai_toolbars[i], true, alignAtTop! )
 	end if
 next
+
+end event
+
+event activate;uo_tabpage p
+
+p=of_getCurrentPage()
+
+if isValid(p) then p.post event ue_selected()
 
 end event
 
