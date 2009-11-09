@@ -1325,7 +1325,7 @@ if parent.il_hotlink_start<>-1 then
 		if w_main.of_canopenobject(li_type) then
 			w_main.post of_openobject(is_hotlink_text,0,false)
 		else
-			w_main.setMicrohelp('Not supported. Only stored procedures, views, and triggers are supported for now.')
+			w_main.setMicrohelp('Not supported. Only stored procedures, functions, views, and triggers are supported for now.')
 		end if
 	end if
 	//MessageBox('',is_hotlink_text)
