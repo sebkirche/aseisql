@@ -2141,7 +2141,7 @@ end function
 
 public function boolean of_canopenobject (readonly integer ai_type);
 CHOOSE CASE ai_type
-	CASE gn_sqlmenu.typeProcedure, gn_sqlmenu.typeTrigger, gn_sqlmenu.typeView
+	CASE gn_sqlmenu.typeProcedure, gn_sqlmenu.typeTrigger, gn_sqlmenu.typeView, gn_sqlmenu.typeSFunction
 		//it's ok.
 	CASE ELSE
 		return false
