@@ -985,13 +985,26 @@ destroy(this.uo_edit)
 destroy(this.in_timerac)
 end on
 
-event ue_selected;call super::ue_selected;
+event ue_selected;call super::ue_selected;int i
+string s
+
 if uo_edit.of_send( uo_edit.SCI_GETMODIFY , 0, 0)<>0 then
 	w_statusbar.f_settext('change','*')
 else
 end if
 of_dbg_updatestops()
-
+//check if file has not been changed by external program
+if il_pagetype=typeEditFile and is_filepath<>'' then
+	if not of_fileattr(true) then
+		s=is_filepath+' was changed after open.~r~nDo you want to reload it'
+		//remember the new attributes
+		of_fileattr(false)
+		if uo_edit.of_send( uo_edit.SCI_GETMODIFY , 0, 0)<>0 then s+=' and lose your changes'
+		s+='?'
+		i=MessageBox(app().displayname, s,Exclamation!,OkCancel!)
+		if i=1 then this.of_open( is_filepath, 0)
+	end if
+end if
 
 end event
 
